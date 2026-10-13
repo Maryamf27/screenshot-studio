@@ -93,7 +93,9 @@ export function WizardShell() {
         </ol>
       </nav>
 
-      {activeStep === 1 ? <UploadManager /> : activeStep === 2 ? <TargetSelector /> : activeStep === 3 ? <TemplateView /> : <PlaceholderView step={activeStep} />}
+      {activeStep === 1 ? (
+        <UploadManager onContinue={() => setActiveStep(2)} />
+      ) : activeStep === 2 ? <TargetSelector /> : activeStep === 3 ? <TemplateView /> : <PlaceholderView step={activeStep} />}
     </div>
   );
 }
