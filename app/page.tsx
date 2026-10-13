@@ -42,20 +42,20 @@ export default function Home() {
     <>
       <AppHeader />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 md:py-12">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-10 sm:px-8 md:py-14">
         {/* Introduction */}
-        <section className="text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Create App Store Screenshots
+        <section className="max-w-2xl">
+          <p className="mb-3 text-xs font-medium uppercase tracking-[0.16em] text-primary">New project</p>
+          <h2 className="text-3xl font-semibold tracking-[-0.035em] text-foreground sm:text-4xl">
+            Create app store screenshots
           </h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-            Turn raw mobile screenshots into polished, store-ready marketing
-            visuals — entirely in your browser.
+          <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
+            Turn raw mobile screenshots into polished, store-ready marketing visuals.
           </p>
         </section>
 
         {/* Workflow stepper */}
-        <div className="mt-8 rounded-xl border border-border bg-card px-4 py-5 sm:px-6">
+        <div className="mt-10 border-y border-border bg-transparent px-1 py-5 sm:px-2">
           <WorkflowStepper activeStep={0} />
         </div>
 

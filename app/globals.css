@@ -2,36 +2,19 @@
 
 /* --- Design tokens --- */
 :root {
-  --background: #fafafa;
-  --foreground: #1c1c1e;
-  --muted: #f0f0f2;
-  --muted-foreground: #6b6b7b;
-  --border: #e2e2e8;
-  --ring: #1c1c1e;
+  --background: #f5f3ee;
+  --foreground: #252522;
+  --muted: #f1efe9;
+  --muted-foreground: #77766f;
+  --border: #e3e0d8;
+  --ring: #52664f;
   --card: #ffffff;
-  --card-foreground: #1c1c1e;
-  --primary: #5b52d4;
+  --card-foreground: #252522;
+  --primary: #52664f;
   --primary-foreground: #ffffff;
-  --accent: #eef0ff;
-  --accent-foreground: #4338ca;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #fafafa;
-    --muted: #262626;
-    --muted-foreground: #a3a3a3;
-    --border: #262626;
-    --ring: #d4d4d4;
-    --card: #171717;
-    --card-foreground: #fafafa;
-    --primary: #7c72f2;
-    --primary-foreground: #ffffff;
-    --accent: #1e1b4b;
-    --accent-foreground: #a5b4fc;
-  }
-}
+  --accent: #e9ede5;
+  --accent-foreground: #40513e;
+} 
 
 /* --- Tailwind theme integration --- */
 @theme inline {
