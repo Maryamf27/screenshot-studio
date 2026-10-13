@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Check, Download, LayoutTemplate, Monitor, Paintbrush, Upload } from "lucide-react";
 import { UploadManager } from "@/components/upload-manager";
 import { TargetSelector } from "@/components/target-selector";
+import { CanvasPreview } from "@/components/canvas-preview";
+import { templates, type TemplateId } from "@/src/renderer/templates";
 import { wizardSteps, type WizardStep } from "@/src/config/storePresets";
 
 const stepIcons = [Upload, Monitor, LayoutTemplate, Paintbrush, Download] as const;
@@ -23,6 +25,31 @@ function PlaceholderView({ step }: { step: WizardStep }) {
       <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
         This workspace is ready for the {current.label.toLowerCase()} flow.
       </p>
+    </section>
+  );
+}
+
+function TemplateView() {
+  const [templateId, setTemplateId] = useState<TemplateId>("classic-top");
+
+  return (
+    <section className="space-y-6">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Gate 1 preview</p>
+        <h3 className="mt-2 text-xl font-semibold text-card-foreground">Pick a template</h3>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">Preview and export use the same pure canvas renderer, so the output stays pixel-for-pixel consistent.</p>
+      </div>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,22rem)]">
+        <CanvasPreview templateId={templateId} />
+        <div className="flex flex-col gap-3">
+          {templates.map((template) => (
+            <button key={template.id} type="button" onClick={() => setTemplateId(template.id)} className={`rounded-xl border p-4 text-left transition-colors ${template.id === templateId ? "border-primary bg-accent" : "border-border bg-card hover:bg-accent/50"}`}>
+              <span className="font-medium text-card-foreground">{template.label}</span>
+              <span className="mt-1 block text-sm leading-5 text-muted-foreground">{template.description}</span>
+            </button>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -66,7 +93,7 @@ export function WizardShell() {
         </ol>
       </nav>
 
-      {activeStep === 1 ? <UploadManager /> : activeStep === 2 ? <TargetSelector /> : <PlaceholderView step={activeStep} />}
+      {activeStep === 1 ? <UploadManager /> : activeStep === 2 ? <TargetSelector /> : activeStep === 3 ? <TemplateView /> : <PlaceholderView step={activeStep} />}
     </div>
   );
 }
