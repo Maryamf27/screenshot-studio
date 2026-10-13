@@ -8,9 +8,9 @@ export function UploadPanel() {
 
   return (
     <div className="w-full">
-      <div className="rounded-[10px] border border-dashed border-[#bdbbb3] bg-white px-6 py-14 text-center sm:px-12 sm:py-20">
+      <div className="rounded-md border border-dashed border-[#b8b8b3] bg-card px-6 py-16 text-center sm:px-12 sm:py-24">
         <ImageUp className="mx-auto mb-5 h-7 w-7 text-primary" strokeWidth={1.5} />
-        <h2 className="text-lg font-medium tracking-[-0.01em] text-card-foreground">
+        <h2 className="text-lg font-medium tracking-[-0.015em] text-card-foreground">
           Drop your screenshots here
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">

@@ -42,11 +42,10 @@ export default function Home() {
     <>
       <AppHeader />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-10 sm:px-8 md:py-14">
-        {/* Introduction */}
-        <section className="max-w-2xl">
-          <p className="mb-3 text-xs font-medium uppercase tracking-[0.16em] text-primary">New project</p>
-          <h2 className="text-3xl font-semibold tracking-[-0.035em] text-foreground sm:text-4xl">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-8 sm:px-8 md:py-12">
+        <section className="border-b border-border pb-8">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">New project</p>
+          <h2 className="text-3xl font-semibold tracking-[-0.04em] text-foreground sm:text-[2.15rem]">
             Create app store screenshots
           </h2>
           <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
@@ -54,38 +53,25 @@ export default function Home() {
           </p>
         </section>
 
-        {/* Workflow stepper */}
-        <div className="mt-10 border-y border-border bg-transparent px-1 py-5 sm:px-2">
+        <div className="border-b border-border px-1 py-6 sm:px-2">
           <WorkflowStepper activeStep={0} />
         </div>
 
-        {/* Main content grid */}
-        <div className="mt-8 grid gap-8 lg:grid-cols-3">
-          {/* Upload dropzone — takes 2/3 width on desktop */}
-          <div className="lg:col-span-2">
-            <UploadPanel />
-          </div>
-
-          {/* Supporting panel — planned workflow */}
-          <aside className="rounded-xl border border-border bg-card p-5">
-            <h3 className="text-sm font-semibold text-card-foreground">
-              How it works
-            </h3>
-            <ol className="mt-4 space-y-4">
-              {workflowItems.map((item) => {
+        <div className="grid gap-10 pt-8 lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-14">
+          <UploadPanel />
+          <aside className="border-t border-border pt-5 lg:border-t-0 lg:border-l lg:pl-7">
+            <h3 className="text-sm font-semibold text-card-foreground">Project workflow</h3>
+            <ol className="mt-5 space-y-5">
+              {workflowItems.map((item, index) => {
                 const Icon = item.icon;
                 return (
                   <li key={item.title} className="flex gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent">
-                      <Icon className="h-4 w-4 text-accent-foreground" />
+                    <div className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${index === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                      <Icon className="h-3.5 w-3.5" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-card-foreground">
-                        {item.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {item.description}
-                      </p>
+                      <p className="text-sm font-medium text-card-foreground">{item.title}</p>
+                      <p className="mt-0.5 text-xs leading-5 text-muted-foreground">{item.description}</p>
                     </div>
                   </li>
                 );
