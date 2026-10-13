@@ -22,7 +22,7 @@ function SortableImage({ image, onRemove }: { image: UploadedImage; onRemove: ()
   );
 }
 
-export function UploadManager() {
+export function UploadManager({ onContinue }: { onContinue: () => void }) {
   const images = useProjectStore((state) => state.images);
   const addImages = useProjectStore((state) => state.addImages);
   const removeImage = useProjectStore((state) => state.removeImage);
@@ -50,6 +50,11 @@ export function UploadManager() {
       </div>
       {message && <p role="alert" className="mt-3 text-center text-xs text-destructive">{message}</p>}
       {images.length > 0 && <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}><SortableContext items={ids} strategy={horizontalListSortingStrategy}><ol className="mt-6 flex flex-wrap gap-3" aria-label="Uploaded screenshots">{images.map((image) => <SortableImage key={image.id} image={image} onRemove={() => removeImage(image.id)} />)}</ol></SortableContext></DndContext>}
+      <div className="mt-6 flex justify-end">
+        <button type="button" onClick={onContinue} disabled={images.length === 0} className="inline-flex h-10 items-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50">
+          Next
+        </button>
+      </div>
       <p className="mt-4 text-center text-xs text-muted-foreground">Your images stay private and are processed locally in your browser.</p>
     </div>
   );
