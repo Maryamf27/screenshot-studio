@@ -9,8 +9,14 @@ export type UploadedImage = {
   name: string;
   type: string;
   size: number;
-  file: Blob;
+  file: File;
+  headline: string;
+  subheadline: string;
 };
+
+function slideNameFromFile(file: File) {
+  return file.name.replace(/\.[^/.]+$/, "") || file.name;
+}
 
 export type CustomDimension = {
   id: string;
@@ -29,7 +35,8 @@ type ProjectState = {
   font: string;
   addImages: (files: File[]) => void;
   removeImage: (id: string) => void;
-  reorderImages: (activeId: string, overId: string) => void;
+  renameImage: (id: string, name: string) => void;
+  reorderImages: (images: UploadedImage[]) => void;
   setPlatform: (platform: StorePlatform) => void;
   togglePreset: (id: StorePresetId) => void;
   addCustomDimension: (dimension: Omit<CustomDimension, "id">) => void;
@@ -48,29 +55,33 @@ export const useProjectStore = create<ProjectState>((setState) => ({
   brandColor: "#111111",
   font: "Inter",
   addImages: (files) =>
-    setState((state) => ({
-      images: [
-        ...state.images,
-        ...files.slice(0, 10 - state.images.length).map((file) => ({
-          id: `${file.name}-${file.lastModified}-${crypto.randomUUID()}`,
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          file,
-        })),
-      ],
-    })),
-  removeImage: (id) => setState((state) => ({ images: state.images.filter((image) => image.id !== id) })),
-  reorderImages: (activeId, overId) =>
     setState((state) => {
-      const oldIndex = state.images.findIndex((image) => image.id === activeId);
-      const newIndex = state.images.findIndex((image) => image.id === overId);
-      if (oldIndex < 0 || newIndex < 0 || oldIndex === newIndex) return state;
-      const images = [...state.images];
-      const [moved] = images.splice(oldIndex, 1);
-      images.splice(newIndex, 0, moved);
-      return { images };
+      const offset = state.images.length;
+      const timestamp = Date.now();
+      return {
+        images: [
+          ...state.images,
+          ...files.slice(0, 10 - offset).map((file, index) => {
+            const name = slideNameFromFile(file);
+            return {
+              id: `${timestamp}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}-${offset + index}`,
+              name,
+              type: file.type,
+              size: file.size,
+              file,
+              headline: name,
+              subheadline: "",
+            };
+          }),
+        ],
+      };
     }),
+  removeImage: (id) => setState((state) => ({ images: state.images.filter((image) => image.id !== id) })),
+  renameImage: (id, name) =>
+    setState((state) => ({
+      images: state.images.map((image) => (image.id === id ? { ...image, name } : image)),
+    })),
+  reorderImages: (images) => setState({ images }),
   setPlatform: (selectedPlatform) => setState({ selectedPlatform, selectedPresetIds: [] }),
   togglePreset: (id) =>
     setState((state) => ({
@@ -88,7 +99,15 @@ export function hydrateProjectStore() {
   if (hydrationStarted || typeof window === "undefined") return;
   hydrationStarted = true;
   void get<Partial<ProjectState>>(STORAGE_KEY).then((saved) => {
-    if (saved) useProjectStore.setState(saved);
+    if (!saved) return;
+    const images = (saved.images ?? []).map((image, index) => ({
+      ...image,
+      id: image.id || `${image.file?.lastModified ?? Date.now()}-${image.name || "slide"}-${index}`,
+      name: image.name?.replace(/\.[^/.]+$/, "") || image.name || `Slide ${index + 1}`,
+      headline: image.headline ?? image.name?.replace(/\.[^/.]+$/, "") ?? "",
+      subheadline: image.subheadline ?? "",
+    }));
+    useProjectStore.setState({ ...saved, images });
   });
 }
 
