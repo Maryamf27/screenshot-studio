@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Check, Download, LayoutTemplate, Monitor, Paintbrush, Upload } from "lucide-react";
-import { UploadPanel } from "@/components/upload-panel";
+import { UploadManager } from "@/components/upload-manager";
+import { TargetSelector } from "@/components/target-selector";
 import { wizardSteps, type WizardStep } from "@/src/config/storePresets";
 
 const stepIcons = [Upload, Monitor, LayoutTemplate, Paintbrush, Download] as const;
@@ -65,7 +66,7 @@ export function WizardShell() {
         </ol>
       </nav>
 
-      {activeStep === 1 ? <UploadPanel /> : <PlaceholderView step={activeStep} />}
+      {activeStep === 1 ? <UploadManager /> : activeStep === 2 ? <TargetSelector /> : <PlaceholderView step={activeStep} />}
     </div>
   );
 }
