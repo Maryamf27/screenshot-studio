@@ -5,7 +5,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { storePresets, type StorePlatform } from "@/src/config/storePresets";
 import { useProjectStore } from "@/src/store/project-store";
 
-export function TargetSelector() {
+export function TargetSelector({ onContinue }: { onContinue: () => void }) {
   const platform = useProjectStore((state) => state.selectedPlatform);
   const selected = useProjectStore((state) => state.selectedPresetIds);
   const custom = useProjectStore((state) => state.customDimensions);
@@ -51,7 +51,17 @@ export function TargetSelector() {
         </div>
         {custom.length > 0 && <ul className="mt-4 flex flex-col gap-2">{custom.map((dimension) => <li key={dimension.id} className="flex items-center justify-between rounded-md border border-border bg-card px-3 py-2 text-sm"><span className="text-foreground">{dimension.name} <span className="text-muted-foreground">{dimension.width} × {dimension.height}px</span></span><button type="button" onClick={() => removeCustomDimension(dimension.id)} aria-label={`Remove ${dimension.name}`} className="text-muted-foreground hover:text-destructive"><Trash2 className="size-4" /></button></li>)}</ul>}
       </div>
-      <p className="text-xs text-muted-foreground">{selected.length + custom.length} export format{selected.length + custom.length === 1 ? "" : "s"} selected</p>
+      <div className="flex items-center justify-between gap-4 border-t border-border pt-6">
+        <p className="text-xs text-muted-foreground">{selected.length + custom.length} export format{selected.length + custom.length === 1 ? "" : "s"} selected</p>
+        <button
+          type="button"
+          onClick={onContinue}
+          disabled={selected.length + custom.length === 0}
+          className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </section>
   );
 }

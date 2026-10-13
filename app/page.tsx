@@ -10,7 +10,7 @@ export default function Home() {
         <section className="border-b border-border pb-8">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">New project</p>
           <h2 className="text-3xl font-semibold tracking-[-0.04em] text-foreground sm:text-[2.15rem]">
-            Create app store screenshots
+            Screenshot Studio
           </h2>
           <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
             Turn raw mobile screenshots into polished, store-ready marketing visuals.
