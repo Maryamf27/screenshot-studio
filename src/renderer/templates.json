@@ -1,0 +1,382 @@
+[
+  {
+    "id": "award-badge",
+    "label": "Award Badge & Task Cards",
+    "style": "Laurel social proof",
+    "description": "A laurel rating badge and daily task cards frame your app in a warm editorial layout.",
+    "background": {
+      "type": "gradient",
+      "start": "#FFF8E8",
+      "end": "#F5EBDD",
+      "angle": 135
+    },
+    "bgShapes": [
+      {
+        "type": "arch",
+        "x": -8,
+        "y": 12,
+        "width": 44,
+        "height": 38,
+        "color": "#E8BD73",
+        "opacity": 0.1
+      },
+      {
+        "type": "circle",
+        "x": 69,
+        "y": 4,
+        "width": 36,
+        "height": 20,
+        "color": "#F0D7A3",
+        "opacity": 0.09
+      }
+    ],
+    "badge": {
+      "x": 50,
+      "y": 2.5,
+      "width": 55,
+      "height": 4.5,
+      "fontSize": 2.8,
+      "fontWeight": 800,
+      "lineHeight": 1,
+      "color": "#5B421C",
+      "fillColor": "#FFFDF7",
+      "paddingX": 2.3,
+      "paddingY": 0.8,
+      "align": "center",
+      "text": "★★★★★  4.9 RATING",
+      "maxLines": 1,
+      "firstSlideOnly": true,
+      "laurel": true
+    },
+    "headline": {
+      "x": 50,
+      "y": 8,
+      "width": 88,
+      "height": 8,
+      "fontSize": 5.7,
+      "fontWeight": 800,
+      "lineHeight": 1.05,
+      "color": "#34281A",
+      "align": "center",
+      "maxLines": 2
+    },
+    "subheadline": {
+      "x": 50,
+      "y": 16,
+      "width": 82,
+      "height": 5,
+      "fontSize": 2.5,
+      "fontWeight": 500,
+      "lineHeight": 1.2,
+      "color": "#786A57",
+      "align": "center",
+      "maxLines": 2
+    },
+    "taskCards": [
+      {
+        "x": 8,
+        "y": 23,
+        "width": 84,
+        "height": 8.5,
+        "radius": 2.4,
+        "fillColor": "#FFFEFB",
+        "textColor": "#352D22",
+        "accentColor": "#C58B42",
+        "time": "9:00 AM",
+        "title": "Wipe windows",
+        "detail": "Living room Â· 15 min"
+      },
+      {
+        "x": 8,
+        "y": 33,
+        "width": 84,
+        "height": 8.5,
+        "radius": 2.4,
+        "fillColor": "#FFFEFB",
+        "textColor": "#352D22",
+        "accentColor": "#6D8C72",
+        "time": "10:30 AM",
+        "title": "Water the plants",
+        "detail": "Kitchen Â· 5 min"
+      }
+    ],
+    "screenshot": {
+      "x": 50,
+      "y": 45,
+      "width": 64,
+      "height": 60,
+      "radius": 4,
+      "fit": "contain"
+    },
+    "device": {
+      "type": "phone",
+      "visible": true,
+      "color": "#24211E",
+      "shadowBlur": 4.4,
+      "shadowOffsetY": 1.2,
+      "rimColor": "#D8B77B",
+      "rimWidth": 0.18,
+      "notchVisible": true
+    },
+    "bgShapeStyle": "arch"
+  },
+  {
+    "id": "earthy-routine",
+    "label": "Earthy Routine Rows",
+    "style": "Warm split schedule",
+    "description": "A deep taupe title card and tidy routine rows give the listing a grounded, crafted feel.",
+    "background": {
+      "type": "solid",
+      "start": "#F3EEE6"
+    },
+    "bgShapes": [
+      {
+        "type": "pillar",
+        "x": 2,
+        "y": 35,
+        "width": 8,
+        "height": 54,
+        "color": "#C9B8A2",
+        "opacity": 0.1
+      },
+      {
+        "type": "wave",
+        "x": 44,
+        "y": 76,
+        "width": 72,
+        "height": 32,
+        "color": "#C7B49B",
+        "opacity": 0.08
+      }
+    ],
+    "headerPanel": {
+      "x": 6,
+      "y": 4,
+      "width": 88,
+      "height": 25,
+      "radius": 3,
+      "fillColor": "#786252"
+    },
+    "headline": {
+      "x": 50,
+      "y": 9,
+      "width": 80,
+      "height": 8,
+      "fontSize": 5.3,
+      "fontWeight": 800,
+      "lineHeight": 1.05,
+      "color": "#FFFCF7",
+      "align": "center",
+      "maxLines": 2
+    },
+    "subheadline": {
+      "x": 50,
+      "y": 19,
+      "width": 76,
+      "height": 5,
+      "fontSize": 2.5,
+      "fontWeight": 500,
+      "lineHeight": 1.2,
+      "color": "#E8DED1",
+      "align": "center",
+      "maxLines": 2
+    },
+    "routineRows": {
+      "x": 6,
+      "y": 35,
+      "width": 43,
+      "rowHeight": 9.5,
+      "gap": 1.6,
+      "radius": 1.8,
+      "fillColor": "#FFFCF7",
+      "textColor": "#3F352C",
+      "mutedColor": "#8B7A67",
+      "accentColor": "#9A7656",
+      "rows": [
+        {
+          "time": "9:00 AM",
+          "title": "Morning reset"
+        },
+        {
+          "time": "11:30 AM",
+          "title": "Tidy the kitchen"
+        },
+        {
+          "time": "2:00 PM",
+          "title": "Water plants"
+        },
+        {
+          "time": "5:30 PM",
+          "title": "Evening wind-down"
+        },
+        {
+          "time": "8:00 PM",
+          "title": "Plan tomorrow"
+        }
+      ]
+    },
+    "screenshot": {
+      "x": 75,
+      "y": 34,
+      "width": 48,
+      "height": 56,
+      "radius": 3.5,
+      "fit": "contain"
+    },
+    "device": {
+      "type": "phone",
+      "visible": true,
+      "color": "#2B251F",
+      "shadowBlur": 4.2,
+      "shadowOffsetY": 1.1,
+      "notchVisible": true
+    },
+    "bgShapeStyle": "pillars"
+  },
+  {
+    "id": "split-bleed",
+    "label": "Oversized Bleed / Split Caption",
+    "style": "Immersive device hero",
+    "description": "A compact upper caption makes room for a phone that continues cleanly beyond the canvas edge.",
+    "background": {
+      "type": "gradient",
+      "start": "#10141E",
+      "end": "#1C2340",
+      "angle": 135
+    },
+    "bgShapes": [
+      {
+        "type": "arch",
+        "x": 54,
+        "y": 10,
+        "width": 62,
+        "height": 47,
+        "color": "#6D75CE",
+        "opacity": 0.1
+      },
+      {
+        "type": "orb",
+        "x": -18,
+        "y": 56,
+        "width": 56,
+        "height": 40,
+        "color": "#5865A8",
+        "opacity": 0.08
+      }
+    ],
+    "headline": {
+      "x": 50,
+      "y": 5,
+      "width": 88,
+      "height": 9,
+      "fontSize": 5.8,
+      "fontWeight": 800,
+      "lineHeight": 1.05,
+      "color": "#F8FAFC",
+      "accentColor": "#A5B4FC",
+      "accentWords": [
+        "Main",
+        "Headline"
+      ],
+      "align": "center",
+      "maxLines": 2
+    },
+    "subheadline": {
+      "x": 50,
+      "y": 16,
+      "width": 80,
+      "height": 6,
+      "fontSize": 2.7,
+      "fontWeight": 500,
+      "lineHeight": 1.2,
+      "color": "#CBD5E1",
+      "align": "center",
+      "maxLines": 2
+    },
+    "screenshot": {
+      "x": 50,
+      "y": 29,
+      "width": 84,
+      "height": 78,
+      "radius": 4.5,
+      "fit": "contain"
+    },
+    "device": {
+      "type": "phone",
+      "visible": true,
+      "color": "#090D16",
+      "shadowBlur": 5.5,
+      "shadowOffsetY": 1.2,
+      "rimColor": "#7775E8",
+      "rimWidth": 0.24,
+      "notchVisible": true
+    },
+    "bgShapeStyle": "orbs"
+  },
+  {
+    "id": "floating-widget",
+    "label": "Minimalist Floating Widget",
+    "style": "Light notification layer",
+    "description": "Quiet white space, crisp type, and a floating product widget add dimension to the device preview.",
+    "background": {
+      "type": "solid",
+      "start": "#FAFAF8"
+    },
+    "bgShapes": [],
+    "headline": {
+      "x": 50,
+      "y": 5.5,
+      "width": 86,
+      "height": 9,
+      "fontSize": 5.8,
+      "fontWeight": 800,
+      "lineHeight": 1.05,
+      "color": "#17211F",
+      "align": "center",
+      "maxLines": 2
+    },
+    "subheadline": {
+      "x": 50,
+      "y": 15,
+      "width": 80,
+      "height": 5.5,
+      "fontSize": 2.7,
+      "fontWeight": 500,
+      "lineHeight": 1.2,
+      "color": "#64716D",
+      "align": "center",
+      "maxLines": 2
+    },
+    "screenshot": {
+      "x": 50,
+      "y": 22,
+      "width": 66,
+      "height": 73,
+      "radius": 4,
+      "fit": "contain"
+    },
+    "device": {
+      "type": "phone",
+      "visible": true,
+      "color": "#202522",
+      "shadowBlur": 4.8,
+      "shadowOffsetY": 1.2,
+      "notchVisible": true
+    },
+    "floatingWidget": {
+      "x": 50,
+      "y": 55,
+      "width": 75,
+      "height": 16,
+      "radius": 2.8,
+      "fillColor": "#FFFFFF",
+      "textColor": "#1F2937",
+      "mutedColor": "#64748B",
+      "accentColor": "#0F766E",
+      "eyebrow": "TODAY Â· 9:00 AM",
+      "title": "Your routine is ready",
+      "detail": "3 tasks planned Â· 25 min total"
+    },
+    "bgShapeStyle": "solid"
+  }
+]
