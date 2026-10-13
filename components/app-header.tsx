@@ -48,7 +48,7 @@ export function AppHeader() {
           </div>
           <div>
             <h1 className="text-sm font-semibold leading-tight text-card-foreground">
-              Store Screenshot Studio
+              Screenshot Studio
             </h1>
             <p className="text-xs text-muted-foreground">
               Screenshot generator

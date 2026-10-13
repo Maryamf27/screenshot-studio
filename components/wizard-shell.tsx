@@ -10,7 +10,7 @@ import { wizardSteps, type WizardStep } from "@/src/config/storePresets";
 
 const stepIcons = [Upload, Monitor, LayoutTemplate, Paintbrush, Download] as const;
 
-function PlaceholderView({ step }: { step: WizardStep }) {
+function PlaceholderView({ step, onContinue }: { step: WizardStep; onContinue: () => void }) {
   const current = wizardSteps[step - 1];
 
   return (
@@ -25,11 +25,18 @@ function PlaceholderView({ step }: { step: WizardStep }) {
       <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
         This workspace is ready for the {current.label.toLowerCase()} flow.
       </p>
+      <button
+        type="button"
+        onClick={onContinue}
+        className="mt-6 inline-flex h-10 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+      >
+        Next
+      </button>
     </section>
   );
 }
 
-function TemplateView() {
+function TemplateView({ onContinue }: { onContinue: () => void }) {
   const [templateId, setTemplateId] = useState<TemplateId>("classic-top");
 
   return (
@@ -49,6 +56,11 @@ function TemplateView() {
             </button>
           ))}
         </div>
+      </div>
+      <div className="flex justify-end border-t border-border pt-6">
+        <button type="button" onClick={onContinue} className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90">
+          Next
+        </button>
       </div>
     </section>
   );
@@ -95,7 +107,13 @@ export function WizardShell() {
 
       {activeStep === 1 ? (
         <UploadManager onContinue={() => setActiveStep(2)} />
-      ) : activeStep === 2 ? <TargetSelector /> : activeStep === 3 ? <TemplateView /> : <PlaceholderView step={activeStep} />}
+      ) : activeStep === 2 ? (
+        <TargetSelector onContinue={() => setActiveStep(3)} />
+      ) : activeStep === 3 ? (
+        <TemplateView onContinue={() => setActiveStep(4)} />
+      ) : (
+        <PlaceholderView step={activeStep} onContinue={() => setActiveStep(Math.min(5, activeStep + 1) as WizardStep)} />
+      )}
     </div>
   );
 }
