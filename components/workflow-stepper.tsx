@@ -22,7 +22,7 @@ interface WorkflowStepperProps {
 export function WorkflowStepper({ activeStep = 0 }: WorkflowStepperProps) {
   return (
     <nav aria-label="Workflow steps" className="w-full">
-      <ol className="flex items-center justify-center gap-0">
+      <ol className="flex items-center justify-between gap-0 overflow-x-auto">
         {steps.map((step, index) => {
           const isActive = index === activeStep;
           const isCompleted = index < activeStep;
@@ -42,7 +42,7 @@ export function WorkflowStepper({ activeStep = 0 }: WorkflowStepperProps) {
               {/* Step */}
               <div className="flex flex-col items-center gap-1.5">
                 <div
-                  className={`flex h-9 w-9 items-center justify-center rounded-full border-2 transition-colors ${
+                  className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${
                     isActive
                       ? "border-primary bg-primary text-primary-foreground"
                       : isCompleted

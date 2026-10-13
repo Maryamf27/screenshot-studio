@@ -1,43 +1,33 @@
 "use client";
 
 import { ImageUp } from "lucide-react";
+import { useRef } from "react";
 
 export function UploadPanel() {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="w-full">
-      {/* Dropzone */}
-      <div className="rounded-xl border-2 border-dashed border-border bg-card p-8 text-center transition-colors sm:p-12">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent">
-          <ImageUp className="h-7 w-7 text-accent-foreground" />
-        </div>
-
-        <p className="text-base font-medium text-card-foreground">
-          Drag &amp; drop screenshots here
+      <div className="rounded-md border border-dashed border-[#b8b8b3] bg-card px-6 py-16 text-center sm:px-12 sm:py-24">
+        <ImageUp className="mx-auto mb-5 h-7 w-7 text-primary" strokeWidth={1.5} />
+        <h2 className="text-lg font-medium tracking-[-0.015em] text-card-foreground">
+          Drop your screenshots here
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          PNG or JPG · Up to 10 screenshots
         </p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          or browse to select files
-        </p>
-
+        <input ref={inputRef} type="file" accept="image/png,image/jpeg" multiple className="sr-only" />
         <button
-          disabled
-          className="mt-5 inline-flex items-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground opacity-50 cursor-not-allowed"
-          title="Upload not yet implemented"
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="mt-7 inline-flex h-9 items-center rounded-md border border-border bg-white px-4 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
-          Browse Files
+          Browse files
         </button>
-
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-          <span>PNG, JPG</span>
-          <span className="hidden sm:inline" aria-hidden="true">·</span>
-          <span>Max 10 screenshots</span>
-        </div>
       </div>
-
-      {/* Processing note */}
-      <div className="mt-3 rounded-lg bg-accent/50 px-4 py-2.5 text-center text-xs text-muted-foreground">
-        All processing happens locally in your browser — your images never leave
-        your device.
-      </div>
+      <p className="mt-4 text-center text-xs text-muted-foreground">
+        Your images stay private and are processed locally in your browser.
+      </p>
     </div>
   );
 }
