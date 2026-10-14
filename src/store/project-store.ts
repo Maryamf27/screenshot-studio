@@ -43,7 +43,26 @@ export type CustomDimension = {
   height: number;
 };
 
+export type BrandSettings = { brandColor: string; font: string };
+export type SlideState = UploadedImage;
+export type Project = {
+  id: string;
+  name: string;
+  updatedAt: number;
+  slides: SlideState[];
+  globalSettings: BrandSettings & {
+    activeSlideIndex: number;
+    selectedPlatform: StorePlatform | null;
+    selectedPresetIds: StorePresetId[];
+    customDimensions: CustomDimension[];
+    activeTemplate: string | null;
+  };
+};
+
 type ProjectState = {
+  projects: Project[];
+  activeProjectId: string | null;
+  hasHydrated: boolean;
   images: UploadedImage[];
   activeSlideIndex: number;
   selectedPlatform: StorePlatform | null;
@@ -63,15 +82,25 @@ type ProjectState = {
   setBrandSettings: (settings: Partial<Pick<ProjectState, "brandColor" | "font">>) => void;
   setActiveTemplate: (id: string) => void;
   setActiveSlideIndex: (index: number) => void;
-  updateSlide: (id: string, updates: Partial<Pick<UploadedImage, "headline" | "subheadline" | "headlineFont" | "subheadlineFont" | "cardFontFamily" | "headlineColor" | "subheadlineColor" | "textAlignment" | "background" | "backgroundAccent" | "showDecorativeLayers" | "frameVisible" | "frameColor" | "cardItems" | "floatingWidgetItems" | "showRatingBadge" | "ratingBadge">>) => void;
+  updateSlide: (id: string, updates: Partial<Pick<UploadedImage, "headline" | "subheadline" | "badgeText" | "headlineFont" | "subheadlineFont" | "cardFontFamily" | "headlineColor" | "subheadlineColor" | "textAlignment" | "background" | "backgroundAccent" | "showDecorativeLayers" | "frameVisible" | "frameColor" | "cardItems" | "floatingWidgetItems" | "showRatingBadge" | "ratingBadge">>) => void;
   applyBrandColorToAllSlides: () => void;
+  createProject: (name?: string) => Promise<string>;
+  openProject: (id: string) => void;
+  leaveProject: () => void;
+  renameProject: (id: string, name: string) => void;
+  deleteProject: (id: string) => void;
 };
 
-const STORAGE_KEY = "store-screenshot-studio-project";
+const STORAGE_KEY = "store-screenshot-studio-projects";
+const LEGACY_STORAGE_KEY = "store-screenshot-studio-project";
 const DEFAULT_HEADLINE = "Your Main Headline";
 const DEFAULT_RATING_BADGE = { score: "4.9", stars: 5, subtitle: "Apps We Love" };
+let projectCreationInFlight: Promise<string> | null = null;
 
-export const useProjectStore = create<ProjectState>((setState) => ({
+export const useProjectStore = create<ProjectState>((setState, getState) => ({
+  projects: [],
+  activeProjectId: null,
+  hasHydrated: false,
   images: [],
   activeSlideIndex: 0,
   selectedPlatform: null,
@@ -80,6 +109,65 @@ export const useProjectStore = create<ProjectState>((setState) => ({
   activeTemplate: null,
   brandColor: "#111111",
   font: "Inter",
+  createProject: (name = "Untitled Project") => {
+    if (projectCreationInFlight) return projectCreationInFlight;
+    projectCreationInFlight = (async () => {
+      const state = getState();
+      let projects = state.projects;
+      const current = projects.find((project) => project.id === state.activeProjectId);
+      if (current) {
+        const savedCurrent: Project = {
+          ...current,
+          updatedAt: Date.now(),
+          slides: state.images,
+          globalSettings: {
+            activeSlideIndex: state.activeSlideIndex,
+            selectedPlatform: state.selectedPlatform,
+            selectedPresetIds: state.selectedPresetIds,
+            customDimensions: state.customDimensions,
+            activeTemplate: state.activeTemplate,
+            brandColor: state.brandColor,
+            font: state.font,
+          },
+        };
+        projects = projects.map((project) => project.id === current.id ? savedCurrent : project);
+        await set(STORAGE_KEY, { projects, activeProjectId: state.activeProjectId });
+      }
+
+      const emptyUntitled = (project: Project) => project.name === "Untitled Project" && project.slides.length === 0;
+      const reusable = (current && emptyUntitled(current)) ? current : projects.find(emptyUntitled);
+      if (reusable) {
+        const freshProject: Project = {
+          ...reusable,
+          updatedAt: Date.now(),
+          slides: [],
+          globalSettings: { activeSlideIndex: 0, selectedPlatform: null, selectedPresetIds: [], customDimensions: [], activeTemplate: null, brandColor: "#111111", font: "Inter" },
+        };
+        const deduplicated = projects.map((project) => project.id === reusable.id ? freshProject : project).filter((project) => !emptyUntitled(project) || project.id === reusable.id);
+        await set(STORAGE_KEY, { projects: deduplicated, activeProjectId: reusable.id });
+        useProjectStore.setState({ projects: deduplicated, activeProjectId: reusable.id, images: freshProject.slides, ...freshProject.globalSettings });
+        return reusable.id;
+      }
+
+      const id = crypto.randomUUID();
+      const project: Project = { id, name, updatedAt: Date.now(), slides: [], globalSettings: { activeSlideIndex: 0, selectedPlatform: null, selectedPresetIds: [], customDimensions: [], activeTemplate: null, brandColor: "#111111", font: "Inter" } };
+      useProjectStore.setState({ ...project.globalSettings, images: [], projects: [...projects, project], activeProjectId: id });
+      return id;
+    })().finally(() => { projectCreationInFlight = null; });
+    return projectCreationInFlight;
+  },
+  openProject: (id) => setState((state) => {
+    const project = state.projects.find((item) => item.id === id);
+    if (!project) return {};
+    return { activeProjectId: id, images: project.slides, ...project.globalSettings };
+  }),
+  leaveProject: () => setState({ activeProjectId: null }),
+  renameProject: (id, name) => setState((state) => ({ projects: state.projects.map((project) => project.id === id ? { ...project, name: name.trim() || project.name, updatedAt: Date.now() } : project) })),
+  deleteProject: (id) => setState((state) => {
+    const projects = state.projects.filter((project) => project.id !== id);
+    if (state.activeProjectId !== id) return { projects };
+    return { projects, activeProjectId: null, images: [], activeSlideIndex: 0, selectedPlatform: null, selectedPresetIds: [], customDimensions: [], activeTemplate: null, brandColor: "#111111", font: "Inter" };
+  }),
   addImages: (files) =>
     setState((state) => {
       const offset = state.images.length;
@@ -144,6 +232,7 @@ export const useProjectStore = create<ProjectState>((setState) => ({
       activeTemplate: template.id,
       images: state.images.map((image, index) => index === state.activeSlideIndex ? {
         ...image,
+        headline: image.headline === DEFAULT_HEADLINE ? template.defaultHeadline ?? image.headline : image.headline,
         background,
         textAlignment: template.headline.align as "left" | "center" | "right",
         headlineFont: undefined,
@@ -158,8 +247,10 @@ export const useProjectStore = create<ProjectState>((setState) => ({
         frameColor: undefined,
         backgroundAccent: undefined,
         showDecorativeLayers: undefined,
-        showRatingBadge: image.showRatingBadge ?? index === 0,
-        ratingBadge: image.ratingBadge ?? { ...DEFAULT_RATING_BADGE },
+        showRatingBadge: template.id === "fitness-neon-dark" || template.id === "fitness-dark-neon" ? false : template.id === "fashion-editorial-grid" || template.id === "edu-flashcard-stack" ? true : image.showRatingBadge ?? index === 0,
+        ratingBadge: template.defaultRatingBadge && image.ratingBadge.score === DEFAULT_RATING_BADGE.score && image.ratingBadge.subtitle === DEFAULT_RATING_BADGE.subtitle
+          ? template.defaultRatingBadge
+          : image.ratingBadge ?? { ...DEFAULT_RATING_BADGE },
       } : image),
     };
   }),
@@ -182,9 +273,8 @@ let hydrationStarted = false;
 export function hydrateProjectStore() {
   if (hydrationStarted || typeof window === "undefined") return;
   hydrationStarted = true;
-  void get<Partial<ProjectState>>(STORAGE_KEY).then((saved) => {
-    if (!saved) return;
-    const images = (saved.images ?? []).map((image, index) => {
+  void Promise.all([get<{ projects?: Project[]; activeProjectId?: string | null }>(STORAGE_KEY), get<Partial<ProjectState>>(LEGACY_STORAGE_KEY)]).then(([saved, legacy]) => {
+    const normalizeSlides = (slides: UploadedImage[] = []) => slides.map((image, index) => {
       const fileName = typeof image.file?.name === "string" ? image.file.name : "";
       const fileTitle = fileName.replace(/\.[^/.]+$/, "");
       const storedHeadline = typeof image.headline === "string" ? image.headline : "";
@@ -199,21 +289,50 @@ export function hydrateProjectStore() {
         ratingBadge: { ...DEFAULT_RATING_BADGE, ...image.ratingBadge },
       };
     });
-    useProjectStore.setState({ ...saved, images, activeSlideIndex: Math.min(Math.max(0, saved.activeSlideIndex ?? 0), Math.max(0, images.length - 1)) });
-  });
+    let projects = saved?.projects ?? [];
+    let activeProjectId = saved?.activeProjectId ?? null;
+    if (!saved && legacy) {
+      const slides = normalizeSlides(legacy.images ?? []);
+      const hasLegacyWork = slides.length > 0 || Boolean(legacy.selectedPlatform || legacy.selectedPresetIds?.length || legacy.activeTemplate);
+      if (hasLegacyWork) {
+        const project: Project = {
+          id: crypto.randomUUID(), name: "My Project", updatedAt: Date.now(), slides,
+          globalSettings: {
+            activeSlideIndex: legacy.activeSlideIndex ?? 0,
+            selectedPlatform: legacy.selectedPlatform ?? null,
+            selectedPresetIds: legacy.selectedPresetIds ?? [],
+            customDimensions: legacy.customDimensions ?? [],
+            activeTemplate: legacy.activeTemplate ?? null,
+            brandColor: legacy.brandColor ?? "#111111",
+            font: legacy.font ?? "Inter",
+          },
+        };
+        projects = [project];
+        activeProjectId = project.id;
+      }
+    }
+    projects = projects.map((project) => ({ ...project, slides: normalizeSlides(project.slides), globalSettings: { ...project.globalSettings } }));
+    const activeBeforeDedupe = projects.find((project) => project.id === activeProjectId);
+    const blankProjects = projects.filter((project) => project.name === "Untitled Project" && project.slides.length === 0);
+    const keptBlankId = blankProjects.some((project) => project.id === activeBeforeDedupe?.id) ? activeBeforeDedupe?.id : blankProjects[0]?.id;
+    if (blankProjects.length > 1) projects = projects.filter((project) => project.name !== "Untitled Project" || project.slides.length > 0 || project.id === keptBlankId);
+    const activeProject = projects.find((project) => project.id === activeProjectId);
+    useProjectStore.setState({ projects, activeProjectId: activeProject?.id ?? null, hasHydrated: true, ...(activeProject ? { images: activeProject.slides, ...activeProject.globalSettings } : {}) });
+  }).catch(() => useProjectStore.setState({ hasHydrated: true }));
 }
 
 useProjectStore.subscribe((state) => {
-  if (typeof window === "undefined") return;
-  const persisted = {
-    images: state.images,
-    activeSlideIndex: state.activeSlideIndex,
-    selectedPlatform: state.selectedPlatform,
-    selectedPresetIds: state.selectedPresetIds,
-    customDimensions: state.customDimensions,
-    activeTemplate: state.activeTemplate,
-    brandColor: state.brandColor,
-    font: state.font,
-  };
-  void set(STORAGE_KEY, persisted);
+  if (typeof window === "undefined" || !state.hasHydrated) return;
+  let projects = state.projects;
+  const current = projects.find((project) => project.id === state.activeProjectId);
+  if (current) {
+    const globalSettings = { activeSlideIndex: state.activeSlideIndex, selectedPlatform: state.selectedPlatform, selectedPresetIds: state.selectedPresetIds, customDimensions: state.customDimensions, activeTemplate: state.activeTemplate, brandColor: state.brandColor, font: state.font };
+    const changed = current.slides !== state.images || Object.keys(globalSettings).some((key) => current.globalSettings[key as keyof typeof globalSettings] !== globalSettings[key as keyof typeof globalSettings]);
+    if (changed) {
+      const updated: Project = { ...current, updatedAt: Date.now(), slides: state.images, globalSettings };
+      projects = projects.map((project) => project.id === current.id ? updated : project);
+      useProjectStore.setState({ projects });
+    }
+  }
+  void set(STORAGE_KEY, { projects, activeProjectId: state.activeProjectId });
 });

@@ -1,5 +1,5 @@
 import type { StorePreset } from "@/src/config/storePresets";
-import type { BackgroundDefinition, BackgroundShapeDefinition, BackgroundShapeStyle, DeviceLayerDefinition, FloatingWidgetDefinition, SlideBackgroundAccent, TaskCardDefinition, TemplateDefinition } from "@/src/renderer/templates";
+import type { BackgroundAssetDefinition, BackgroundDefinition, BackgroundShapeDefinition, BackgroundShapeStyle, DeviceLayerDefinition, FloatingWidgetDefinition, SlideBackgroundAccent, StickerDefinition, TaskCardDefinition, TemplateDefinition } from "@/src/renderer/templates";
 
 export type SlideData = {
   image: Blob | HTMLImageElement | HTMLCanvasElement;
@@ -32,6 +32,102 @@ export type RenderOptions = {
 };
 
 type ImageLike = HTMLImageElement | HTMLCanvasElement;
+const backgroundAssetCache = new Map<string, Promise<HTMLImageElement>>();
+
+function loadBackgroundAsset(src: string): Promise<HTMLImageElement> {
+  const cached = backgroundAssetCache.get(src);
+  if (cached) return cached;
+  const pending = new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error(`Unable to load template background asset: ${src}`));
+    image.src = src;
+  });
+  backgroundAssetCache.set(src, pending);
+  return pending;
+}
+
+async function drawBackgroundAsset(ctx: CanvasRenderingContext2D, asset: BackgroundAssetDefinition | undefined, canvasWidth: number, canvasHeight: number, preloadedImage?: HTMLImageElement) {
+  if (!asset) return;
+  let image: HTMLImageElement;
+  if (preloadedImage) image = preloadedImage;
+  else {
+    try {
+      image = await loadBackgroundAsset(asset.src);
+    } catch {
+      return;
+    }
+  }
+
+  const offscreen = document.createElement("canvas");
+  offscreen.width = canvasWidth;
+  offscreen.height = canvasHeight;
+  const offscreenContext = offscreen.getContext("2d");
+  if (!offscreenContext) return;
+  const landscape = canvasWidth > canvasHeight;
+  const maxWidth = canvasWidth * (landscape ? 0.5 : 0.9);
+  const maxHeight = canvasHeight * (landscape ? 0.9 : 0.82);
+  const scale = Math.min(maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
+  const imageWidth = image.naturalWidth * scale;
+  const imageHeight = image.naturalHeight * scale;
+  const centerX = canvasWidth * (landscape ? 0.8 : 0.53);
+  const x = centerX - imageWidth / 2;
+  const y = canvasHeight * (landscape ? 0.06 : 0.11);
+  offscreenContext.drawImage(image, x, y, imageWidth, imageHeight);
+
+  // Fade the silhouette toward the headline area and slide edges so it reads as atmosphere.
+  offscreenContext.globalCompositeOperation = "destination-in";
+  const maskRadius = Math.max(canvasWidth * 0.42, canvasHeight * 0.48);
+  const mask = offscreenContext.createRadialGradient(centerX, canvasHeight * 0.56, maskRadius * 0.08, centerX, canvasHeight * 0.56, maskRadius);
+  mask.addColorStop(0, "rgba(255,255,255,0.78)");
+  mask.addColorStop(0.56, "rgba(255,255,255,0.43)");
+  mask.addColorStop(1, "rgba(255,255,255,0)");
+  offscreenContext.fillStyle = mask;
+  offscreenContext.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  ctx.save();
+  ctx.globalAlpha = asset.opacity ?? 0.3;
+  ctx.globalCompositeOperation = "screen";
+  ctx.drawImage(offscreen, 0, 0);
+  ctx.restore();
+}
+
+function drawTemplateStickers(
+  ctx: CanvasRenderingContext2D,
+  stickers: { definition: StickerDefinition; image: HTMLImageElement }[],
+  canvasWidth: number,
+  canvasHeight: number,
+) {
+  const unit = Math.min(canvasWidth, canvasHeight);
+  const margin = unit * 0.025;
+  for (const { definition, image } of stickers) {
+    const aspect = image.naturalWidth / image.naturalHeight;
+    if (!Number.isFinite(aspect) || aspect <= 0) continue;
+    const requestedWidth = (definition.w / 100) * canvasWidth;
+    const maxWidth = Math.min(requestedWidth, canvasWidth * 0.32, unit * 0.3);
+    const maxHeight = Math.min(canvasHeight * 0.23, unit * 0.36);
+    let drawWidth = Math.min(maxWidth, maxHeight * aspect);
+    let drawHeight = drawWidth / aspect;
+    const angle = ((definition.rotation ?? 0) * Math.PI) / 180;
+    const rotatedWidth = () => Math.abs(Math.cos(angle)) * drawWidth + Math.abs(Math.sin(angle)) * drawHeight;
+    const rotatedHeight = () => Math.abs(Math.sin(angle)) * drawWidth + Math.abs(Math.cos(angle)) * drawHeight;
+    const fitScale = Math.min(1, (canvasWidth - margin * 2) / rotatedWidth(), (canvasHeight - margin * 2) / rotatedHeight());
+    drawWidth *= fitScale;
+    drawHeight *= fitScale;
+    const halfRotatedWidth = rotatedWidth() / 2;
+    const halfRotatedHeight = rotatedHeight() / 2;
+    const centerX = Math.min(canvasWidth - margin - halfRotatedWidth, Math.max(margin + halfRotatedWidth, (definition.x / 100) * canvasWidth));
+    const centerY = Math.min(canvasHeight - margin - halfRotatedHeight, Math.max(margin + halfRotatedHeight, (definition.y / 100) * canvasHeight));
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(angle);
+    ctx.shadowColor = "rgba(26, 36, 52, 0.2)";
+    ctx.shadowBlur = Math.max(4, unit * 0.014);
+    ctx.shadowOffsetY = unit * 0.006;
+    ctx.drawImage(image, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+    ctx.restore();
+  }
+}
 
 function loadImage(source: SlideData["image"]): Promise<{ image: ImageLike; dispose: () => void }> {
   if (!(source instanceof Blob)) return Promise.resolve({ image: source, dispose: () => undefined });
@@ -343,6 +439,104 @@ function drawBackgroundShape(ctx: CanvasRenderingContext2D, shape: BackgroundSha
 function drawBackgroundShapes(ctx: CanvasRenderingContext2D, style: BackgroundShapeStyle, shapes: BackgroundShapeDefinition[] | undefined, canvasWidth: number, canvasHeight: number) {
   if (style === "solid") return;
   for (const shape of shapes ?? []) drawBackgroundShape(ctx, shape, canvasWidth, canvasHeight);
+}
+
+function drawNativeTemplateDecoration(ctx: CanvasRenderingContext2D, decoration: TemplateDefinition["nativeDecoration"], width: number, height: number) {
+  if (!decoration) return;
+  const unit = Math.min(width, height);
+  ctx.save();
+  if (decoration === "fashion-festive-promo") {
+    // Fixed pseudo-random positions make the festive pattern stable between renders.
+    for (let index = 0; index < 78; index += 1) {
+      const x = ((index * 73 + 19) % 997) / 997 * width;
+      const y = ((index * 137 + 41) % 991) / 991 * height;
+      const radius = unit * (0.0015 + (index % 4) * 0.00055);
+      const gold = index % 3 === 0;
+      ctx.globalAlpha = 0.34 + (index % 4) * 0.08;
+      ctx.strokeStyle = gold ? "#F3C668" : "#FFE8EA";
+      ctx.fillStyle = ctx.strokeStyle;
+      ctx.lineWidth = Math.max(1, unit * 0.0012);
+      if (index % 4 === 0) {
+        ctx.beginPath();
+        ctx.arc(x, y, radius * 1.8, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(x - radius * 2.2, y);
+        ctx.lineTo(x + radius * 2.2, y);
+        ctx.moveTo(x, y - radius * 2.2);
+        ctx.lineTo(x, y + radius * 2.2);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 0.48;
+    ctx.strokeStyle = "#F3C668";
+    ctx.lineWidth = Math.max(2, unit * 0.0035);
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(-width * 0.04, height * 0.23);
+    ctx.bezierCurveTo(width * 0.14, height * 0.19, width * 0.07, height * 0.04, width * 0.32, -height * 0.04);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(width * 1.04, height * 0.78);
+    ctx.bezierCurveTo(width * 0.86, height * 0.81, width * 0.94, height * 0.96, width * 0.68, height * 1.04);
+    ctx.stroke();
+  } else if (decoration === "fitness-neon-dark") {
+    const glowX = width > height ? width * 0.8 : width * 0.5;
+    const glowY = height * (width > height ? 0.52 : 0.58);
+    const radius = Math.max(unit * 0.44, width * 0.32);
+    const glow = ctx.createRadialGradient(glowX, glowY, 0, glowX, glowY, radius);
+    glow.addColorStop(0, "rgba(0, 136, 255, 0.28)");
+    glow.addColorStop(0.46, "rgba(0, 136, 255, 0.12)");
+    glow.addColorStop(1, "rgba(0, 136, 255, 0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, width, height);
+  } else if (decoration === "edu-pastel-waves") {
+    ctx.strokeStyle = "rgba(91, 150, 224, 0.19)";
+    ctx.lineWidth = Math.max(2, unit * 0.0035);
+    for (let index = 0; index < 3; index += 1) {
+      const yTop = height * (0.15 + index * 0.035);
+      ctx.beginPath();
+      ctx.moveTo(-width * 0.05, yTop);
+      ctx.bezierCurveTo(width * 0.22, yTop - height * 0.11, width * 0.42, yTop + height * 0.09, width * 0.7, yTop - height * 0.025);
+      ctx.bezierCurveTo(width * 0.84, yTop - height * 0.09, width * 0.94, yTop - height * 0.07, width * 1.05, yTop - height * 0.015);
+      ctx.stroke();
+      const yBottom = height * (0.84 + index * 0.035);
+      ctx.beginPath();
+      ctx.moveTo(-width * 0.05, yBottom);
+      ctx.bezierCurveTo(width * 0.24, yBottom - height * 0.1, width * 0.46, yBottom + height * 0.07, width * 0.73, yBottom - height * 0.015);
+      ctx.bezierCurveTo(width * 0.88, yBottom - height * 0.07, width * 0.96, yBottom - height * 0.04, width * 1.05, yBottom + height * 0.01);
+      ctx.stroke();
+    }
+    const cardWidth = width * (width > height ? 0.27 : 0.48);
+    const cardHeight = height * (width > height ? 0.28 : 0.16);
+    const positions = width > height
+      ? [[width * 0.41, height * 0.58], [width * 0.51, height * 0.63], [width * 0.4, height * 0.68]]
+      : [[-width * 0.06, height * 0.42], [width * 0.58, height * 0.49], [-width * 0.03, height * 0.56]];
+    positions.forEach(([x, y], index) => {
+      ctx.save();
+      ctx.globalAlpha = 0.9;
+      ctx.shadowColor = "rgba(0, 0, 0, 0.08)";
+      ctx.shadowBlur = unit * 0.025;
+      ctx.shadowOffsetY = unit * 0.008;
+      ctx.fillStyle = index === 1 ? "#F9FCFF" : "#FFFFFF";
+      roundedRect(ctx, x, y, cardWidth, cardHeight, Math.min(16, unit * 0.018));
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+  ctx.restore();
+}
+
+function drawDeviceGlow(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, canvasWidth: number, canvasHeight: number) {
+  ctx.save();
+  ctx.strokeStyle = "#00A3FF";
+  ctx.lineWidth = Math.max(2, Math.min(canvasWidth, canvasHeight) * 0.0015);
+  ctx.shadowColor = "#00A3FF";
+  ctx.shadowBlur = Math.max(8, 20 * Math.min(canvasWidth, canvasHeight) / 1080);
+  roundedRect(ctx, x, y, width, height, width * 0.105);
+  ctx.stroke();
+  ctx.restore();
 }
 
 function parseRgbColor(color: string): [number, number, number] | undefined {
@@ -751,10 +945,23 @@ export async function renderSlide(
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   let loaded: Awaited<ReturnType<typeof loadImage>> | undefined;
+  let loadedStickers: { definition: StickerDefinition; image: HTMLImageElement }[] = [];
   try {
-    loaded = await loadImage(slide.image);
+    const [screenshotAsset, stickerAssets, backgroundAsset] = await Promise.all([
+      loadImage(slide.image),
+      Promise.all((template.stickers ?? []).map(async (definition) => {
+        try {
+          return { definition, image: await loadBackgroundAsset(definition.src) };
+        } catch {
+          return undefined;
+        }
+      })),
+      template.backgroundAsset ? loadBackgroundAsset(template.backgroundAsset.src).catch(() => undefined) : Promise.resolve(undefined),
+    ]);
+    loaded = screenshotAsset;
+    loadedStickers = stickerAssets.filter((sticker): sticker is { definition: StickerDefinition; image: HTMLImageElement } => Boolean(sticker));
     const family = slide.fontFamily ?? "Arial, sans-serif";
-    const headlineFamily = slide.headlineFontFamily ?? family;
+    const headlineFamily = slide.headlineFontFamily ?? template.headlineFontFamily ?? family;
     const subheadlineFamily = slide.subheadlineFontFamily ?? family;
     const cardFamily = slide.cardFontFamily ?? subheadlineFamily;
     await Promise.all([family, headlineFamily, subheadlineFamily, cardFamily].map((fontFamily) => document.fonts.load(`400 16px "${fontFamily}"`)));
@@ -788,7 +995,10 @@ export async function renderSlide(
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     drawBackgroundOverlay(ctx, options.backgroundAccent, template, canvas.width, canvas.height, contrastBackgrounds);
+    await drawBackgroundAsset(ctx, template.backgroundAsset, canvas.width, canvas.height, backgroundAsset);
+    drawNativeTemplateDecoration(ctx, template.nativeDecoration, canvas.width, canvas.height);
     drawHeaderPanel(ctx, template, canvas.width, canvas.height);
+    drawTemplateStickers(ctx, loadedStickers, canvas.width, canvas.height);
 
     const showDecorativeLayers = options.showDecorativeLayers !== false;
     const landscapeHeadline = isLandscape ? {
@@ -811,25 +1021,28 @@ export async function renderSlide(
       align: "center" as const,
       maxLines: 2,
     } : template.subheadline;
-    if (showDecorativeLayers && template.badge && !template.badge.laurel && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false)) {
+    if (showDecorativeLayers && template.badge && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false)) {
       await drawBadge(ctx, slide.badgeText ?? template.badge.text, template, canvas.width, canvas.height, slide.headlineFontFamily ?? family);
     }
-    const showRatingBadge = showDecorativeLayers && (slide.showRatingBadge ?? Boolean(template.badge?.laurel && slide.isFirstSlide !== false));
+    const showRatingBadge = showDecorativeLayers && (slide.showRatingBadge ?? Boolean(template.badge?.laurel && slide.isFirstSlide !== false && template.nativeDecoration !== "fitness-neon-dark"));
     const pillBadgeBottom = template.badge && !template.badge.laurel ? template.badge.y + template.badge.height + 0.5 : 0;
-    const ratingTop = pillBadgeBottom || 0.5;
+    const editorialFashion = template.id === "fashion-editorial-grid";
+    const academicEducation = template.id === "edu-flashcard-stack";
+    const ratingTop = editorialFashion || academicEducation ? (isLandscape ? 35 : 29) : pillBadgeBottom || 0.5;
     const ratingBottom = ratingTop + 6.8;
-    const headlineY = Math.max(landscapeHeadline.y, pillBadgeBottom, showRatingBadge ? ratingBottom + (isLandscape ? 0.6 : 0.7) : 0);
+    const headlineY = editorialFashion || academicEducation ? Math.max(landscapeHeadline.y, pillBadgeBottom) : Math.max(landscapeHeadline.y, pillBadgeBottom, showRatingBadge ? ratingBottom + (isLandscape ? 0.6 : 0.7) : 0);
     const headlineLayer = { ...landscapeHeadline, y: headlineY };
     const subheadlineLayer = {
       ...landscapeSubheadline,
       y: Math.max(landscapeSubheadline.y, headlineLayer.y + headlineLayer.height + (isLandscape ? 0.8 : 0.5)),
     };
     if (showRatingBadge) {
-      const ratingBadge = slide.ratingBadge ?? { score: "4.9", stars: 5, subtitle: "Apps We Love" };
+      const ratingBadge = slide.ratingBadge ?? template.defaultRatingBadge ?? { score: "4.9", stars: 5, subtitle: "Apps We Love" };
       const darkBackground = luminance(averageColor(contrastBackgrounds)) < 0.35;
-      await drawRatingBadge(ctx, ratingBadge, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, isLandscape ? 31 : 50, isLandscape ? 0.62 : 1);
+      await drawRatingBadge(ctx, ratingBadge, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, (editorialFashion || academicEducation) && isLandscape ? 31 : isLandscape ? 31 : 50, isLandscape ? 0.62 : (editorialFashion || academicEducation) ? 0.72 : 1);
     }
-    await drawText(ctx, slide.headline, headlineLayer, canvas.width, canvas.height, headlineFamily, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
+    const headlineText = slide.headline === "Your Main Headline" ? template.defaultHeadline ?? slide.headline : slide.headline;
+    await drawText(ctx, headlineText, headlineLayer, canvas.width, canvas.height, headlineFamily, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
     await drawText(ctx, slide.subheadline ?? "", subheadlineLayer, canvas.width, canvas.height, subheadlineFamily, slide.textAlignment, slide.subheadlineColor ?? (template.subheadline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
 
     const defaultItems = template.taskCards?.map((item) => ({ subtitle: item.time, title: item.title, detail: item.detail }))
@@ -885,11 +1098,28 @@ export async function renderSlide(
     const y = frameY;
     const frameWidth = frameSize.width;
     const frameHeight = frameSize.height;
+    const rotation = template.device.rotation ?? 0;
+    if (rotation) {
+      ctx.save();
+      ctx.translate(x + frameWidth / 2, y + frameHeight / 2);
+      ctx.rotate((rotation * Math.PI) / 180);
+      const rotatedX = -frameWidth / 2;
+      const rotatedY = -frameHeight / 2;
+      if (template.device.visible && options.frameVisible !== false) {
+        drawPhone(ctx, rotatedX, rotatedY, frameWidth, frameHeight, canvas.width, canvas.height, { ...template.device, color: options.frameColor ?? template.device.color });
+        if (template.device.glow) drawDeviceGlow(ctx, rotatedX, rotatedY, frameWidth, frameHeight, canvas.width, canvas.height);
+      }
+      drawScreenshot(ctx, loaded.image, rotatedX, rotatedY, frameWidth, frameHeight, (box.radius / 100) * canvas.width, "contain", insetRatio);
+      if (template.device.visible && options.frameVisible !== false) drawDeviceAccents(ctx, rotatedX, rotatedY, frameWidth, frameHeight, template.device);
+      ctx.restore();
+    } else {
     if (template.device.visible && options.frameVisible !== false) {
       drawPhone(ctx, x, y, frameWidth, frameHeight, canvas.width, canvas.height, { ...template.device, color: options.frameColor ?? template.device.color });
+      if (template.device.glow) drawDeviceGlow(ctx, x, y, frameWidth, frameHeight, canvas.width, canvas.height);
     }
     drawScreenshot(ctx, loaded.image, x, y, frameWidth, frameHeight, (box.radius / 100) * canvas.width, "contain", insetRatio);
     if (template.device.visible && options.frameVisible !== false) drawDeviceAccents(ctx, x, y, frameWidth, frameHeight, template.device);
+    }
     if (showDecorativeLayers) {
       const defaultWidgetItems = template.floatingWidget ? [{ title: template.floatingWidget.title, subtitle: template.floatingWidget.detail }] : [];
       const widget = isLandscape && template.floatingWidget
