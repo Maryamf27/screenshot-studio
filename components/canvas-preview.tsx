@@ -42,7 +42,7 @@ export function CanvasPreview({ templateId, compact = false, slideIndex, applySl
     const customBackground = image.background;
     const frameColors = { dark: "#111827", light: "#f8fafc", accent: brandColor } as const;
     void renderSlide(
-      { image: image.file, headline: image.headline, subheadline: image.subheadline, badgeText: useSlideCustomizations ? image.badgeText : undefined, isFirstSlide: selectedSlideIndex === 0, panoramaIndex: selectedSlideIndex, panoramaCount: imageCount, fontFamily: useSlideCustomizations ? font : undefined, headlineFontFamily: useSlideCustomizations ? image.headlineFont : undefined, subheadlineFontFamily: useSlideCustomizations ? image.subheadlineFont : undefined, headlineColor: useSlideCustomizations ? image.headlineColor : undefined, subheadlineColor: useSlideCustomizations ? image.subheadlineColor : undefined, textAlignment: useSlideCustomizations ? image.textAlignment : undefined },
+      { image: image.file, headline: image.headline, subheadline: image.subheadline, badgeText: useSlideCustomizations ? image.badgeText : undefined, showRatingBadge: useSlideCustomizations ? image.showRatingBadge : undefined, ratingBadge: useSlideCustomizations ? image.ratingBadge : undefined, cardItems: useSlideCustomizations ? image.cardItems : undefined, floatingWidgetItems: useSlideCustomizations ? image.floatingWidgetItems : undefined, isFirstSlide: selectedSlideIndex === 0, panoramaIndex: selectedSlideIndex, panoramaCount: imageCount, fontFamily: useSlideCustomizations ? font : undefined, headlineFontFamily: useSlideCustomizations ? image.headlineFont : undefined, subheadlineFontFamily: useSlideCustomizations ? image.subheadlineFont : undefined, cardFontFamily: useSlideCustomizations ? image.cardFontFamily : undefined, headlineColor: useSlideCustomizations ? image.headlineColor : undefined, subheadlineColor: useSlideCustomizations ? image.subheadlineColor : undefined, textAlignment: useSlideCustomizations ? image.textAlignment : undefined },
       template,
       preset,
       {
@@ -75,7 +75,7 @@ export function CanvasPreview({ templateId, compact = false, slideIndex, applySl
     return () => { cancelled = true; };
   }, [activeTemplateId, brandColor, compact, font, image, imageCount, preset, presetId, selectedSlideIndex, useSlideCustomizations]);
 
-  if (!image) return <div className={`flex items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 text-center text-sm text-slate-500 ${compact ? "aspect-[4/3] min-h-32" : "min-h-72"}`}>Upload a screenshot to preview a template.</div>;
+  if (!image) return <div className={`flex items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 text-center text-sm text-slate-500 ${compact ? "aspect-4/3 min-h-32" : "min-h-72"}`}>Upload a screenshot to preview a template.</div>;
   return (
     <div className={compact ? "w-full" : "space-y-3"}>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}

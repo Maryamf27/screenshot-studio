@@ -6,12 +6,17 @@ export type SlideData = {
   headline: string;
   subheadline?: string;
   badgeText?: string;
+  showRatingBadge?: boolean;
+  ratingBadge?: { score: string; stars: number; subtitle: string };
+  cardItems?: { id: string; subtitle: string; title: string; detail?: string }[];
+  floatingWidgetItems?: { id: string; title: string; subtitle: string }[];
   isFirstSlide?: boolean;
   panoramaIndex?: number;
   panoramaCount?: number;
   fontFamily?: string;
   headlineFontFamily?: string;
   subheadlineFontFamily?: string;
+  cardFontFamily?: string;
   headlineColor?: string;
   subheadlineColor?: string;
   textAlignment?: CanvasTextAlign;
@@ -219,6 +224,71 @@ async function drawBadge(ctx: CanvasRenderingContext2D, text: string, template: 
   ctx.restore();
 }
 
+async function drawRatingBadge(
+  ctx: CanvasRenderingContext2D,
+  rating: { score: string; stars: number; subtitle: string },
+  topPercent: number,
+  canvasWidth: number,
+  canvasHeight: number,
+  family: string,
+  textColor: string,
+  darkBackground: boolean,
+  centerXPercent = 50,
+  scale = 1,
+) {
+  const centerX = (centerXPercent / 100) * canvasWidth;
+  const top = (topPercent / 100) * canvasHeight;
+  const scoreSize = canvasWidth * 0.032 * scale;
+  const starsSize = canvasWidth * 0.013 * scale;
+  const subtitleSize = canvasWidth * 0.013 * scale;
+  const scoreY = top + canvasHeight * 0.018 * scale;
+  const starsY = top + canvasHeight * 0.041 * scale;
+  const subtitleY = top + canvasHeight * 0.064 * scale;
+  const accentColor = darkBackground ? "#FFD978" : "#986B1E";
+  const stars = "★".repeat(Math.max(0, Math.min(5, Math.floor(rating.stars))));
+  await document.fonts.load(`800 ${scoreSize}px "${family}"`);
+  await document.fonts.load(`700 ${starsSize}px "${family}"`);
+  await document.fonts.load(`500 ${subtitleSize}px "${family}"`);
+
+  ctx.save();
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = `800 ${scoreSize}px "${family}"`;
+  ctx.fillStyle = textColor;
+  ctx.fillText(rating.score, centerX, scoreY);
+  const scoreWidth = ctx.measureText(rating.score).width;
+
+  // Fine curved stems and rotated leaves form a small laurel around the score.
+  ctx.strokeStyle = accentColor;
+  ctx.fillStyle = accentColor;
+  ctx.lineWidth = Math.max(1, canvasWidth * 0.0012);
+  for (const direction of [-1, 1]) {
+    const branchX = centerX + direction * (scoreWidth / 2 + scoreSize * 0.52);
+    ctx.beginPath();
+    ctx.moveTo(branchX, scoreY + scoreSize * 0.55);
+    ctx.quadraticCurveTo(branchX + direction * scoreSize * 0.24, scoreY, branchX, scoreY - scoreSize * 0.68);
+    ctx.stroke();
+    for (let index = 0; index < 4; index += 1) {
+      const leafY = scoreY + scoreSize * (0.36 - index * 0.34);
+      ctx.save();
+      ctx.translate(branchX + direction * scoreSize * 0.08, leafY);
+      ctx.rotate(direction * (0.72 - index * 0.13));
+      ctx.beginPath();
+      ctx.ellipse(0, 0, scoreSize * 0.19, scoreSize * 0.075, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  ctx.font = `700 ${starsSize}px "${family}"`;
+  ctx.fillStyle = accentColor;
+  ctx.fillText(stars, centerX, starsY);
+  ctx.font = `500 ${subtitleSize}px "${family}"`;
+  ctx.fillStyle = textColor;
+  ctx.fillText(rating.subtitle, centerX, subtitleY);
+  ctx.restore();
+}
+
 function drawBackgroundShape(ctx: CanvasRenderingContext2D, shape: BackgroundShapeDefinition, canvasWidth: number, canvasHeight: number) {
   const x = (shape.x / 100) * canvasWidth;
   const y = (shape.y / 100) * canvasHeight;
@@ -374,7 +444,7 @@ function drawBackgroundOverlay(ctx: CanvasRenderingContext2D, overlay: SlideBack
   const baseColor = averageColor(backgroundColors);
   const isDarkBackground = luminance(baseColor) < 0.35;
   const patternColor = isDarkBackground ? getLighterPatternColor(baseColor) : getDarkerPatternColor(baseColor);
-  const patternOpacity = isDarkBackground ? 0.12 : 0.15;
+  const patternOpacity = isDarkBackground ? 0.18 : 0.16;
   if (mode === "template") {
     const templateShapes = template.bgShapes?.map((shape) => ({ ...shape, color: patternColor, opacity: patternOpacity }));
     const denseShapes = makeDensityShapes(template.bgShapeStyle, patternColor, patternOpacity);
@@ -391,7 +461,7 @@ function drawBackgroundOverlay(ctx: CanvasRenderingContext2D, overlay: SlideBack
       { type: "arch", x: 73, y: 46, width: 45, height: 43, color: tone, opacity: patternOpacity, rotation: 180 },
       { type: "arch", x: 29, y: 75, width: 42, height: 36, color: tone, opacity: patternOpacity },
     ], canvasWidth, canvasHeight);
-  } else if (mode === "orbs") {
+  } else if (mode === "orbs" || mode === "floating-orbs") {
     drawBackgroundShapes(ctx, "orbs", [
       { type: "orb", x: -12, y: 6, width: 48, height: 31, color: tone, opacity: patternOpacity },
       { type: "orb", x: 67, y: 10, width: 48, height: 33, color: tone, opacity: patternOpacity },
@@ -400,9 +470,9 @@ function drawBackgroundOverlay(ctx: CanvasRenderingContext2D, overlay: SlideBack
       { type: "orb", x: 23, y: 75, width: 48, height: 30, color: tone, opacity: patternOpacity },
       { type: "orb", x: 43, y: 30, width: 38, height: 24, color: tone, opacity: patternOpacity },
     ], canvasWidth, canvasHeight);
-  } else if (mode === "grid-dots") {
+  } else if (mode === "grid-dots" || mode === "subtle-grid-dots") {
     const spacing = canvasWidth / 24;
-    const radius = Math.max(1, canvasWidth * 0.00105);
+    const radius = Math.max(2.5, canvasWidth * 0.003);
     ctx.save();
     ctx.globalAlpha = patternOpacity;
     ctx.fillStyle = tone;
@@ -414,7 +484,7 @@ function drawBackgroundOverlay(ctx: CanvasRenderingContext2D, overlay: SlideBack
       }
     }
     ctx.restore();
-  } else {
+  } else if (mode === "sprinkles" || mode === "sprinkles-sparks") {
     const marks = [
       [5, 28, 1], [13, 35, -1], [94, 28, -1], [87, 37, 1],
       [6, 47, -1], [15, 58, 1], [93, 52, 1], [84, 62, -1],
@@ -466,7 +536,7 @@ function drawHeaderPanel(ctx: CanvasRenderingContext2D, template: TemplateDefini
   ctx.restore();
 }
 
-async function drawTaskCard(ctx: CanvasRenderingContext2D, card: TaskCardDefinition, canvasWidth: number, canvasHeight: number, family: string) {
+async function drawTaskCard(ctx: CanvasRenderingContext2D, card: TaskCardDefinition, item: { subtitle: string; title: string; detail?: string }, canvasWidth: number, canvasHeight: number, family: string) {
   const x = (card.x / 100) * canvasWidth;
   const y = (card.y / 100) * canvasHeight;
   const width = (card.width / 100) * canvasWidth;
@@ -480,42 +550,56 @@ async function drawTaskCard(ctx: CanvasRenderingContext2D, card: TaskCardDefinit
   roundedRect(ctx, x, y, width, height, radius);
   ctx.fill();
   ctx.restore();
-  const inset = width * 0.06;
+  const scale = Math.max(0.55, Math.min(canvasWidth / 360, height / 48));
+  const indicatorRadius = Math.max(3, width * 0.014);
+  const centerY = y + height / 2;
+  const indicatorX = x + 24 * scale;
+  const textX = x + 50 * scale;
+  const titleSize = 14 * scale;
+  const subtitleSize = 11 * scale;
+  const titleY = y + 18 * scale;
+  const subtitleY = y + 34 * scale;
+  const rightEdge = x + width - 14 * scale;
+  const textLimit = Math.max(0, rightEdge - textX);
   ctx.save();
   ctx.fillStyle = card.accentColor;
   ctx.beginPath();
-  ctx.arc(x + inset * 0.55, y + height * 0.5, width * 0.018, 0, Math.PI * 2);
+  ctx.arc(indicatorX, centerY, indicatorRadius, 0, Math.PI * 2);
   ctx.fill();
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
-  const timeSize = canvasWidth * 0.016;
-  const titleSize = canvasWidth * 0.022;
-  await document.fonts.load(`500 ${timeSize}px "${family}"`);
+  await document.fonts.load(`500 ${subtitleSize}px "${family}"`);
   await document.fonts.load(`700 ${titleSize}px "${family}"`);
-  ctx.font = `500 ${timeSize}px "${family}"`;
-  ctx.fillStyle = card.accentColor;
-  ctx.fillText(card.time, x + inset, y + height * 0.2, width - inset * 2);
   ctx.font = `700 ${titleSize}px "${family}"`;
   ctx.fillStyle = card.textColor;
-  ctx.fillText(card.title, x + inset, y + height * 0.49, width - inset * 2);
-  if (card.detail) {
-    ctx.font = `400 ${canvasWidth * 0.014}px "${family}"`;
+  const timeWidth = item.subtitle ? Math.min(textLimit * 0.45, ctx.measureText(item.subtitle).width) : 0;
+  const titleWidth = Math.max(0, textLimit - (timeWidth ? timeWidth + 12 * scale : 0));
+  ctx.fillText(item.title, textX, titleY, titleWidth);
+  if (item.subtitle) {
+    ctx.textAlign = "right";
+    ctx.font = `400 ${subtitleSize}px "${family}"`;
+    ctx.fillStyle = card.accentColor;
+    ctx.fillText(item.subtitle, rightEdge, titleY + 1 * scale, timeWidth || textLimit * 0.45);
+    ctx.textAlign = "left";
+  }
+  if (item.detail) {
+    ctx.font = `400 ${subtitleSize}px "${family}"`;
     ctx.fillStyle = card.textColor;
     ctx.globalAlpha = 0.68;
-    ctx.fillText(card.detail, x + inset, y + height * 0.74, width - inset * 2);
+    ctx.fillText(item.detail, textX, subtitleY, textLimit);
   }
   ctx.restore();
 }
 
-async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: TemplateDefinition, canvasWidth: number, canvasHeight: number, family: string) {
+async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: TemplateDefinition, items: { subtitle: string; title: string }[], canvasWidth: number, canvasHeight: number, family: string, yOffset = 0) {
   const layout = template.routineRows;
   if (!layout) return;
   const x = (layout.x / 100) * canvasWidth;
-  const startY = (layout.y / 100) * canvasHeight;
+  const startY = ((layout.y + yOffset) / 100) * canvasHeight;
   const width = (layout.width / 100) * canvasWidth;
   const rowHeight = (layout.rowHeight / 100) * canvasHeight;
   const gap = (layout.gap / 100) * canvasHeight;
-  for (const [index, row] of layout.rows.entries()) {
+  for (const [index, row] of items.entries()) {
     const y = startY + index * (rowHeight + gap);
     ctx.save();
     ctx.fillStyle = layout.fillColor;
@@ -533,7 +617,7 @@ async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: Template
     ctx.textBaseline = "middle";
     ctx.font = `500 ${timeSize}px "${family}"`;
     ctx.fillStyle = layout.mutedColor;
-    ctx.fillText(row.time, insetX, y + rowHeight * 0.32, width * 0.8);
+    ctx.fillText(row.subtitle, insetX, y + rowHeight * 0.32, width * 0.8);
     ctx.font = `700 ${titleSize}px "${family}"`;
     ctx.fillStyle = layout.textColor;
     ctx.fillText(row.title, insetX, y + rowHeight * 0.7, width * 0.8);
@@ -541,7 +625,7 @@ async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: Template
   }
 }
 
-async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: FloatingWidgetDefinition | undefined, canvasWidth: number, canvasHeight: number, family: string) {
+async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: FloatingWidgetDefinition | undefined, items: { title: string; subtitle: string }[], canvasWidth: number, canvasHeight: number, family: string) {
   if (!widget) return;
   const x = (widget.x / 100) * canvasWidth;
   const y = (widget.y / 100) * canvasHeight;
@@ -557,8 +641,8 @@ async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: Floatin
   ctx.restore();
   const inset = width * 0.07;
   const eyebrowSize = canvasWidth * 0.014;
-  const titleSize = canvasWidth * 0.024;
-  const detailSize = canvasWidth * 0.016;
+  const titleSize = canvasWidth * (items.length > 1 ? 0.02 : 0.024);
+  const detailSize = canvasWidth * (items.length > 1 ? 0.014 : 0.016);
   await document.fonts.load(`500 ${eyebrowSize}px "${family}"`);
   await document.fonts.load(`700 ${titleSize}px "${family}"`);
   await document.fonts.load(`400 ${detailSize}px "${family}"`);
@@ -568,12 +652,18 @@ async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: Floatin
   ctx.font = `500 ${eyebrowSize}px "${family}"`;
   ctx.fillStyle = widget.accentColor;
   ctx.fillText(widget.eyebrow, x + inset, y + height * 0.17, width - inset * 2);
-  ctx.font = `700 ${titleSize}px "${family}"`;
-  ctx.fillStyle = widget.textColor;
-  ctx.fillText(widget.title, x + inset, y + height * 0.39, width - inset * 2);
-  ctx.font = `400 ${detailSize}px "${family}"`;
-  ctx.fillStyle = widget.mutedColor;
-  ctx.fillText(widget.detail, x + inset, y + height * 0.69, width - inset * 2);
+  const contentTop = y + height * 0.36;
+  const contentHeight = height * 0.55;
+  const itemHeight = contentHeight / Math.max(1, items.length);
+  for (const [index, item] of items.entries()) {
+    const rowTop = contentTop + index * itemHeight;
+    ctx.font = `700 ${titleSize}px "${family}"`;
+    ctx.fillStyle = widget.textColor;
+    ctx.fillText(item.title, x + inset, rowTop, width - inset * 2);
+    ctx.font = `400 ${detailSize}px "${family}"`;
+    ctx.fillStyle = widget.mutedColor;
+    ctx.fillText(item.subtitle, x + inset, rowTop + itemHeight * 0.48, width - inset * 2);
+  }
   ctx.restore();
 }
 
@@ -600,6 +690,14 @@ function boxFitScale(imageWidth: number, imageHeight: number, boxWidth: number, 
   const xScale = boxWidth / imageWidth;
   const yScale = boxHeight / imageHeight;
   return fit === "cover" ? Math.max(xScale, yScale) : Math.min(xScale, yScale);
+}
+
+function fitFrameToImage(imageWidth: number, imageHeight: number, maxWidth: number, maxHeight: number, insetRatio: number) {
+  const imageAspect = imageWidth / imageHeight;
+  // Match the image to the frame's inner screen opening, accounting for the bezel inset.
+  const frameHeightPerWidth = (1 - insetRatio * 2) / imageAspect + insetRatio * 2;
+  const width = Math.max(1, Math.min(maxWidth, maxHeight / frameHeightPerWidth));
+  return { width, height: width * frameHeightPerWidth };
 }
 
 function resolveBackgroundColor(color: string, brandColor: string) {
@@ -655,12 +753,19 @@ export async function renderSlide(
   let loaded: Awaited<ReturnType<typeof loadImage>> | undefined;
   try {
     loaded = await loadImage(slide.image);
+    const family = slide.fontFamily ?? "Arial, sans-serif";
+    const headlineFamily = slide.headlineFontFamily ?? family;
+    const subheadlineFamily = slide.subheadlineFontFamily ?? family;
+    const cardFamily = slide.cardFontFamily ?? subheadlineFamily;
+    await Promise.all([family, headlineFamily, subheadlineFamily, cardFamily].map((fontFamily) => document.fonts.load(`400 16px "${fontFamily}"`)));
+    await document.fonts.ready;
     const background = options.background ?? template.background;
     const brandColor = options.brandColor ?? "#111111";
     const backgroundStart = resolveBackgroundColor(background.start, brandColor);
     const backgroundEnd = resolveBackgroundColor(background.end ?? background.start, brandColor);
     const contrastColor = getAutomaticTextColor(background, brandColor);
     const contrastBackgrounds = background.type === "gradient" ? [backgroundStart, backgroundEnd] : [backgroundStart];
+    const isLandscape = canvas.width > canvas.height;
     if (background.type === "gradient") {
       let gradient: CanvasGradient;
       if (background.continuous && (slide.panoramaCount ?? 1) > 1) {
@@ -685,29 +790,113 @@ export async function renderSlide(
     drawBackgroundOverlay(ctx, options.backgroundAccent, template, canvas.width, canvas.height, contrastBackgrounds);
     drawHeaderPanel(ctx, template, canvas.width, canvas.height);
 
-    const family = slide.fontFamily ?? "Arial, sans-serif";
     const showDecorativeLayers = options.showDecorativeLayers !== false;
-    if (showDecorativeLayers) {
-      for (const card of template.taskCards ?? []) await drawTaskCard(ctx, card, canvas.width, canvas.height, family);
-      await drawRoutineRows(ctx, template, canvas.width, canvas.height, family);
+    const landscapeHeadline = isLandscape ? {
+      ...template.headline,
+      x: 31,
+      y: 7,
+      width: 58,
+      height: 12,
+      fontSize: template.headline.fontSize * 0.62,
+      align: "center" as const,
+      maxLines: 2,
+    } : template.headline;
+    const landscapeSubheadline = isLandscape ? {
+      ...template.subheadline,
+      x: 31,
+      y: 20,
+      width: 58,
+      height: 8,
+      fontSize: template.subheadline.fontSize * 0.62,
+      align: "center" as const,
+      maxLines: 2,
+    } : template.subheadline;
+    if (showDecorativeLayers && template.badge && !template.badge.laurel && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false)) {
+      await drawBadge(ctx, slide.badgeText ?? template.badge.text, template, canvas.width, canvas.height, slide.headlineFontFamily ?? family);
     }
-    if (showDecorativeLayers && (!template.badge?.firstSlideOnly || slide.isFirstSlide !== false)) {
-      await drawBadge(ctx, slide.badgeText ?? template.badge?.text ?? "", template, canvas.width, canvas.height, slide.headlineFontFamily ?? family);
+    const showRatingBadge = showDecorativeLayers && (slide.showRatingBadge ?? Boolean(template.badge?.laurel && slide.isFirstSlide !== false));
+    const pillBadgeBottom = template.badge && !template.badge.laurel ? template.badge.y + template.badge.height + 0.5 : 0;
+    const ratingTop = pillBadgeBottom || 0.5;
+    const ratingBottom = ratingTop + 6.8;
+    const headlineY = Math.max(landscapeHeadline.y, pillBadgeBottom, showRatingBadge ? ratingBottom + (isLandscape ? 0.6 : 0.7) : 0);
+    const headlineLayer = { ...landscapeHeadline, y: headlineY };
+    const subheadlineLayer = {
+      ...landscapeSubheadline,
+      y: Math.max(landscapeSubheadline.y, headlineLayer.y + headlineLayer.height + (isLandscape ? 0.8 : 0.5)),
+    };
+    if (showRatingBadge) {
+      const ratingBadge = slide.ratingBadge ?? { score: "4.9", stars: 5, subtitle: "Apps We Love" };
+      const darkBackground = luminance(averageColor(contrastBackgrounds)) < 0.35;
+      await drawRatingBadge(ctx, ratingBadge, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, isLandscape ? 31 : 50, isLandscape ? 0.62 : 1);
     }
-    await drawText(ctx, slide.headline, template.headline, canvas.width, canvas.height, slide.headlineFontFamily ?? family, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
-    await drawText(ctx, slide.subheadline ?? "", template.subheadline, canvas.width, canvas.height, slide.subheadlineFontFamily ?? family, slide.textAlignment, slide.subheadlineColor ?? (template.subheadline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
+    await drawText(ctx, slide.headline, headlineLayer, canvas.width, canvas.height, headlineFamily, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
+    await drawText(ctx, slide.subheadline ?? "", subheadlineLayer, canvas.width, canvas.height, subheadlineFamily, slide.textAlignment, slide.subheadlineColor ?? (template.subheadline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
 
-    const box = template.screenshot;
-    const frameWidth = (box.width / 100) * canvas.width;
-    const frameHeight = (box.height / 100) * canvas.height;
-    const x = (box.x / 100) * canvas.width - frameWidth / 2;
-    const y = (box.y / 100) * canvas.height;
+    const defaultItems = template.taskCards?.map((item) => ({ subtitle: item.time, title: item.title, detail: item.detail }))
+      ?? template.routineRows?.rows.map((item) => ({ subtitle: item.time, title: item.title })) ?? [];
+    const items = slide.cardItems?.map(({ subtitle, title, detail }) => ({ subtitle, title, detail })) ?? defaultItems;
+    const copyBottom = Math.max(headlineLayer.y + headlineLayer.height, subheadlineLayer.y + subheadlineLayer.height);
+    const firstCardTop = template.taskCards?.[0]?.y ?? template.routineRows?.y;
+    const cardOffset = showDecorativeLayers && firstCardTop !== undefined ? Math.max(0, copyBottom + 1 - firstCardTop) : 0;
+    const cardBounds: { left: number; right: number; bottom: number }[] = [];
+    const taskCards = template.taskCards?.map((card, index) => isLandscape ? {
+      ...card,
+      x: 5,
+      y: 37 + index * 14.5,
+      width: 53,
+      height: 12,
+    } : card);
+    if (showDecorativeLayers && taskCards?.length) {
+      const verticalStep = taskCards.length > 1 ? taskCards[1].y - taskCards[0].y : 0;
+      const step = verticalStep || taskCards[0].height + 1;
+      for (const [index, item] of items.entries()) {
+        const card = taskCards[index] ?? taskCards[taskCards.length - 1];
+        const y = (index < taskCards.length ? card.y : taskCards[taskCards.length - 1].y + (index - taskCards.length + 1) * step) + cardOffset;
+        const positionedCard = { ...card, y };
+        await drawTaskCard(ctx, positionedCard, item, canvas.width, canvas.height, cardFamily);
+        cardBounds.push({ left: card.x, right: card.x + card.width, bottom: y + card.height });
+      }
+    }
+    if (showDecorativeLayers && template.routineRows && items.length > 0) {
+      await drawRoutineRows(ctx, template, items, canvas.width, canvas.height, cardFamily, cardOffset);
+      const rowLayout = template.routineRows;
+      const bottom = rowLayout.y + cardOffset + Math.max(0, items.length - 1) * (rowLayout.rowHeight + rowLayout.gap) + rowLayout.rowHeight;
+      cardBounds.push({ left: rowLayout.x, right: rowLayout.x + rowLayout.width, bottom });
+    }
+
+    const box = isLandscape ? { ...template.screenshot, x: 80, y: 6, width: 40, height: 88 } : template.screenshot;
+    const imageWidth = loaded.image instanceof HTMLCanvasElement ? loaded.image.width : loaded.image.naturalWidth;
+    const imageHeight = loaded.image instanceof HTMLCanvasElement ? loaded.image.height : loaded.image.naturalHeight;
+    const insetRatio = template.device.visible && options.frameVisible !== false ? 0.018 : 0;
+    const maxFrameWidth = (box.width / 100) * canvas.width;
+    const maxFrameHeight = (box.height / 100) * canvas.height;
+    let frameY = (box.y / 100) * canvas.height;
+    let frameSize = fitFrameToImage(imageWidth, imageHeight, maxFrameWidth, maxFrameHeight, insetRatio);
+    let frameX = (box.x / 100) * canvas.width - frameSize.width / 2;
+    const overlappingCardBounds = cardBounds.filter((bounds) => frameX < (bounds.right / 100) * canvas.width && frameX + frameSize.width > (bounds.left / 100) * canvas.width);
+    if (overlappingCardBounds.length > 0 && frameSize.height > 0) {
+      const cardBottom = Math.max(...overlappingCardBounds.map((bounds) => bounds.bottom)) / 100 * canvas.height;
+      frameY = Math.max(frameY, cardBottom + canvas.height * 0.015);
+      const availableHeight = Math.max(1, canvas.height * 0.98 - frameY);
+      frameSize = fitFrameToImage(imageWidth, imageHeight, maxFrameWidth, Math.min(maxFrameHeight, availableHeight), insetRatio);
+      frameX = (box.x / 100) * canvas.width - frameSize.width / 2;
+    }
+    const x = frameX;
+    const y = frameY;
+    const frameWidth = frameSize.width;
+    const frameHeight = frameSize.height;
     if (template.device.visible && options.frameVisible !== false) {
       drawPhone(ctx, x, y, frameWidth, frameHeight, canvas.width, canvas.height, { ...template.device, color: options.frameColor ?? template.device.color });
     }
-    drawScreenshot(ctx, loaded.image, x, y, frameWidth, frameHeight, (box.radius / 100) * canvas.width, "contain", template.device.visible && options.frameVisible !== false ? 0.018 : 0);
+    drawScreenshot(ctx, loaded.image, x, y, frameWidth, frameHeight, (box.radius / 100) * canvas.width, "contain", insetRatio);
     if (template.device.visible && options.frameVisible !== false) drawDeviceAccents(ctx, x, y, frameWidth, frameHeight, template.device);
-    if (showDecorativeLayers) await drawFloatingWidget(ctx, template.floatingWidget, canvas.width, canvas.height, family);
+    if (showDecorativeLayers) {
+      const defaultWidgetItems = template.floatingWidget ? [{ title: template.floatingWidget.title, subtitle: template.floatingWidget.detail }] : [];
+      const widget = isLandscape && template.floatingWidget
+        ? { ...template.floatingWidget, x: 31, y: 72, width: 56, height: 20 }
+        : template.floatingWidget;
+      await drawFloatingWidget(ctx, widget, slide.floatingWidgetItems ?? defaultWidgetItems, canvas.width, canvas.height, cardFamily);
+    }
     return canvas;
   } finally {
     loaded?.dispose();

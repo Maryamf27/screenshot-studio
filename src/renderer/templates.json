@@ -83,8 +83,8 @@
         "textColor": "#352D22",
         "accentColor": "#C58B42",
         "time": "9:00 AM",
-        "title": "Wipe windows",
-        "detail": "Living room Â· 15 min"
+        "title": "Add a text",
+        "detail": "Optional subtitle"
       },
       {
         "x": 8,
@@ -95,9 +95,9 @@
         "fillColor": "#FFFEFB",
         "textColor": "#352D22",
         "accentColor": "#6D8C72",
-        "time": "10:30 AM",
-        "title": "Water the plants",
-        "detail": "Kitchen Â· 5 min"
+        "time": "9:00 AM",
+        "title": "Add a text",
+        "detail": "Optional subtitle"
       }
     ],
     "screenshot": {
@@ -195,23 +195,23 @@
       "rows": [
         {
           "time": "9:00 AM",
-          "title": "Morning reset"
+          "title": "Add a text"
         },
         {
-          "time": "11:30 AM",
-          "title": "Tidy the kitchen"
+          "time": "9:00 AM",
+          "title": "Add a text"
         },
         {
-          "time": "2:00 PM",
-          "title": "Water plants"
+          "time": "9:00 AM",
+          "title": "Add a text"
         },
         {
-          "time": "5:30 PM",
-          "title": "Evening wind-down"
+          "time": "9:00 AM",
+          "title": "Add a text"
         },
         {
-          "time": "8:00 PM",
-          "title": "Plan tomorrow"
+          "time": "9:00 AM",
+          "title": "Add a text"
         }
       ]
     },
@@ -373,9 +373,9 @@
       "textColor": "#1F2937",
       "mutedColor": "#64748B",
       "accentColor": "#0F766E",
-      "eyebrow": "TODAY Â· 9:00 AM",
-      "title": "Your routine is ready",
-      "detail": "3 tasks planned Â· 25 min total"
+      "eyebrow": "FEATURED",
+      "title": "Add a text",
+      "detail": "Optional subtitle"
     },
     "bgShapeStyle": "solid"
   }

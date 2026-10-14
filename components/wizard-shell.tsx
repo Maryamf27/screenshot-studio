@@ -6,32 +6,13 @@ import { UploadManager } from "@/components/upload-manager";
 import { TargetSelector } from "@/components/target-selector";
 import { CanvasPreview } from "@/components/canvas-preview";
 import { CustomizationEditor } from "@/components/customization-editor";
+import { ExportPanel } from "@/components/export-panel";
 import { getTemplate, templates } from "@/src/renderer/templates";
 import { wizardSteps, type WizardStep } from "@/src/config/storePresets";
 import { useProjectStore } from "@/src/store/project-store";
 import { StepNavigation } from "@/components/step-navigation";
 
 const stepIcons = [Upload, Monitor, LayoutTemplate, Paintbrush, Download] as const;
-
-function PlaceholderView({ step, onBack, onContinue }: { step: WizardStep; onBack: () => void; onContinue: () => void }) {
-  const current = wizardSteps[step - 1];
-
-  return (
-    <section className="flex min-h-64 flex-col items-center justify-center border border-dashed border-border bg-card px-6 py-12 text-center rounded-2xl shadow-sm">
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-primary ring-1 ring-orange-100">
-        {(() => {
-          const Icon = stepIcons[step - 1]; // Fixed line-break array indexing bug
-          return <Icon className="h-5 w-5" aria-hidden="true" />;
-        })()}
-      </div>
-      <h3 className="mt-5 text-lg font-semibold tracking-tight text-slate-900">{current.label}</h3>
-      <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
-        This workspace is ready for the {current.label.toLowerCase()} flow.
-      </p>
-      <StepNavigation onBack={onBack} onContinue={onContinue} continueLabel="Next" className="mt-6 w-full max-w-sm border-0 pt-0" />
-    </section>
-  );
-}
 
 function TemplateView({ onBack, onContinue }: { onBack: () => void; onContinue: () => void }) {
   const templateId = useProjectStore((state) => state.activeTemplate);
@@ -93,7 +74,7 @@ export function WizardShell() {
   return (
     <div className="space-y-7 sm:space-y-8">
       <nav aria-label="Project workflow" className="-mx-1 overflow-x-auto px-1 pb-2 sm:overflow-visible sm:pb-0">
-        <ol className="grid min-w-[560px] grid-cols-5 gap-2 sm:min-w-0 sm:gap-3">
+        <ol className="grid min-w-140 grid-cols-5 gap-2 sm:min-w-0 sm:gap-3">
           {wizardSteps.map((step, index) => {
             const stepNumber = (index + 1) as WizardStep;
             const Icon = stepIcons[index];
@@ -135,7 +116,7 @@ export function WizardShell() {
       ) : activeStep === 4 ? (
         <CustomizationEditor onBack={() => setActiveStep((step) => Math.max(1, step - 1) as WizardStep)} onContinue={() => setActiveStep(5)} />
       ) : (
-        <PlaceholderView step={activeStep} onBack={() => setActiveStep((step) => Math.max(1, step - 1) as WizardStep)} onContinue={() => setActiveStep(Math.min(5, activeStep + 1) as WizardStep)} />
+        <ExportPanel onBack={() => setActiveStep(4)} />
       )}
     </div>
   );

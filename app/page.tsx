@@ -6,7 +6,7 @@ export default function Home() {
     <>
       <AppHeader />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-8 sm:px-8 md:py-12">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-12">
         <section className="border-b border-border pb-8">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">New project</p>
           <h2 className="text-3xl font-semibold tracking-[-0.04em] text-foreground sm:text-[2.15rem]">

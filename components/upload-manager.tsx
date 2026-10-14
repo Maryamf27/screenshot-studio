@@ -25,7 +25,7 @@ function SortableImage({ image, onRemove, onRename }: { image: UploadedImage; on
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={`group relative min-w-0 overflow-hidden rounded-2xl border bg-white p-2.5 shadow-sm transition-[border-color,box-shadow,opacity,transform] duration-200 ${cardState}`}
     >
-      <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-slate-100">
+      <div className="relative aspect-4/5 overflow-hidden rounded-xl bg-slate-100">
         <img src={preview} alt={image.file.name} className="size-full object-contain" />
         <div className="absolute inset-x-2 top-2 flex items-center justify-between">
           <button

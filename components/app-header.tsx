@@ -1,7 +1,5 @@
 "use client";
 
-import { Plus } from "lucide-react";
-
 export function AppHeader() {
   return (
     <header className="border-b border-border bg-card">
@@ -55,16 +53,6 @@ export function AppHeader() {
             </p>
           </div>
         </div>
-
-        {/* Primary action */}
-        <button
-          disabled
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground opacity-50 cursor-not-allowed"
-          title="Not yet implemented"
-        >
-          <Plus className="h-4 w-4" />
-          New Project
-        </button>
       </div>
     </header>
   );
