@@ -95,7 +95,13 @@ type ProjectState = {
 const STORAGE_KEY = "store-screenshot-studio-projects";
 const LEGACY_STORAGE_KEY = "store-screenshot-studio-project";
 const DEFAULT_HEADLINE = "Your Main Headline";
-const DEFAULT_RATING_BADGE = { score: "4.9", stars: 5, subtitle: "Apps We Love" };
+const EMPTY_RATING_BADGE = { score: "", stars: 0, subtitle: "" };
+const TEMPLATE_RATING_DEFAULTS = [
+  ["4.9", "Apps We Love"], ["4.9", "Highly rated"], ["5", "6000 reviews"], ["4.4", "227K reviews"], ["4.9", "Loved by learners"],
+];
+const TEMPLATE_BADGE_DEFAULTS = new Set(["★★★★★ 4.9 rating", "9m+ users", "trusted by 2m users", "academy approved", "new · featured"]);
+const TEMPLATE_HEADLINE_DEFAULTS = new Set(["free shipping free returns", "ai stylist & outfit planner", "master any skill in weeks"]);
+const TEMPLATE_COPY_DEFAULTS = new Set(["add a text", "optional subtitle", "optional detail", "9:00 am", "featured", "plan your next task", "stay focused and on track"]);
 let projectCreationInFlight: Promise<string> | null = null;
 
 export const useProjectStore = create<ProjectState>((setState, getState) => ({
@@ -185,8 +191,8 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
               headline: DEFAULT_HEADLINE,
               subheadline: "",
               templateId: "award-badge",
-              showRatingBadge: offset + index === 0,
-              ratingBadge: { ...DEFAULT_RATING_BADGE },
+              showRatingBadge: false,
+              ratingBadge: { ...EMPTY_RATING_BADGE },
             };
           }),
         ],
@@ -239,17 +245,15 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
         cardFontFamily: undefined,
         headlineColor: undefined,
         subheadlineColor: undefined,
-        badgeText: template.badge?.text,
+        badgeText: image.badgeText ?? "",
         cardItems,
         floatingWidgetItems,
         frameVisible: undefined,
         frameColor: undefined,
         backgroundAccent: undefined,
         showDecorativeLayers: undefined,
-        showRatingBadge: template.id === "fitness-dark-neon" ? false : template.id === "fitness-neon-dark" || template.id === "fashion-editorial-grid" || template.id === "edu-flashcard-stack" ? true : image.showRatingBadge ?? index === 0,
-        ratingBadge: template.defaultRatingBadge && image.ratingBadge.score === DEFAULT_RATING_BADGE.score && image.ratingBadge.subtitle === DEFAULT_RATING_BADGE.subtitle
-          ? template.defaultRatingBadge
-          : image.ratingBadge ?? { ...DEFAULT_RATING_BADGE },
+        showRatingBadge: image.showRatingBadge ?? false,
+        ratingBadge: image.ratingBadge ?? { ...EMPTY_RATING_BADGE },
       } : image),
     };
   }),
@@ -258,12 +262,7 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
   applyBrandColorToAllSlides: () => setState((state) => ({
     images: state.images.map((image) => ({
       ...image,
-      background: {
-        type: image.background?.type ?? "solid",
-        primaryColor: state.brandColor,
-        secondaryColor: image.background?.secondaryColor ?? state.brandColor,
-        angle: image.background?.angle ?? 135,
-      },
+      frameColor: "accent",
     })),
   })),
 }));
@@ -278,15 +277,24 @@ export function hydrateProjectStore() {
       const fileTitle = fileName.replace(/\.[^/.]+$/, "");
       const storedHeadline = typeof image.headline === "string" ? image.headline : "";
       const legacyFileHeadline = [image.name, fileName, fileTitle].some((candidate) => candidate && storedHeadline === candidate);
+      const ratingBadge = { ...EMPTY_RATING_BADGE, ...image.ratingBadge };
+      const templateGeneratedRating = TEMPLATE_RATING_DEFAULTS.some(([score, subtitle]) => ratingBadge.score === score && ratingBadge.subtitle === subtitle);
+      const savedBadgeText = image.badgeText?.trim() ?? "";
+      const templateGeneratedBadge = TEMPLATE_BADGE_DEFAULTS.has(savedBadgeText.toLowerCase().replace(/\s+/g, " "));
+      const headline = !storedHeadline || legacyFileHeadline || TEMPLATE_HEADLINE_DEFAULTS.has(storedHeadline.trim().toLowerCase()) ? DEFAULT_HEADLINE : storedHeadline;
+      const cleanCopy = (value: string) => TEMPLATE_COPY_DEFAULTS.has(value.trim().toLowerCase()) ? "" : value;
       return {
         ...image,
         templateId: getTemplate(image.templateId ?? templateId).id,
         id: image.id || `${image.file?.lastModified ?? Date.now()}-${image.name || "slide"}-${index}`,
         name: image.name?.replace(/\.[^/.]+$/, "") || image.name || `Slide ${index + 1}`,
-        headline: !storedHeadline || legacyFileHeadline ? DEFAULT_HEADLINE : storedHeadline,
+        headline,
         subheadline: image.subheadline ?? "",
-        showRatingBadge: typeof image.showRatingBadge === "boolean" ? image.showRatingBadge : index === 0,
-        ratingBadge: { ...DEFAULT_RATING_BADGE, ...image.ratingBadge },
+        badgeText: templateGeneratedBadge ? "" : image.badgeText ?? "",
+        showRatingBadge: image.showRatingBadge === true && !templateGeneratedRating,
+        ratingBadge,
+        cardItems: image.cardItems?.map((item) => ({ ...item, title: cleanCopy(item.title), subtitle: cleanCopy(item.subtitle), detail: item.detail ? cleanCopy(item.detail) : item.detail })),
+        floatingWidgetItems: image.floatingWidgetItems?.map((item) => ({ ...item, title: cleanCopy(item.title), subtitle: cleanCopy(item.subtitle) })),
       };
     });
     let projects = saved?.projects ?? [];

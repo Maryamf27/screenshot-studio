@@ -1,9 +1,10 @@
 [
   {
     "id": "award-badge",
-    "label": "Award Badge & Task Cards",
-    "style": "Laurel social proof",
-    "description": "A laurel rating badge and daily task cards frame your app in a warm editorial layout.",
+    "category": "General",
+    "label": "Warm Editorial Cards",
+    "style": "Warm editorial",
+    "description": "A quiet ivory canvas and editable feature cards balance the app screenshot.",
     "background": {
       "type": "gradient",
       "start": "#FFF8E8",
@@ -43,7 +44,7 @@
       "paddingX": 2.3,
       "paddingY": 0.8,
       "align": "center",
-      "text": "★★★★★  4.9 RATING",
+      "text": "",
       "maxLines": 1,
       "firstSlideOnly": true,
       "laurel": true
@@ -82,9 +83,9 @@
         "fillColor": "#FFFEFB",
         "textColor": "#352D22",
         "accentColor": "#C58B42",
-        "time": "9:00 AM",
-        "title": "Add a text",
-        "detail": "Optional subtitle"
+        "time": "",
+        "title": "",
+        "detail": ""
       },
       {
         "x": 8,
@@ -95,9 +96,9 @@
         "fillColor": "#FFFEFB",
         "textColor": "#352D22",
         "accentColor": "#6D8C72",
-        "time": "9:00 AM",
-        "title": "Add a text",
-        "detail": "Optional subtitle"
+        "time": "",
+        "title": "",
+        "detail": ""
       }
     ],
     "screenshot": {
@@ -122,6 +123,7 @@
   },
   {
     "id": "earthy-routine",
+    "category": "General",
     "label": "Earthy Routine Rows",
     "style": "Warm split schedule",
     "description": "A deep taupe title card and tidy routine rows give the listing a grounded, crafted feel.",
@@ -194,24 +196,24 @@
       "accentColor": "#9A7656",
       "rows": [
         {
-          "time": "9:00 AM",
-          "title": "Add a text"
+          "time": "",
+          "title": ""
         },
         {
-          "time": "9:00 AM",
-          "title": "Add a text"
+          "time": "",
+          "title": ""
         },
         {
-          "time": "9:00 AM",
-          "title": "Add a text"
+          "time": "",
+          "title": ""
         },
         {
-          "time": "9:00 AM",
-          "title": "Add a text"
+          "time": "",
+          "title": ""
         },
         {
-          "time": "9:00 AM",
-          "title": "Add a text"
+          "time": "",
+          "title": ""
         }
       ]
     },
@@ -235,6 +237,7 @@
   },
   {
     "id": "split-bleed",
+    "category": "General",
     "label": "Oversized Bleed / Split Caption",
     "style": "Immersive device hero",
     "description": "A compact upper caption makes room for a phone that continues cleanly beyond the canvas edge.",
@@ -315,6 +318,7 @@
   },
   {
     "id": "floating-widget",
+    "category": "General",
     "label": "Minimalist Floating Widget",
     "style": "Light notification layer",
     "description": "Quiet white space, crisp type, and a floating product widget add dimension to the device preview.",
@@ -373,9 +377,9 @@
       "textColor": "#1F2937",
       "mutedColor": "#64748B",
       "accentColor": "#0F766E",
-      "eyebrow": "FEATURED",
-      "title": "Add a text",
-      "detail": "Optional subtitle"
+      "eyebrow": "",
+      "title": "",
+      "detail": ""
     },
     "bgShapeStyle": "solid"
   }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getStorePreset } from "@/src/config/storePresets";
+import { getStorePreset, type StorePreset } from "@/src/config/storePresets";
 import { renderSlide } from "@/src/renderer/render-slide";
 import { getTemplate, type TemplateId } from "@/src/renderer/templates";
 import { useProjectStore } from "@/src/store/project-store";
@@ -24,25 +24,33 @@ export function CanvasPreview({ templateId, compact = false, slideIndex, applySl
   const activeTemplateId = templateId ?? storedTemplateId ?? "award-badge";
   const useSlideCustomizations = !compact && applySlideCustomizations;
   const custom = customDimensions[0];
-  const preset = useMemo(() => compact ? getStorePreset("phone") : presetId ? getStorePreset(presetId) : custom ? {
-    id: custom.id,
-    label: custom.name,
-    width: custom.width,
-    height: custom.height,
-    orientation: custom.width > custom.height ? "landscape" as const : "portrait" as const,
-  } : getStorePreset("phone"), [compact, custom, presetId]);
+  const preset = useMemo(() => {
+    const outputPreset: StorePreset | undefined = compact ? getStorePreset("phone") : presetId ? getStorePreset(presetId) : custom ? {
+      id: custom.id,
+      label: custom.name,
+      width: custom.width,
+      height: custom.height,
+      orientation: custom.width > custom.height ? "landscape" : "portrait",
+    } : getStorePreset("phone");
+    if (!outputPreset) return undefined;
+    const previewLimit = compact ? 640 : 960;
+    const scale = Math.min(1, previewLimit / outputPreset.height);
+    return { ...outputPreset, width: Math.max(1, Math.round(outputPreset.width * scale)), height: Math.max(1, Math.round(outputPreset.height * scale)) };
+  }, [compact, custom, presetId]);
   const previewHeight = compact ? 224 : 544;
   const previewWidth = preset ? Math.round(previewHeight * preset.width / preset.height) : previewHeight;
+  const [textWarning, setTextWarning] = useState<string>();
 
   useEffect(() => {
     const output = canvasRef.current;
     if (!output || !image || !preset) return;
     let cancelled = false;
+    setTextWarning(undefined);
     const template = getTemplate(activeTemplateId);
     const customBackground = image.background;
     const frameColors = { dark: "#111827", light: "#f8fafc", accent: brandColor } as const;
     void renderSlide(
-      { image: image.file, headline: image.headline, subheadline: image.subheadline, badgeText: useSlideCustomizations ? image.badgeText : undefined, showRatingBadge: useSlideCustomizations ? image.showRatingBadge : undefined, ratingBadge: useSlideCustomizations ? image.ratingBadge : undefined, cardItems: useSlideCustomizations ? image.cardItems : undefined, floatingWidgetItems: useSlideCustomizations ? image.floatingWidgetItems : undefined, isFirstSlide: selectedSlideIndex === 0, panoramaIndex: selectedSlideIndex, panoramaCount: imageCount, fontFamily: useSlideCustomizations ? font : undefined, headlineFontFamily: useSlideCustomizations ? image.headlineFont : undefined, subheadlineFontFamily: useSlideCustomizations ? image.subheadlineFont : undefined, cardFontFamily: useSlideCustomizations ? image.cardFontFamily : undefined, headlineColor: useSlideCustomizations ? image.headlineColor : undefined, subheadlineColor: useSlideCustomizations ? image.subheadlineColor : undefined, textAlignment: useSlideCustomizations ? image.textAlignment : undefined },
+      { image: image.file, relatedScreenshots: images.map((screenshot) => screenshot.file), headline: image.headline, subheadline: image.subheadline, badgeText: useSlideCustomizations ? image.badgeText : undefined, showRatingBadge: useSlideCustomizations ? image.showRatingBadge : undefined, ratingBadge: useSlideCustomizations ? image.ratingBadge : undefined, cardItems: useSlideCustomizations ? image.cardItems : undefined, floatingWidgetItems: useSlideCustomizations ? image.floatingWidgetItems : undefined, isFirstSlide: selectedSlideIndex === 0, panoramaIndex: selectedSlideIndex, panoramaCount: imageCount, fontFamily: useSlideCustomizations ? font : undefined, headlineFontFamily: useSlideCustomizations ? image.headlineFont : undefined, subheadlineFontFamily: useSlideCustomizations ? image.subheadlineFont : undefined, cardFontFamily: useSlideCustomizations ? image.cardFontFamily : undefined, headlineColor: useSlideCustomizations ? image.headlineColor : undefined, subheadlineColor: useSlideCustomizations ? image.subheadlineColor : undefined, textAlignment: useSlideCustomizations ? image.textAlignment : undefined },
       template,
       preset,
       {
@@ -58,6 +66,7 @@ export function CanvasPreview({ templateId, compact = false, slideIndex, applySl
           end: customBackground.secondaryColor,
           angle: customBackground.angle ?? template.background.angle,
         } : undefined,
+        onTextOverflow: compact ? undefined : (message) => { if (!cancelled) setTextWarning(message); },
       },
     ).then((rendered) => {
       if (cancelled) return;
@@ -79,6 +88,7 @@ export function CanvasPreview({ templateId, compact = false, slideIndex, applySl
   return (
     <div className={compact ? "w-full" : "space-y-3"}>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      {textWarning && <p role="alert" className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">{textWarning}</p>}
       <div className="mx-auto max-w-full" style={{ aspectRatio: preset ? `${preset.width} / ${preset.height}` : "9 / 16", width: `min(100%, ${previewWidth}px)` }}>
         <canvas ref={canvasRef} className="block size-full rounded-xl border border-slate-200 bg-white object-contain" aria-label={compact ? "Template preview using the first screenshot" : "Rendered screenshot preview"} />
       </div>

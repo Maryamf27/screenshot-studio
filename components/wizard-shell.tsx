@@ -7,7 +7,7 @@ import { TargetSelector } from "@/components/target-selector";
 import { CanvasPreview } from "@/components/canvas-preview";
 import { CustomizationEditor } from "@/components/customization-editor";
 import { ExportPanel } from "@/components/export-panel";
-import { getTemplate, templates, type TemplateCategory } from "@/src/renderer/templates";
+import { getTemplate, templateCategories, templates, type TemplateCategory } from "@/src/renderer/templates";
 import { wizardSteps, type WizardStep } from "@/src/config/storePresets";
 import { hydrateProjectStore, useProjectStore } from "@/src/store/project-store";
 import { StepNavigation } from "@/components/step-navigation";
@@ -22,7 +22,7 @@ function TemplateView({ onBack, onContinue }: { onBack: () => void; onContinue: 
   const setTemplateId = useProjectStore((state) => state.setSlideTemplate);
   const activeId = getTemplate(images[activeSlideIndex]?.templateId).id;
   const visibleTemplates = category === "All" ? templates : templates.filter((template) => template.category === category);
-  const categories: ("All" | TemplateCategory)[] = ["All", "Fashion", "Fitness", "Education", "Productivity"];
+  const categories: ("All" | TemplateCategory)[] = ["All", ...templateCategories];
 
   return (
     <section className="space-y-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
@@ -38,10 +38,13 @@ function TemplateView({ onBack, onContinue }: { onBack: () => void; onContinue: 
         <div>
           <div className="mb-3 flex items-center justify-between gap-3">
             <h4 className="text-sm font-semibold text-slate-900">Template gallery</h4>
-            <span className="text-xs text-slate-500">{templates.length} styles</span>
+            <span className="text-xs text-slate-500">{templates.length} layouts</span>
           </div>
           <div className="mb-4 flex flex-wrap gap-2" role="tablist" aria-label="Filter templates by category">
-            {categories.map((item) => <button key={item} type="button" role="tab" aria-selected={category === item} onClick={() => setCategory(item)} className={`cursor-pointer rounded-full border px-3.5 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 ${category === item ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-600 hover:border-slate-400 hover:text-slate-900"}`}>{item}</button>)}
+            {categories.map((item) => {
+              const count = item === "All" ? templates.length : templates.filter((template) => template.category === item).length;
+              return <button key={item} type="button" role="tab" aria-selected={category === item} onClick={() => setCategory(item)} className={`cursor-pointer rounded-full border px-3.5 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 ${category === item ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-600 hover:border-slate-400 hover:text-slate-900"}`}>{item}<span className={`ml-1.5 text-xs ${category === item ? "text-slate-300" : "text-slate-400"}`}>{count}</span></button>;
+            })}
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {visibleTemplates.map((template) => (
@@ -59,6 +62,7 @@ function TemplateView({ onBack, onContinue }: { onBack: () => void; onContinue: 
                 <span className="font-semibold tracking-tight text-slate-900">{template.label}</span>
                 {template.id === activeId && <span className="flex size-6 items-center justify-center rounded-full bg-orange-500 text-white"><Check className="size-3.5" aria-hidden="true" /></span>}
               </span>
+              <span className="mt-1 inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">{template.category}</span>
               <span className="mt-1 block text-[11px] font-semibold uppercase tracking-[0.12em] text-orange-700">{template.style}</span>
               <span className="mt-1 block text-sm leading-5 text-slate-500">{template.description}</span>
             </button>

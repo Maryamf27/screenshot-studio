@@ -75,6 +75,7 @@ export async function exportBatch(onProgress: (progress: ExportProgress) => void
   const jobsTotal = state.images.length * targets.length;
   const zip = new JSZip();
   let jobsComplete = 0;
+  const textWarnings: string[] = [];
 
   for (const [slideIndex, slide] of state.images.entries()) {
     const template = getTemplate(slide.templateId ?? "award-badge");
@@ -90,6 +91,7 @@ export async function exportBatch(onProgress: (progress: ExportProgress) => void
       } as const : undefined;
       const canvas = await renderSlide({
         image: slide.file,
+        relatedScreenshots: state.images.map((screenshot) => screenshot.file),
         headline: slide.headline,
         subheadline: slide.subheadline,
         badgeText: slide.badgeText,
@@ -114,11 +116,15 @@ export async function exportBatch(onProgress: (progress: ExportProgress) => void
         showDecorativeLayers: slide.showDecorativeLayers,
         frameVisible: slide.frameVisible,
         frameColor: slide.frameColor ? frameColors[slide.frameColor] : undefined,
+        onTextOverflow: (message) => textWarnings.push(`Slide ${slideIndex + 1}: ${message}`),
       });
 
-      const dataUrl = canvas.toDataURL("image/png");
-      const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
-      zip.folder(`${target.platform}/${target.folder}`)!.file(fileBaseName(slide, slideIndex), base64, { base64: true });
+      if (textWarnings.length) throw new Error([...new Set(textWarnings)].join(" "));
+
+      const png = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error(`Slide ${slideIndex + 1} could not be encoded as PNG.`)), "image/png");
+      });
+      zip.folder(`${target.platform}/${target.folder}`)!.file(fileBaseName(slide, slideIndex), png);
       jobsComplete += 1;
       onProgress({ stage: "render", current: jobsComplete, total: jobsTotal, slideIndex, targetLabel: target.label });
     }

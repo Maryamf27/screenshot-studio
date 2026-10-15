@@ -37,7 +37,7 @@ const presetGroups = [
 
 const controlClass = "mt-1.5 h-10 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-800 shadow-sm outline-none transition-colors hover:border-slate-300 focus:border-orange-400 focus:ring-2 focus:ring-orange-100";
 const toggleClass = "cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold transition-all active:scale-[0.98]";
-const fontOptions = ["Inter", "Poppins", "Roboto", "Montserrat", "Plus Jakarta Sans", "Outfit", "Space Grotesk", "Oswald", "Playfair Display"];
+const fontOptions = ["Arial", "Verdana", "Trebuchet MS", "Georgia", "Courier New"];
 
 function ThemeSelect({ label, value, options, onChange }: { label: string; value: string; options: { value: string; label: string }[]; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false);
@@ -189,7 +189,7 @@ export function CustomizationEditor({ onBack, onContinue }: { onBack: () => void
             <div><h3 className="text-sm font-semibold text-slate-900">Text & typography</h3><p className="mt-0.5 text-xs text-slate-500">Edit the copy on this slide.</p></div>
             <label className="block text-xs font-semibold text-slate-600">Headline<input className={controlClass} type="text" value={activeImage.headline} onChange={(event) => update({ headline: event.target.value })} placeholder="Your Main Headline" /></label>
             <label className="block text-xs font-semibold text-slate-600">Subheadline<textarea className={`${controlClass} h-20 resize-y py-2`} value={activeImage.subheadline} onChange={(event) => update({ subheadline: event.target.value })} placeholder="Add a supporting message" /></label>
-            {template.badge?.laurel && <label className="block text-xs font-semibold text-slate-600">Laurel badge text<input className={controlClass} type="text" value={activeImage.badgeText ?? template.badge.text} onChange={(event) => update({ badgeText: event.target.value })} placeholder="9M+ USERS" /></label>}
+            {template.badge && <label className="block text-xs font-semibold text-slate-600">Optional badge text<input className={controlClass} type="text" value={activeImage.badgeText ?? ""} onChange={(event) => update({ badgeText: event.target.value })} placeholder="Only add verified information" /></label>}
             <FontPicker label="Headline Font" value={activeImage.headlineFont ?? template.headlineFontFamily ?? font} onChange={(headlineFont) => update({ headlineFont })} />
             <FontPicker label="Subheadline Font" value={activeImage.subheadlineFont ?? font} onChange={(subheadlineFont) => update({ subheadlineFont })} />
             <div><span className="text-xs font-semibold text-slate-600">Text alignment</span><div className="mt-1.5 grid grid-cols-3 rounded-xl bg-slate-100 p-1" role="group" aria-label="Text alignment">{(["left", "center", "right"] as const).map((alignment) => <button key={alignment} type="button" onClick={() => update({ textAlignment: alignment })} aria-pressed={(activeImage.textAlignment ?? "center") === alignment} className={`${toggleClass} capitalize ${(activeImage.textAlignment ?? "center") === alignment ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:bg-white/70 hover:text-slate-800"}`}>{alignment}</button>)}</div></div>
@@ -221,12 +221,13 @@ export function CustomizationEditor({ onBack, onContinue }: { onBack: () => void
           </section>}
 
           <details className="group border-t border-slate-100 pt-4">
-            <summary className="cursor-pointer list-none text-sm font-semibold text-slate-900 marker:hidden">Social Proof Badge <span className="float-right text-slate-400 transition-transform group-open:rotate-180" aria-hidden="true">⌄</span></summary>
+            <summary className="cursor-pointer list-none text-sm font-semibold text-slate-900 marker:hidden">Optional rating or social proof <span className="float-right text-slate-400 transition-transform group-open:rotate-180" aria-hidden="true">⌄</span></summary>
             <div className="mt-3 space-y-3">
-              <button type="button" role="switch" aria-checked={activeImage.showRatingBadge} onClick={() => update({ showRatingBadge: !activeImage.showRatingBadge })} className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"><span>Show Rating Badge on this Slide</span><span className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full p-1 transition-colors ${activeImage.showRatingBadge ? "bg-orange-500" : "bg-slate-300"}`}><span className={`size-4 rounded-full bg-white shadow transition-transform ${activeImage.showRatingBadge ? "translate-x-5" : "translate-x-0"}`} /></span></button>
-              <label className="block text-xs font-semibold text-slate-600">Score<input className={controlClass} type="text" value={activeImage.ratingBadge.score} onChange={(event) => update({ ratingBadge: { ...activeImage.ratingBadge, score: event.target.value } })} placeholder="4.9" /></label>
+              <p className="text-xs leading-5 text-slate-500">Hidden by default. Only enter ratings or claims that belong to this app.</p>
+              <button type="button" role="switch" aria-checked={activeImage.showRatingBadge} onClick={() => update({ showRatingBadge: !activeImage.showRatingBadge })} className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"><span>Show verified rating on this slide</span><span className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full p-1 transition-colors ${activeImage.showRatingBadge ? "bg-orange-500" : "bg-slate-300"}`}><span className={`size-4 rounded-full bg-white shadow transition-transform ${activeImage.showRatingBadge ? "translate-x-5" : "translate-x-0"}`} /></span></button>
+              <label className="block text-xs font-semibold text-slate-600">Score<input className={controlClass} type="text" value={activeImage.ratingBadge.score} onChange={(event) => update({ ratingBadge: { ...activeImage.ratingBadge, score: event.target.value } })} placeholder="Enter app rating" /></label>
               <label className="block text-xs font-semibold text-slate-600">Star count<input className={controlClass} type="number" min="0" max="5" step="1" value={activeImage.ratingBadge.stars} onChange={(event) => update({ ratingBadge: { ...activeImage.ratingBadge, stars: Math.max(0, Math.min(5, Math.floor(Number(event.target.value) || 0))) } })} /></label>
-              <label className="block text-xs font-semibold text-slate-600">Subtitle<input className={controlClass} type="text" value={activeImage.ratingBadge.subtitle} onChange={(event) => update({ ratingBadge: { ...activeImage.ratingBadge, subtitle: event.target.value } })} placeholder="Apps We Love" /></label>
+              <label className="block text-xs font-semibold text-slate-600">Subtitle<input className={controlClass} type="text" value={activeImage.ratingBadge.subtitle} onChange={(event) => update({ ratingBadge: { ...activeImage.ratingBadge, subtitle: event.target.value } })} placeholder="e.g. 120 verified reviews" /></label>
             </div>
           </details>
 
@@ -270,9 +271,9 @@ export function CustomizationEditor({ onBack, onContinue }: { onBack: () => void
           </section>
 
           <section className="space-y-3 border-t border-slate-100 pt-4">
-            <div><h3 className="text-sm font-semibold text-slate-900">Project brand</h3><p className="mt-0.5 text-xs text-slate-500">Apply this color to every slide background.</p></div>
+            <div><h3 className="text-sm font-semibold text-slate-900">Project brand</h3><p className="mt-0.5 text-xs text-slate-500">Use the brand color for device accents while each template keeps its own palette.</p></div>
             <label className="flex h-11 cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 shadow-sm transition-colors hover:border-slate-300"><input aria-label="Project brand color" type="color" value={brandColor} onChange={(event) => setBrandSettings({ brandColor: event.target.value })} className="size-6 cursor-pointer rounded border-0 bg-transparent p-0" />Brand color <span className="ml-auto font-mono text-[11px] text-slate-400">{brandColor.toUpperCase()}</span></label>
-            <button type="button" onClick={applyBrandColorToAllSlides} className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:shadow-md active:scale-[0.98]"><Check className="size-3.5" />Apply Brand Color to All Slides</button>
+            <button type="button" onClick={applyBrandColorToAllSlides} className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:shadow-md active:scale-[0.98]"><Check className="size-3.5" />Use Brand Color on Every Device Frame</button>
           </section>
         </aside>
       </div>

@@ -1,8 +1,9 @@
 import type { StorePreset } from "@/src/config/storePresets";
-import type { BackgroundAssetDefinition, BackgroundDefinition, BackgroundShapeDefinition, BackgroundShapeStyle, DeviceLayerDefinition, FloatingWidgetDefinition, SlideBackgroundAccent, StickerDefinition, TaskCardDefinition, TemplateDefinition } from "@/src/renderer/templates";
+import type { BackgroundAssetDefinition, BackgroundDefinition, BackgroundShapeDefinition, BackgroundShapeStyle, DeviceLayerDefinition, FloatingWidgetDefinition, SlideBackgroundAccent, ScreenshotPanelDefinition, StickerDefinition, TaskCardDefinition, TemplateDefinition } from "@/src/renderer/templates";
 
 export type SlideData = {
   image: Blob | HTMLImageElement | HTMLCanvasElement;
+  relatedScreenshots?: (Blob | HTMLImageElement | HTMLCanvasElement)[];
   headline: string;
   subheadline?: string;
   badgeText?: string;
@@ -29,10 +30,12 @@ export type RenderOptions = {
   background?: TemplateDefinition["background"];
   backgroundAccent?: SlideBackgroundAccent;
   showDecorativeLayers?: boolean;
+  onTextOverflow?: (message: string) => void;
 };
 
 type ImageLike = HTMLImageElement | HTMLCanvasElement;
 const backgroundAssetCache = new Map<string, Promise<HTMLImageElement>>();
+const screenshotImageCache = new WeakMap<Blob, Promise<HTMLImageElement>>();
 
 function loadBackgroundAsset(src: string): Promise<HTMLImageElement> {
   const cached = backgroundAssetCache.get(src);
@@ -64,33 +67,15 @@ async function drawBackgroundAsset(ctx: CanvasRenderingContext2D, asset: Backgro
   offscreen.height = canvasHeight;
   const offscreenContext = offscreen.getContext("2d");
   if (!offscreenContext) return;
-  const focusBackground = asset.src === "/assets/fitness-focus-background.jpg";
-  const maxWidth = canvasWidth * (focusBackground ? 1 : 0.9);
-  const maxHeight = canvasHeight * (focusBackground ? 1 : 0.82);
-  const scale = focusBackground
-    ? Math.max(maxWidth / image.naturalWidth, maxHeight / image.naturalHeight)
-    : Math.min(maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
+  const maxWidth = canvasWidth * 0.9;
+  const maxHeight = canvasHeight * 0.82;
+  const scale = Math.min(maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
   const imageWidth = image.naturalWidth * scale;
   const imageHeight = image.naturalHeight * scale;
-  const centerX = canvasWidth * (focusBackground ? 0.5 : 0.53);
+  const centerX = canvasWidth * 0.53;
   const x = centerX - imageWidth / 2;
-  const y = focusBackground ? (canvasHeight - imageHeight) / 2 : canvasHeight * 0.11;
+  const y = canvasHeight * 0.11;
   offscreenContext.drawImage(image, x, y, imageWidth, imageHeight);
-
-  if (focusBackground) {
-    offscreenContext.globalCompositeOperation = "source-atop";
-    const tint = offscreenContext.createLinearGradient(0, 0, canvasWidth, canvasHeight);
-    tint.addColorStop(0, "rgba(24, 39, 27, 0.38)");
-    tint.addColorStop(0.52, "rgba(3, 7, 5, 0.24)");
-    tint.addColorStop(1, "rgba(2, 5, 3, 0.46)");
-    offscreenContext.fillStyle = tint;
-    offscreenContext.fillRect(0, 0, canvasWidth, canvasHeight);
-    ctx.save();
-    ctx.globalAlpha = asset.opacity ?? 1;
-    ctx.drawImage(offscreen, 0, 0);
-    ctx.restore();
-    return;
-  }
 
   // Fade the silhouette toward the headline area and slide edges so it reads as atmosphere.
   offscreenContext.globalCompositeOperation = "destination-in";
@@ -148,16 +133,21 @@ function drawTemplateStickers(
 
 function loadImage(source: SlideData["image"]): Promise<{ image: ImageLike; dispose: () => void }> {
   if (!(source instanceof Blob)) return Promise.resolve({ image: source, dispose: () => undefined });
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(source);
-    const image = new Image();
-    image.onload = () => resolve({ image, dispose: () => URL.revokeObjectURL(url) });
-    image.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("The screenshot could not be decoded as an image."));
-    };
-    image.src = url;
-  });
+  let pending = screenshotImageCache.get(source);
+  if (!pending) {
+    pending = new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(source);
+      const image = new Image();
+      image.onload = () => { URL.revokeObjectURL(url); resolve(image); };
+      image.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("The screenshot could not be decoded as an image."));
+      };
+      image.src = url;
+    });
+    screenshotImageCache.set(source, pending);
+  }
+  return pending.then((image) => ({ image, dispose: () => undefined }));
 }
 
 function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
@@ -225,23 +215,22 @@ async function drawText(
   alignment: CanvasTextAlign = layer.align,
   colorOverride?: string,
   backgroundColors: string[] = [],
+  onOverflow?: (message: string) => void,
 ): Promise<void> {
   if (!text.trim()) return;
   const x = (layer.x / 100) * canvasWidth;
   const y = (layer.y / 100) * canvasHeight;
   const width = (layer.width / 100) * canvasWidth;
   const height = (layer.height / 100) * canvasHeight;
-  const fontSize = (layer.fontSize / 100) * Math.min(canvasWidth, canvasHeight);
-  const lineHeight = fontSize * layer.lineHeight;
+  const baseFontSize = (layer.fontSize / 100) * Math.min(canvasWidth, canvasHeight);
+  const minimumFontSize = Math.max(12, baseFontSize * 0.62);
   const left = alignment === "center" ? x - width / 2 : alignment === "right" ? x - width : x;
   const top = y;
 
   ctx.save();
   ctx.beginPath();
-  ctx.rect(left, top, width, height);
+  ctx.rect(Math.max(0, left), Math.max(0, top), Math.min(width, canvasWidth - Math.max(0, left)), Math.min(height, canvasHeight - Math.max(0, top)));
   ctx.clip();
-  await document.fonts.load(`${layer.fontWeight} ${fontSize}px "${family}"`);
-  ctx.font = `${layer.fontWeight} ${fontSize}px "${family}"`;
   ctx.textAlign = alignment;
   ctx.textBaseline = "top";
   const baseColor = colorOverride ?? layer.color;
@@ -249,28 +238,40 @@ async function drawText(
     contrastRatio(luminance(layer.accentColor!), luminance(backgroundColor)) >= 3,
   ) ? layer.accentColor : baseColor;
   ctx.fillStyle = baseColor;
-  const words = text.trim().split(/\s+/);
-  const lines: string[] = [];
-  let line = "";
-  for (const word of words) {
-    // Split unusually long words so they remain within the layer's width.
-    let remaining = word;
-    while (ctx.measureText(remaining).width > width && remaining.length > 1) {
-      let splitAt = 1;
-      while (splitAt < remaining.length && ctx.measureText(remaining.slice(0, splitAt + 1)).width <= width) splitAt += 1;
-      const segment = remaining.slice(0, splitAt);
-      if (line) { lines.push(line); line = ""; }
-      lines.push(segment);
-      remaining = remaining.slice(splitAt);
+  const maxLines = Math.max(1, layer.maxLines ?? Math.floor(height / Math.max(1, baseFontSize * layer.lineHeight)));
+  const makeLines = (fontSize: number) => {
+    ctx.font = `${layer.fontWeight} ${fontSize}px "${family}", sans-serif`;
+    const lines: string[] = [];
+    let line = "";
+    for (const word of text.trim().split(/\s+/)) {
+      let remaining = word;
+      while (ctx.measureText(remaining).width > width && remaining.length > 1) {
+        let splitAt = 1;
+        while (splitAt < remaining.length && ctx.measureText(remaining.slice(0, splitAt + 1)).width <= width) splitAt += 1;
+        if (line) { lines.push(line); line = ""; }
+        lines.push(remaining.slice(0, splitAt));
+        remaining = remaining.slice(splitAt);
+      }
+      const candidate = line ? `${line} ${remaining}` : remaining;
+      if (line && ctx.measureText(candidate).width > width) {
+        lines.push(line);
+        line = remaining;
+      } else line = candidate;
     }
-    const candidate = line ? `${line} ${remaining}` : remaining;
-    if (line && ctx.measureText(candidate).width > width) {
-      lines.push(line);
-      line = remaining;
-    } else line = candidate;
+    if (line) lines.push(line);
+    return lines;
+  };
+  let fontSize = baseFontSize;
+  let visibleLines = makeLines(fontSize);
+  while (fontSize > minimumFontSize && (visibleLines.length > maxLines || visibleLines.length * fontSize * layer.lineHeight > height)) {
+    fontSize = Math.max(minimumFontSize, fontSize * 0.94);
+    visibleLines = makeLines(fontSize);
   }
-  if (line) lines.push(line);
-  const visibleLines = lines.slice(0, layer.maxLines ?? lines.length);
+  const lineHeight = fontSize * layer.lineHeight;
+  const fits = visibleLines.length <= maxLines && visibleLines.length * lineHeight <= height;
+  if (!fits) onOverflow?.("Text is too long for this template. Shorten the headline or subheadline before exporting.");
+  visibleLines = visibleLines.slice(0, maxLines);
+  ctx.font = `${layer.fontWeight} ${fontSize}px "${family}", sans-serif`;
   visibleLines.forEach((value, index) => {
     const lineY = y + index * lineHeight;
     if (!layer.accentColor || !layer.accentWords?.length) {
@@ -509,6 +510,13 @@ function drawNativeTemplateDecoration(ctx: CanvasRenderingContext2D, decoration:
     glow.addColorStop(0, "rgba(0, 136, 255, 0.28)");
     glow.addColorStop(0.46, "rgba(0, 136, 255, 0.12)");
     glow.addColorStop(1, "rgba(0, 136, 255, 0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, width, height);
+  } else if (decoration === "fitness-cinematic") {
+    const glow = ctx.createRadialGradient(width * 0.47, height * 0.52, unit * 0.05, width * 0.47, height * 0.52, unit * 0.72);
+    glow.addColorStop(0, "rgba(119, 139, 78, 0.19)");
+    glow.addColorStop(0.55, "rgba(52, 67, 39, 0.10)");
+    glow.addColorStop(1, "rgba(0, 0, 0, 0)");
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, width, height);
   } else if (decoration === "edu-pastel-waves") {
@@ -848,7 +856,7 @@ async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: Template
 }
 
 async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: FloatingWidgetDefinition | undefined, items: { title: string; subtitle: string }[], canvasWidth: number, canvasHeight: number, family: string) {
-  if (!widget) return;
+  if (!widget || !items.some((item) => item.title.trim() || item.subtitle.trim()) && !widget.eyebrow.trim()) return;
   const x = (widget.x / 100) * canvasWidth;
   const y = (widget.y / 100) * canvasHeight;
   const width = (widget.width / 100) * canvasWidth;
@@ -910,6 +918,47 @@ function drawScreenshot(ctx: CanvasRenderingContext2D, image: ImageLike, x: numb
   const drawWidth = imageWidth * scale;
   const drawHeight = imageHeight * scale;
   ctx.drawImage(image, screenX + (screenWidth - drawWidth) / 2, screenY + (screenHeight - drawHeight) / 2, drawWidth, drawHeight);
+  ctx.restore();
+}
+
+function drawScreenshotPanel(ctx: CanvasRenderingContext2D, image: ImageLike, panel: ScreenshotPanelDefinition, canvasWidth: number, canvasHeight: number) {
+  const x = (panel.x / 100) * canvasWidth;
+  const y = (panel.y / 100) * canvasHeight;
+  const width = (panel.width / 100) * canvasWidth;
+  const height = (panel.height / 100) * canvasHeight;
+  const rotation = ((panel.rotation ?? 0) * Math.PI) / 180;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, canvasWidth, canvasHeight);
+  ctx.clip();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+  const left = -width / 2;
+  const top = -height / 2;
+  ctx.shadowColor = "rgba(34, 26, 20, 0.16)";
+  ctx.shadowBlur = Math.max(3, Math.min(canvasWidth, canvasHeight) * 0.012);
+  ctx.shadowOffsetY = Math.min(canvasHeight * 0.008, 12);
+  ctx.fillStyle = "#fffdf9";
+  roundedRect(ctx, left - 4, top - 4, width + 8, height + 8, Math.max(0, (panel.radius / 100) * canvasWidth));
+  ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.save();
+  roundedRect(ctx, left, top, width, height, Math.max(0, (panel.radius / 100) * canvasWidth));
+  ctx.clip();
+  const imageWidth = image instanceof HTMLCanvasElement ? image.width : image.naturalWidth;
+  const imageHeight = image instanceof HTMLCanvasElement ? image.height : image.naturalHeight;
+  if (!imageWidth || !imageHeight) throw new Error("A collage screenshot has no usable image dimensions.");
+  const scale = boxFitScale(imageWidth, imageHeight, width, height, panel.fit);
+  const drawWidth = imageWidth * scale;
+  const drawHeight = imageHeight * scale;
+  ctx.drawImage(image, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+  ctx.restore();
+  if (panel.borderColor) {
+    ctx.strokeStyle = panel.borderColor;
+    ctx.lineWidth = Math.max(1, canvasWidth * 0.0015);
+    roundedRect(ctx, left, top, width, height, Math.max(0, (panel.radius / 100) * canvasWidth));
+    ctx.stroke();
+  }
   ctx.restore();
 }
 
@@ -983,10 +1032,16 @@ export async function renderSlide(
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   let loaded: Awaited<ReturnType<typeof loadImage>> | undefined;
+  let loadedPanels: { definition: ScreenshotPanelDefinition; image: ImageLike; dispose: () => void }[] = [];
   let loadedStickers: { definition: StickerDefinition; image: HTMLImageElement }[] = [];
   try {
-    const [screenshotAsset, stickerAssets, backgroundAsset] = await Promise.all([
+    const [screenshotAsset, panelAssets, stickerAssets, backgroundAsset] = await Promise.all([
       loadImage(slide.image),
+      Promise.all((template.screenshotPanels ?? []).map(async (definition) => {
+        const source = slide.relatedScreenshots?.[definition.sourceSlide ?? 0] ?? slide.image;
+        const loadedPanel = await loadImage(source);
+        return { definition, ...loadedPanel };
+      })),
       Promise.all((template.stickers ?? []).map(async (definition) => {
         try {
           return { definition, image: await loadBackgroundAsset(definition.src) };
@@ -997,6 +1052,7 @@ export async function renderSlide(
       template.backgroundAsset ? loadBackgroundAsset(template.backgroundAsset.src).catch(() => undefined) : Promise.resolve(undefined),
     ]);
     loaded = screenshotAsset;
+    loadedPanels = panelAssets;
     loadedStickers = stickerAssets.filter((sticker): sticker is { definition: StickerDefinition; image: HTMLImageElement } => Boolean(sticker));
     const family = slide.fontFamily ?? "Arial, sans-serif";
     const headlineFamily = slide.headlineFontFamily ?? template.headlineFontFamily ?? family;
@@ -1036,13 +1092,19 @@ export async function renderSlide(
     await drawBackgroundAsset(ctx, template.backgroundAsset, canvas.width, canvas.height, backgroundAsset);
     drawHeaderPanel(ctx, template, canvas.width, canvas.height);
     drawTemplateStickers(ctx, loadedStickers, canvas.width, canvas.height);
-
     const showDecorativeLayers = options.showDecorativeLayers !== false;
-    if (showDecorativeLayers && template.badge && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false)) {
-      await drawBadge(ctx, slide.badgeText ?? template.badge.text, template, canvas.width, canvas.height, slide.headlineFontFamily ?? family);
+    if (showDecorativeLayers) {
+      for (const panel of loadedPanels) drawScreenshotPanel(ctx, panel.image, panel.definition, canvas.width, canvas.height);
     }
-    const laurelBadgeVisible = Boolean(template.badge?.laurel && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false));
-    const showRatingBadge = showDecorativeLayers && !laurelBadgeVisible && (slide.showRatingBadge ?? Boolean(template.defaultRatingBadge));
+
+    const badgeText = slide.badgeText ?? "";
+    if (showDecorativeLayers && template.badge && badgeText.trim() && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false)) {
+      await drawBadge(ctx, badgeText, template, canvas.width, canvas.height, slide.headlineFontFamily ?? family);
+    }
+    const laurelBadgeVisible = Boolean(template.badge?.laurel && badgeText.trim() && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false));
+    const rating = slide.ratingBadge;
+    const hasRatingContent = Boolean(rating && (rating.score.trim() || rating.subtitle.trim() || rating.stars > 0));
+    const showRatingBadge = showDecorativeLayers && !laurelBadgeVisible && slide.showRatingBadge === true && hasRatingContent;
     const pillBadgeBottom = template.badge && !template.badge.laurel ? template.badge.y + template.badge.height + 0.5 : 0;
     const editorialFashion = template.id === "fashion-editorial-grid";
     const academicEducation = template.id === "edu-flashcard-stack";
@@ -1055,13 +1117,12 @@ export async function renderSlide(
       y: Math.max(template.subheadline.y, headlineLayer.y + headlineLayer.height + 0.5),
     };
     if (showRatingBadge) {
-      const ratingBadge = slide.ratingBadge ?? template.defaultRatingBadge ?? { score: "4.9", stars: 5, subtitle: "Apps We Love" };
       const darkBackground = luminance(averageColor(contrastBackgrounds)) < 0.35;
-      await drawRatingBadge(ctx, ratingBadge, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, 50, (editorialFashion || academicEducation) ? 0.72 : 1);
+      await drawRatingBadge(ctx, rating!, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, 50, (editorialFashion || academicEducation) ? 0.72 : 1);
     }
     const headlineText = slide.headline === "Your Main Headline" ? template.defaultHeadline ?? slide.headline : slide.headline;
-    await drawText(ctx, headlineText, headlineLayer, canvas.width, canvas.height, headlineFamily, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
-    await drawText(ctx, slide.subheadline ?? "", subheadlineLayer, canvas.width, canvas.height, subheadlineFamily, slide.textAlignment, slide.subheadlineColor ?? (template.subheadline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
+    await drawText(ctx, headlineText, headlineLayer, canvas.width, canvas.height, headlineFamily, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds, options.onTextOverflow);
+    await drawText(ctx, slide.subheadline ?? "", subheadlineLayer, canvas.width, canvas.height, subheadlineFamily, slide.textAlignment, slide.subheadlineColor ?? (template.subheadline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds, options.onTextOverflow);
 
     const defaultItems = template.taskCards?.map((item) => ({ subtitle: item.time, title: item.title, detail: item.detail }))
       ?? template.routineRows?.rows.map((item) => ({ subtitle: item.time, title: item.title })) ?? [];
@@ -1140,6 +1201,7 @@ export async function renderSlide(
     return canvas;
   } finally {
     loaded?.dispose();
+    loadedPanels.forEach((panel) => panel.dispose());
     ctx.restore();
   }
 }
