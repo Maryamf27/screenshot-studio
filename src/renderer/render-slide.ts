@@ -227,20 +227,31 @@ async function drawText(
   colorOverride?: string,
   backgroundColors: string[] = [],
   onOverflow?: (message: string) => void,
+  maxTextWidth?: number,
 ): Promise<void> {
   if (!text.trim()) return;
   const x = (layer.x / 100) * canvasWidth;
   const y = (layer.y / 100) * canvasHeight;
-  const width = (layer.width / 100) * canvasWidth;
+  const width = Math.min((layer.width / 100) * canvasWidth, maxTextWidth ?? Number.POSITIVE_INFINITY);
   const height = (layer.height / 100) * canvasHeight;
   const baseFontSize = (layer.fontSize / 100) * Math.min(canvasWidth, canvasHeight);
   const minimumFontSize = Math.max(12, baseFontSize * 0.62);
-  const left = alignment === "center" ? x - width / 2 : alignment === "right" ? x - width : x;
+  // Template x is an alignment anchor: centered templates store the center,
+  // while left/right aligned templates store the corresponding box edge.
+  // Keep that template box fixed when the user changes alignment so the copy
+  // aligns inside it instead of shifting the clipping region in the opposite direction.
+  const initialLeft = layer.align === "center" ? x - width / 2 : layer.align === "right" ? x - width : x;
+  const left = maxTextWidth
+    ? Math.min(Math.max(initialLeft, canvasWidth * 0.05), canvasWidth - width - canvasWidth * 0.1)
+    : initialLeft;
+  const textX = alignment === "center" ? left + width / 2 : alignment === "right" ? left + width : left;
   const top = y;
 
   ctx.save();
   ctx.beginPath();
-  ctx.rect(Math.max(0, left), Math.max(0, top), Math.min(width, canvasWidth - Math.max(0, left)), Math.min(height, canvasHeight - Math.max(0, top)));
+  const clipLeft = Math.max(0, left);
+  const clipTop = Math.max(0, top);
+  ctx.rect(clipLeft, clipTop, Math.max(0, Math.min(width - (clipLeft - left), canvasWidth - clipLeft)), Math.max(0, Math.min(height, canvasHeight - clipTop)));
   ctx.clip();
   ctx.textAlign = alignment;
   ctx.textBaseline = "top";
@@ -278,6 +289,10 @@ async function drawText(
     fontSize = Math.max(minimumFontSize, fontSize * 0.94);
     visibleLines = makeLines(fontSize);
   }
+  while (visibleLines.length > 3 && fontSize > minimumFontSize) {
+    fontSize = Math.max(minimumFontSize, fontSize * 0.94);
+    visibleLines = makeLines(fontSize);
+  }
   const lineHeight = fontSize * layer.lineHeight;
   const fits = visibleLines.length <= maxLines && visibleLines.length * lineHeight <= height;
   if (!fits) onOverflow?.("Text is too long for this template. Shorten the headline or subheadline before exporting.");
@@ -287,13 +302,13 @@ async function drawText(
     const lineY = y + index * lineHeight;
     if (!layer.accentColor || !layer.accentWords?.length) {
       ctx.fillStyle = baseColor;
-      ctx.fillText(value, x, lineY, width);
+      ctx.fillText(value, textX, lineY, width);
       return;
     }
     const parts = value.split(" ");
     const spaceWidth = ctx.measureText(" ").width;
     const lineWidth = ctx.measureText(value).width;
-    let cursorX = alignment === "center" ? x - lineWidth / 2 : alignment === "right" ? x - lineWidth : x;
+    let cursorX = alignment === "center" ? textX - lineWidth / 2 : alignment === "right" ? textX - lineWidth : textX;
     ctx.textAlign = "left";
     for (const part of parts) {
       const normalized = part.replace(/[^\p{L}\p{N}]/gu, "").toLowerCase();
@@ -1129,8 +1144,8 @@ export async function renderSlide(
     }
     const headlineText = slide.headline === "Your Main Headline" ? template.defaultHeadline ?? slide.headline : slide.headline;
     const subheadlineText = slide.subheadline?.trim() ? slide.subheadline : template.defaultSubheadline ?? "";
-    await drawText(ctx, headlineText, headlineLayer, canvas.width, canvas.height, headlineFamily, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds, options.onTextOverflow);
-    await drawText(ctx, subheadlineText, subheadlineLayer, canvas.width, canvas.height, subheadlineFamily, slide.textAlignment, slide.subheadlineColor ?? (template.subheadline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds, options.onTextOverflow);
+    await drawText(ctx, headlineText, headlineLayer, canvas.width, canvas.height, headlineFamily, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds, options.onTextOverflow, canvas.width * 0.85);
+    await drawText(ctx, subheadlineText, subheadlineLayer, canvas.width, canvas.height, subheadlineFamily, slide.textAlignment, slide.subheadlineColor ?? (template.subheadline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds, options.onTextOverflow, canvas.width * 0.85);
 
     const defaultItems = template.taskCards?.map((item) => ({ subtitle: item.time, title: item.title, detail: item.detail }))
       ?? template.routineRows?.rows.map((item) => ({ subtitle: item.time, title: item.title })) ?? [];
