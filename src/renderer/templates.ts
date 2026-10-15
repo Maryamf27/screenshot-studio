@@ -17,7 +17,7 @@ export type TextLayerDefinition = {
 };
 
 export type BackgroundDefinition = { type: "solid" | "gradient"; start: string; end?: string; angle?: number; continuous?: boolean };
-export type BackgroundAssetDefinition = { src: string; opacity?: number };
+export type BackgroundAssetDefinition = { src: string; opacity?: number; fit?: "contain" | "cover" };
 export type StickerDefinition = { src: string; x: number; y: number; w: number; rotation?: number };
 export type ScreenshotLayerDefinition = { x: number; y: number; width: number; height: number; radius: number; fit: "contain" | "cover" };
 export type ScreenshotPanelDefinition = {
@@ -79,6 +79,7 @@ export type TemplateDefinition = {
   nativeDecoration?: "fashion-festive-promo" | "fitness-neon-dark" | "fitness-cinematic" | "edu-pastel-waves";
   backgroundAsset?: BackgroundAssetDefinition;
   defaultHeadline?: string;
+  defaultSubheadline?: string;
   headlineFontFamily?: string;
   stickers?: StickerDefinition[];
   screenshotPanels?: ScreenshotPanelDefinition[];
@@ -192,8 +193,8 @@ const categoryTemplates: TemplateDefinition[] = [
   { ...splitTemplate, id: "fashion-panoramic-split", category: "Fashion", label: "Panoramic Split", style: "Fashion · continuous panorama", description: "A tilted phone crosses a soft, continuous fashion canvas.", background: { type: "gradient", start: "#F5E7E3", end: "#E5D7CF", angle: 135, continuous: true }, headline: { ...splitTemplate.headline, y: 6, color: "#3D2825", accentColor: "#A95043" }, subheadline: { ...splitTemplate.subheadline, y: 16, color: "#775B55" }, screenshot: { ...splitTemplate.screenshot, x: 51, y: 48, width: 78, height: 72 }, device: { ...splitTemplate.device, rotation: -12, rimColor: "#C49380" }, bgShapeStyle: "solid" },
   { ...awardTemplate, id: "fashion-editorial-grid", category: "Fashion", label: "Editorial Collage", style: "Fashion · editorial contact sheet", description: "A composed fashion campaign pairs an oversized app preview with two real screenshot panels and editable editorial copy.", defaultHeadline: "Find Your Signature Style", headlineFontFamily: "Georgia", screenshotPanels: [{ sourceSlide: 1, x: 17, y: 43, width: 20, height: 29, radius: 1.2, fit: "contain", rotation: -2, borderColor: "#D8C9BD" }, { sourceSlide: 2, x: 18, y: 75, width: 20, height: 29, radius: 1.2, fit: "contain", rotation: 2, borderColor: "#D8C9BD" }], stickers: [{ src: "/assets/fashion-sticker-sparkle.svg", x: 41, y: 43, w: 7 }, { src: "/assets/fashion-sticker-handbag.svg", x: 43, y: 76, w: 10 }], background: { type: "solid", start: "#F3EAE2" }, badge: undefined, headline: { ...awardTemplate.headline, y: 7, height: 10, width: 92, color: "#35291F", fontWeight: 500, fontSize: 6.1, lineHeight: 1.02, maxLines: 2 }, subheadline: { ...awardTemplate.subheadline, y: 18, height: 4, width: 84, color: "#78685A", fontSize: 2.35 }, screenshot: { ...awardTemplate.screenshot, x: 70, y: 54, width: 54, height: 69, radius: 2.5 }, device: { ...awardTemplate.device, color: "#F8F4EF", rimColor: "#C9B9AB", rimWidth: 0.16, glow: false }, bgShapeStyle: "solid", taskCards: undefined },
   { ...widgetTemplate, id: "fashion-promo-block", category: "Fashion", label: "Promo Block", style: "Fashion · bold campaign", description: "A high impact campaign banner leads into the product screenshot.", background: { type: "solid", start: "#F5C84C" }, headerPanel: { x: 0, y: 0, width: 100, height: 31, radius: 0, fillColor: "#E9402B" }, headline: { ...widgetTemplate.headline, y: 6, color: "#FFFFFF", fontSize: 7.2 }, subheadline: { ...widgetTemplate.subheadline, y: 17, color: "#FFF1D7" }, screenshot: { ...widgetTemplate.screenshot, y: 42, height: 60 }, floatingWidget: undefined },
-  { ...splitTemplate, id: "fitness-dark-neon", category: "Fitness", nativeDecoration: "fitness-neon-dark", backgroundAsset: { src: "/assets/fitness-athlete-silhouette.svg", opacity: 0.3 }, label: "Dark Neon", style: "Fitness · electric cyan", description: "A charcoal training layout with athletic silhouette art and an electric cyan device edge.", defaultHeadline: "Train With Purpose", background: { type: "gradient", start: "#0A0E17", end: "#161F33", angle: 135 }, badge: undefined, headline: { ...splitTemplate.headline, y: 12, color: "#FFFFFF", accentColor: "#35E5F2" }, subheadline: { ...splitTemplate.subheadline, y: 22, color: "#B7D6DA" }, screenshot: { ...splitTemplate.screenshot, y: 38, height: 67 }, device: { ...splitTemplate.device, glow: true, rimColor: "#00A3FF", rimWidth: 0.4 }, bgShapeStyle: "solid" },
-  { ...awardTemplate, id: "fitness-neon-dark", category: "Fitness", nativeDecoration: "fitness-cinematic", backgroundAsset: { src: "/assets/fitness-cinematic-athlete.svg", opacity: 0.72 }, label: "Fitness & Bodybuilding", style: "Cinematic · dark olive", description: "A bold athletic silhouette, deep charcoal canvas, and restrained olive accents frame a large app preview.", defaultHeadline: "Move With Purpose", background: { type: "gradient", start: "#070A08", end: "#171D15", angle: 135 }, bgShapeStyle: "solid", badge: undefined, headline: { ...awardTemplate.headline, x: 8, y: 13, height: 11, width: 60, fontSize: 6.6, fontWeight: 800, align: "left", color: "#F2F4EF", accentColor: "#A3AD79" }, subheadline: { ...awardTemplate.subheadline, x: 8, y: 26, width: 55, align: "left", height: 6, color: "#B8C1B4" }, taskCards: undefined, screenshot: { ...awardTemplate.screenshot, x: 75, y: 50, width: 45, height: 67 }, device: { ...awardTemplate.device, color: "#090D0A", glow: false, rimColor: "#78845E", rimWidth: 0.25 }, floatingWidget: undefined },
+  { ...splitTemplate, id: "fitness-dark-neon", category: "Fitness", nativeDecoration: "fitness-neon-dark", label: "Dark Neon", style: "Fitness · electric cyan", description: "A charcoal training layout with athletic photography and an electric cyan device edge.", defaultHeadline: "Train With Purpose", background: { type: "gradient", start: "#0A0E17", end: "#161F33", angle: 135 }, badge: undefined, headline: { ...splitTemplate.headline, y: 12, color: "#FFFFFF", accentColor: "#35E5F2" }, subheadline: { ...splitTemplate.subheadline, y: 22, color: "#B7D6DA" }, screenshot: { ...splitTemplate.screenshot, y: 38, height: 67 }, device: { ...splitTemplate.device, glow: true, rimColor: "#00A3FF", rimWidth: 0.4 }, bgShapeStyle: "solid" },
+  { ...awardTemplate, id: "fitness-neon-dark", category: "Fitness", nativeDecoration: "fitness-cinematic", label: "Fitness & Bodybuilding", style: "Cinematic · dark olive", description: "Athletic photography, deep charcoal, and restrained olive accents frame the app preview.", defaultHeadline: "Move With Purpose", background: { type: "gradient", start: "#070A08", end: "#171D15", angle: 135 }, bgShapeStyle: "solid", badge: undefined, headline: { ...awardTemplate.headline, x: 8, y: 13, height: 11, width: 60, fontSize: 6.6, fontWeight: 800, align: "left", color: "#F2F4EF", accentColor: "#A3AD79" }, subheadline: { ...awardTemplate.subheadline, x: 8, y: 26, width: 55, align: "left", height: 6, color: "#B8C1B4" }, taskCards: undefined, screenshot: { ...awardTemplate.screenshot, x: 75, y: 50, width: 45, height: 67 }, device: { ...awardTemplate.device, color: "#090D0A", glow: false, rimColor: "#78845E", rimWidth: 0.25 }, floatingWidget: undefined },
   { ...awardTemplate, id: "fitness-log-cards", category: "Fitness", label: "Workout Log Cards", style: "Fitness · exercise checklist", description: "Exercise checkoff cards float above a strong phone preview.", background: { type: "solid", start: "#E8F6F5" }, headline: { ...awardTemplate.headline, color: "#103B3B" }, taskCards: (awardTemplate.taskCards ?? []).slice(0, 2).map((card, i) => ({ ...card, y: 23 + i * 10, fillColor: "#FFFFFF", accentColor: "#0EAAA4", textColor: "#163F3D" })), screenshot: { ...awardTemplate.screenshot, y: 47, height: 56 }, badge: undefined },
   { ...widgetTemplate, id: "edu-flashcard-stack", category: "Education", label: "Academic Sticker Stack", style: "Education · premium ivory study", description: "Academic sticker art frames editable course copy and a clean device preview.", background: { type: "gradient", start: "#FBF9F6", end: "#F1EADF", angle: 135 }, headlineFontFamily: "Georgia", stickers: [{ src: "/assets/education-sticker-cap.png", x: 9, y: 40, w: 22, rotation: -13 }, { src: "/assets/education-sticker-books.png", x: 91, y: 41, w: 23, rotation: 10 }, { src: "/assets/education-sticker-pen.png", x: 10, y: 73, w: 20, rotation: 14 }, { src: "/assets/education-sticker-certificate.png", x: 90, y: 76, w: 23, rotation: -9 }], bgShapes: undefined, badge: undefined, headline: { ...widgetTemplate.headline, y: 12, height: 10, fontSize: 5.8, fontWeight: 500, lineHeight: 1.08, color: "#202B3B", maxLines: 2 }, subheadline: { ...widgetTemplate.subheadline, y: 23, height: 4, color: "#64748B", fontSize: 2.3 }, screenshot: { ...widgetTemplate.screenshot, y: 42, height: 62 }, floatingWidget: undefined, bgShapeStyle: "solid" },
   { ...widgetTemplate, id: "edu-pastel-waves", category: "Education", nativeDecoration: "edu-pastel-waves", label: "Pastel Waves & Cards", style: "Education · layered study cards", description: "Soft blue vector waves and stacked flashcards frame the learning app preview.", background: { type: "solid", start: "#EBF3FE" }, bgShapeStyle: "solid", headline: { ...widgetTemplate.headline, color: "#163B6B" }, subheadline: { ...widgetTemplate.subheadline, color: "#436A96" }, screenshot: { ...widgetTemplate.screenshot, y: 31, height: 70 }, floatingWidget: undefined },
@@ -202,7 +203,41 @@ const categoryTemplates: TemplateDefinition[] = [
   { ...splitTemplate, id: "prod-split-bleed", category: "Productivity", label: "Split Bleed", style: "Productivity · developer dark mode", description: "An upper caption gives way to a dark developer screen bleeding off the lower edge.", background: { type: "gradient", start: "#10141E", end: "#202A38", angle: 135 }, headline: { ...splitTemplate.headline, y: 6, color: "#F8FAFC", accentColor: "#64D9A5" }, subheadline: { ...splitTemplate.subheadline, y: 18, color: "#AAB8C8" }, screenshot: { ...splitTemplate.screenshot, y: 35, height: 78 }, device: { ...splitTemplate.device, color: "#090D16", rimColor: "#394B5C" } },
 ];
 
-export const templates: readonly TemplateDefinition[] = [...baseTemplates, ...additionalTemplates, ...categoryTemplates];
+const categoryCopy: Record<TemplateCategory, { headline: string; subheadline: string }> = {
+  General: { headline: "A Better Way to Get Things Done", subheadline: "Everything you need, thoughtfully brought together." },
+  Fashion: { headline: "Find Your Signature Style", subheadline: "Discover pieces that feel entirely your own." },
+  Fitness: { headline: "Move With Purpose", subheadline: "Build a routine that works for you." },
+  Education: { headline: "Make Every Lesson Count", subheadline: "Learn at your pace, one idea at a time." },
+  Productivity: { headline: "Make Space for Focus", subheadline: "Bring your plans and priorities into view." },
+};
+
+// Keep defaults present for every layout so a new upload never previews with placeholder copy.
+const categoryBackgrounds: Record<TemplateCategory, string> = {
+  General: "/assets/general-stone-texture.jpg",
+  Fashion: "/assets/fashion-editorial-photo.jpg",
+  Fitness: "/assets/fitness-gym-photo.jpg",
+  Education: "/assets/education-library-photo.jpg",
+  Productivity: "/assets/productivity-office-photo.jpg",
+};
+
+function backgroundOpacity(template: TemplateDefinition) {
+  if (template.category === "Fitness") return template.id === "fitness-log-cards" ? 0.12 : 0.4;
+  if (template.category === "Fashion") {
+    if (template.id === "fashion-panoramic-split") return 0.52;
+    if (template.id === "fashion-editorial-grid") return 0.38;
+    return 0.12;
+  }
+  if (template.category === "Education") return template.id === "edu-flashcard-stack" ? 0.14 : 0.18;
+  if (template.category === "Productivity") return template.id === "prod-minimal-widget" ? 0.3 : 0.16;
+  return 0.14;
+}
+
+export const templates: readonly TemplateDefinition[] = [...baseTemplates, ...additionalTemplates, ...categoryTemplates].map((template) => ({
+  ...template,
+  backgroundAsset: { src: categoryBackgrounds[template.category], opacity: backgroundOpacity(template), fit: "cover" },
+  defaultHeadline: template.defaultHeadline ?? categoryCopy[template.category].headline,
+  defaultSubheadline: template.defaultSubheadline ?? categoryCopy[template.category].subheadline,
+}));
 export const templateCategories: readonly TemplateCategory[] = Array.from(new Set(templates.map((template) => template.category)));
 
 const legacyTemplateIds: Record<string, TemplateId> = {

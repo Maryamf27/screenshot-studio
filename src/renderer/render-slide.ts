@@ -62,6 +62,17 @@ async function drawBackgroundAsset(ctx: CanvasRenderingContext2D, asset: Backgro
     }
   }
 
+  if (asset.fit === "cover") {
+    const scale = Math.max(canvasWidth / image.naturalWidth, canvasHeight / image.naturalHeight);
+    const imageWidth = image.naturalWidth * scale;
+    const imageHeight = image.naturalHeight * scale;
+    ctx.save();
+    ctx.globalAlpha = asset.opacity ?? 1;
+    ctx.drawImage(image, (canvasWidth - imageWidth) / 2, (canvasHeight - imageHeight) / 2, imageWidth, imageHeight);
+    ctx.restore();
+    return;
+  }
+
   const offscreen = document.createElement("canvas");
   offscreen.width = canvasWidth;
   offscreen.height = canvasHeight;
@@ -1091,11 +1102,7 @@ export async function renderSlide(
     drawNativeTemplateDecoration(ctx, template.nativeDecoration, canvas.width, canvas.height);
     await drawBackgroundAsset(ctx, template.backgroundAsset, canvas.width, canvas.height, backgroundAsset);
     drawHeaderPanel(ctx, template, canvas.width, canvas.height);
-    drawTemplateStickers(ctx, loadedStickers, canvas.width, canvas.height);
     const showDecorativeLayers = options.showDecorativeLayers !== false;
-    if (showDecorativeLayers) {
-      for (const panel of loadedPanels) drawScreenshotPanel(ctx, panel.image, panel.definition, canvas.width, canvas.height);
-    }
 
     const badgeText = slide.badgeText ?? "";
     if (showDecorativeLayers && template.badge && badgeText.trim() && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false)) {
@@ -1121,8 +1128,9 @@ export async function renderSlide(
       await drawRatingBadge(ctx, rating!, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, 50, (editorialFashion || academicEducation) ? 0.72 : 1);
     }
     const headlineText = slide.headline === "Your Main Headline" ? template.defaultHeadline ?? slide.headline : slide.headline;
+    const subheadlineText = slide.subheadline?.trim() ? slide.subheadline : template.defaultSubheadline ?? "";
     await drawText(ctx, headlineText, headlineLayer, canvas.width, canvas.height, headlineFamily, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds, options.onTextOverflow);
-    await drawText(ctx, slide.subheadline ?? "", subheadlineLayer, canvas.width, canvas.height, subheadlineFamily, slide.textAlignment, slide.subheadlineColor ?? (template.subheadline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds, options.onTextOverflow);
+    await drawText(ctx, subheadlineText, subheadlineLayer, canvas.width, canvas.height, subheadlineFamily, slide.textAlignment, slide.subheadlineColor ?? (template.subheadline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds, options.onTextOverflow);
 
     const defaultItems = template.taskCards?.map((item) => ({ subtitle: item.time, title: item.title, detail: item.detail }))
       ?? template.routineRows?.rows.map((item) => ({ subtitle: item.time, title: item.title })) ?? [];
@@ -1193,6 +1201,11 @@ export async function renderSlide(
     }
     drawScreenshot(ctx, loaded.image, x, y, frameWidth, frameHeight, (box.radius / 100) * canvas.width, "contain", insetRatio);
     if (template.device.visible && options.frameVisible !== false) drawDeviceAccents(ctx, x, y, frameWidth, frameHeight, template.device);
+    }
+    // Keep collage imagery and small art accents above the base artwork and device, as discrete layers.
+    if (showDecorativeLayers) {
+      for (const panel of loadedPanels) drawScreenshotPanel(ctx, panel.image, panel.definition, canvas.width, canvas.height);
+      drawTemplateStickers(ctx, loadedStickers, canvas.width, canvas.height);
     }
     if (showDecorativeLayers) {
       const defaultWidgetItems = template.floatingWidget ? [{ title: template.floatingWidget.title, subtitle: template.floatingWidget.detail }] : [];
