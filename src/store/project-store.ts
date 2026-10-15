@@ -2,7 +2,7 @@
 
 import { get, set } from "idb-keyval";
 import { create } from "zustand";
-import type { StorePresetId, StorePlatform } from "@/src/config/storePresets";
+import { allStorePresets, type StorePresetId, type StorePlatform } from "@/src/config/storePresets";
 import { getTemplate } from "@/src/renderer/templates";
 import type { SlideBackgroundAccent } from "@/src/renderer/templates";
 
@@ -14,6 +14,7 @@ export type UploadedImage = {
   file: File;
   headline: string;
   subheadline: string;
+  templateId?: string;
   headlineFont?: string;
   subheadlineFont?: string;
   cardFontFamily?: string;
@@ -55,7 +56,8 @@ export type Project = {
     selectedPlatform: StorePlatform | null;
     selectedPresetIds: StorePresetId[];
     customDimensions: CustomDimension[];
-    activeTemplate: string | null;
+    /** Legacy field migrated into slide.templateId during hydration. */
+    activeTemplate?: string | null;
   };
 };
 
@@ -68,7 +70,6 @@ type ProjectState = {
   selectedPlatform: StorePlatform | null;
   selectedPresetIds: StorePresetId[];
   customDimensions: CustomDimension[];
-  activeTemplate: string | null;
   brandColor: string;
   font: string;
   addImages: (files: File[]) => void;
@@ -80,7 +81,7 @@ type ProjectState = {
   addCustomDimension: (dimension: Omit<CustomDimension, "id">) => void;
   removeCustomDimension: (id: string) => void;
   setBrandSettings: (settings: Partial<Pick<ProjectState, "brandColor" | "font">>) => void;
-  setActiveTemplate: (id: string) => void;
+  setSlideTemplate: (id: string) => void;
   setActiveSlideIndex: (index: number) => void;
   updateSlide: (id: string, updates: Partial<Pick<UploadedImage, "headline" | "subheadline" | "badgeText" | "headlineFont" | "subheadlineFont" | "cardFontFamily" | "headlineColor" | "subheadlineColor" | "textAlignment" | "background" | "backgroundAccent" | "showDecorativeLayers" | "frameVisible" | "frameColor" | "cardItems" | "floatingWidgetItems" | "showRatingBadge" | "ratingBadge">>) => void;
   applyBrandColorToAllSlides: () => void;
@@ -106,7 +107,6 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
   selectedPlatform: null,
   selectedPresetIds: [],
   customDimensions: [],
-  activeTemplate: null,
   brandColor: "#111111",
   font: "Inter",
   createProject: (name = "Untitled Project") => {
@@ -125,7 +125,6 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
             selectedPlatform: state.selectedPlatform,
             selectedPresetIds: state.selectedPresetIds,
             customDimensions: state.customDimensions,
-            activeTemplate: state.activeTemplate,
             brandColor: state.brandColor,
             font: state.font,
           },
@@ -141,7 +140,7 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
           ...reusable,
           updatedAt: Date.now(),
           slides: [],
-          globalSettings: { activeSlideIndex: 0, selectedPlatform: null, selectedPresetIds: [], customDimensions: [], activeTemplate: null, brandColor: "#111111", font: "Inter" },
+          globalSettings: { activeSlideIndex: 0, selectedPlatform: null, selectedPresetIds: [], customDimensions: [], brandColor: "#111111", font: "Inter" },
         };
         const deduplicated = projects.map((project) => project.id === reusable.id ? freshProject : project).filter((project) => !emptyUntitled(project) || project.id === reusable.id);
         await set(STORAGE_KEY, { projects: deduplicated, activeProjectId: reusable.id });
@@ -150,7 +149,7 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
       }
 
       const id = crypto.randomUUID();
-      const project: Project = { id, name, updatedAt: Date.now(), slides: [], globalSettings: { activeSlideIndex: 0, selectedPlatform: null, selectedPresetIds: [], customDimensions: [], activeTemplate: null, brandColor: "#111111", font: "Inter" } };
+      const project: Project = { id, name, updatedAt: Date.now(), slides: [], globalSettings: { activeSlideIndex: 0, selectedPlatform: null, selectedPresetIds: [], customDimensions: [], brandColor: "#111111", font: "Inter" } };
       useProjectStore.setState({ ...project.globalSettings, images: [], projects: [...projects, project], activeProjectId: id });
       return id;
     })().finally(() => { projectCreationInFlight = null; });
@@ -166,7 +165,7 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
   deleteProject: (id) => setState((state) => {
     const projects = state.projects.filter((project) => project.id !== id);
     if (state.activeProjectId !== id) return { projects };
-    return { projects, activeProjectId: null, images: [], activeSlideIndex: 0, selectedPlatform: null, selectedPresetIds: [], customDimensions: [], activeTemplate: null, brandColor: "#111111", font: "Inter" };
+    return { projects, activeProjectId: null, images: [], activeSlideIndex: 0, selectedPlatform: null, selectedPresetIds: [], customDimensions: [], brandColor: "#111111", font: "Inter" };
   }),
   addImages: (files) =>
     setState((state) => {
@@ -185,6 +184,7 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
               file,
               headline: DEFAULT_HEADLINE,
               subheadline: "",
+              templateId: "award-badge",
               showRatingBadge: offset + index === 0,
               ratingBadge: { ...DEFAULT_RATING_BADGE },
             };
@@ -212,10 +212,9 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
   addCustomDimension: (dimension) => setState((state) => ({ customDimensions: [...state.customDimensions, { ...dimension, id: crypto.randomUUID() }] })),
   removeCustomDimension: (id) => setState((state) => ({ customDimensions: state.customDimensions.filter((dimension) => dimension.id !== id) })),
   setBrandSettings: (settings) => setState(settings),
-  setActiveTemplate: (activeTemplate) => setState((state) => {
-    const template = getTemplate(activeTemplate);
-    const selectedSlide = state.images[state.activeSlideIndex];
-    if (!selectedSlide) return { activeTemplate: template.id };
+  setSlideTemplate: (templateId) => setState((state) => {
+    const template = getTemplate(templateId);
+    if (!state.images[state.activeSlideIndex]) return {};
     const cardItems = template.taskCards?.map((item, index) => ({ id: `${template.id}-${index}`, subtitle: item.time, title: item.title, detail: item.detail }))
       ?? template.routineRows?.rows.map((item, index) => ({ id: `${template.id}-${index}`, subtitle: item.time, title: item.title }));
     const floatingWidgetItems = template.floatingWidget ? [{ id: `${template.id}-widget-0`, title: template.floatingWidget.title, subtitle: template.floatingWidget.detail }] : undefined;
@@ -229,9 +228,9 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
       angle: template.background.angle ?? 135,
     } as const;
     return {
-      activeTemplate: template.id,
       images: state.images.map((image, index) => index === state.activeSlideIndex ? {
         ...image,
+        templateId: template.id,
         headline: image.headline === DEFAULT_HEADLINE ? template.defaultHeadline ?? image.headline : image.headline,
         background,
         textAlignment: template.headline.align as "left" | "center" | "right",
@@ -247,7 +246,7 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
         frameColor: undefined,
         backgroundAccent: undefined,
         showDecorativeLayers: undefined,
-        showRatingBadge: template.id === "fitness-neon-dark" || template.id === "fitness-dark-neon" ? false : template.id === "fashion-editorial-grid" || template.id === "edu-flashcard-stack" ? true : image.showRatingBadge ?? index === 0,
+        showRatingBadge: template.id === "fitness-dark-neon" ? false : template.id === "fitness-neon-dark" || template.id === "fashion-editorial-grid" || template.id === "edu-flashcard-stack" ? true : image.showRatingBadge ?? index === 0,
         ratingBadge: template.defaultRatingBadge && image.ratingBadge.score === DEFAULT_RATING_BADGE.score && image.ratingBadge.subtitle === DEFAULT_RATING_BADGE.subtitle
           ? template.defaultRatingBadge
           : image.ratingBadge ?? { ...DEFAULT_RATING_BADGE },
@@ -273,14 +272,15 @@ let hydrationStarted = false;
 export function hydrateProjectStore() {
   if (hydrationStarted || typeof window === "undefined") return;
   hydrationStarted = true;
-  void Promise.all([get<{ projects?: Project[]; activeProjectId?: string | null }>(STORAGE_KEY), get<Partial<ProjectState>>(LEGACY_STORAGE_KEY)]).then(([saved, legacy]) => {
-    const normalizeSlides = (slides: UploadedImage[] = []) => slides.map((image, index) => {
+  void Promise.all([get<{ projects?: Project[]; activeProjectId?: string | null }>(STORAGE_KEY), get<Partial<ProjectState> & { activeTemplate?: string | null }>(LEGACY_STORAGE_KEY)]).then(([saved, legacy]) => {
+    const normalizeSlides = (slides: UploadedImage[] = [], templateId = "award-badge") => slides.map((image, index) => {
       const fileName = typeof image.file?.name === "string" ? image.file.name : "";
       const fileTitle = fileName.replace(/\.[^/.]+$/, "");
       const storedHeadline = typeof image.headline === "string" ? image.headline : "";
       const legacyFileHeadline = [image.name, fileName, fileTitle].some((candidate) => candidate && storedHeadline === candidate);
       return {
         ...image,
+        templateId: getTemplate(image.templateId ?? templateId).id,
         id: image.id || `${image.file?.lastModified ?? Date.now()}-${image.name || "slide"}-${index}`,
         name: image.name?.replace(/\.[^/.]+$/, "") || image.name || `Slide ${index + 1}`,
         headline: !storedHeadline || legacyFileHeadline ? DEFAULT_HEADLINE : storedHeadline,
@@ -292,7 +292,7 @@ export function hydrateProjectStore() {
     let projects = saved?.projects ?? [];
     let activeProjectId = saved?.activeProjectId ?? null;
     if (!saved && legacy) {
-      const slides = normalizeSlides(legacy.images ?? []);
+      const slides = normalizeSlides(legacy.images ?? [], legacy.activeTemplate ?? "award-badge");
       const hasLegacyWork = slides.length > 0 || Boolean(legacy.selectedPlatform || legacy.selectedPresetIds?.length || legacy.activeTemplate);
       if (hasLegacyWork) {
         const project: Project = {
@@ -302,7 +302,6 @@ export function hydrateProjectStore() {
             selectedPlatform: legacy.selectedPlatform ?? null,
             selectedPresetIds: legacy.selectedPresetIds ?? [],
             customDimensions: legacy.customDimensions ?? [],
-            activeTemplate: legacy.activeTemplate ?? null,
             brandColor: legacy.brandColor ?? "#111111",
             font: legacy.font ?? "Inter",
           },
@@ -311,7 +310,17 @@ export function hydrateProjectStore() {
         activeProjectId = project.id;
       }
     }
-    projects = projects.map((project) => ({ ...project, slides: normalizeSlides(project.slides), globalSettings: { ...project.globalSettings } }));
+    projects = projects.map((project) => {
+      const { activeTemplate: legacyTemplateId, ...globalSettings } = project.globalSettings;
+      return {
+        ...project,
+        slides: normalizeSlides(project.slides, legacyTemplateId ?? "award-badge"),
+        globalSettings: {
+          ...globalSettings,
+          selectedPresetIds: (globalSettings.selectedPresetIds ?? []).filter((id) => allStorePresets.some((preset) => preset.id === id)),
+        },
+      };
+    });
     const activeBeforeDedupe = projects.find((project) => project.id === activeProjectId);
     const blankProjects = projects.filter((project) => project.name === "Untitled Project" && project.slides.length === 0);
     const keptBlankId = blankProjects.some((project) => project.id === activeBeforeDedupe?.id) ? activeBeforeDedupe?.id : blankProjects[0]?.id;
@@ -326,7 +335,7 @@ useProjectStore.subscribe((state) => {
   let projects = state.projects;
   const current = projects.find((project) => project.id === state.activeProjectId);
   if (current) {
-    const globalSettings = { activeSlideIndex: state.activeSlideIndex, selectedPlatform: state.selectedPlatform, selectedPresetIds: state.selectedPresetIds, customDimensions: state.customDimensions, activeTemplate: state.activeTemplate, brandColor: state.brandColor, font: state.font };
+    const globalSettings = { activeSlideIndex: state.activeSlideIndex, selectedPlatform: state.selectedPlatform, selectedPresetIds: state.selectedPresetIds, customDimensions: state.customDimensions, brandColor: state.brandColor, font: state.font };
     const changed = current.slides !== state.images || Object.keys(globalSettings).some((key) => current.globalSettings[key as keyof typeof globalSettings] !== globalSettings[key as keyof typeof globalSettings]);
     if (changed) {
       const updated: Project = { ...current, updatedAt: Date.now(), slides: state.images, globalSettings };

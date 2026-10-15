@@ -130,7 +130,7 @@ export function CustomizationEditor({ onBack, onContinue }: { onBack: () => void
   const updateSlide = useProjectStore((state) => state.updateSlide);
   const font = useProjectStore((state) => state.font);
   const brandColor = useProjectStore((state) => state.brandColor);
-  const activeTemplateId = useProjectStore((state) => state.activeTemplate);
+  const activeTemplateId = useProjectStore((state) => state.images[state.activeSlideIndex]?.templateId);
   const setBrandSettings = useProjectStore((state) => state.setBrandSettings);
   const applyBrandColorToAllSlides = useProjectStore((state) => state.applyBrandColorToAllSlides);
   const activeImage = images[activeSlideIndex];

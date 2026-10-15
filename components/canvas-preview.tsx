@@ -19,18 +19,18 @@ export function CanvasPreview({ templateId, compact = false, slideIndex, applySl
   const font = useProjectStore((state) => state.font);
   const brandColor = useProjectStore((state) => state.brandColor);
   const customDimensions = useProjectStore((state) => state.customDimensions);
-  const storedTemplateId = useProjectStore((state) => state.activeTemplate);
+  const storedTemplateId = useProjectStore((state) => state.images[state.activeSlideIndex]?.templateId);
   const [error, setError] = useState<string>();
   const activeTemplateId = templateId ?? storedTemplateId ?? "award-badge";
   const useSlideCustomizations = !compact && applySlideCustomizations;
   const custom = customDimensions[0];
-  const preset = useMemo(() => presetId ? getStorePreset(presetId) : custom ? {
+  const preset = useMemo(() => compact ? getStorePreset("phone") : presetId ? getStorePreset(presetId) : custom ? {
     id: custom.id,
     label: custom.name,
     width: custom.width,
     height: custom.height,
     orientation: custom.width > custom.height ? "landscape" as const : "portrait" as const,
-  } : getStorePreset("phone"), [custom, presetId]);
+  } : getStorePreset("phone"), [compact, custom, presetId]);
   const previewHeight = compact ? 224 : 544;
   const previewWidth = preset ? Math.round(previewHeight * preset.width / preset.height) : previewHeight;
 

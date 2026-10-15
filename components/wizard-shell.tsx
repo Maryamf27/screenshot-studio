@@ -16,9 +16,11 @@ const stepIcons = [Upload, Monitor, LayoutTemplate, Paintbrush, Download] as con
 
 function TemplateView({ onBack, onContinue }: { onBack: () => void; onContinue: () => void }) {
   const [category, setCategory] = useState<"All" | TemplateCategory>("All");
-  const templateId = useProjectStore((state) => state.activeTemplate);
-  const setTemplateId = useProjectStore((state) => state.setActiveTemplate);
-  const activeId = getTemplate(templateId).id;
+  const images = useProjectStore((state) => state.images);
+  const activeSlideIndex = useProjectStore((state) => state.activeSlideIndex);
+  const setActiveSlideIndex = useProjectStore((state) => state.setActiveSlideIndex);
+  const setTemplateId = useProjectStore((state) => state.setSlideTemplate);
+  const activeId = getTemplate(images[activeSlideIndex]?.templateId).id;
   const visibleTemplates = category === "All" ? templates : templates.filter((template) => template.category === category);
   const categories: ("All" | TemplateCategory)[] = ["All", "Fashion", "Fitness", "Education", "Productivity"];
 
@@ -29,6 +31,9 @@ function TemplateView({ onBack, onContinue }: { onBack: () => void; onContinue: 
         <h3 className="mt-2 text-xl font-semibold tracking-tight text-slate-900">Pick a template</h3>
         <p className="mt-2 text-sm leading-6 text-slate-500">Choose a starting layout. Each card previews your first screenshot; the selected design is rendered at the active target&apos;s full dimensions.</p>
       </div>
+      {images.length > 0 && <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Choose screenshot to customize">
+        {images.map((image, index) => <button key={image.id} type="button" role="tab" aria-selected={activeSlideIndex === index} onClick={() => setActiveSlideIndex(index)} className={`shrink-0 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors ${activeSlideIndex === index ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-600 hover:border-slate-400"}`}>{`Slide ${index + 1}: ${image.name}`}</button>)}
+      </div>}
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(17rem,22rem)]">
         <div>
           <div className="mb-3 flex items-center justify-between gap-3">
@@ -60,13 +65,13 @@ function TemplateView({ onBack, onContinue }: { onBack: () => void; onContinue: 
             ))}
           </div>
         </div>
-        <aside className="rounded-2xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
+        <aside className="sticky top-6 self-start rounded-2xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
           <div className="mb-3">
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Live preview</p>
             <h4 className="mt-1 font-semibold tracking-tight text-slate-900">{templates.find((template) => template.id === activeId)?.label}</h4>
           </div>
-          <CanvasPreview templateId={activeId} slideIndex={0} applySlideCustomizations={false} />
-          <p className="mt-3 text-xs leading-5 text-slate-500">Preview uses Slide 1 and updates as you choose a layout.</p>
+          <CanvasPreview templateId={activeId} />
+          <p className="mt-3 text-xs leading-5 text-slate-500">Previewing Slide {activeSlideIndex + 1}. Choose a slide above to assign its template.</p>
         </aside>
       </div>
       <StepNavigation onBack={onBack} onContinue={onContinue} continueLabel="Next" />
@@ -128,7 +133,7 @@ export function WizardShell() {
           <button type="button" onClick={async () => { await createProject(); setActiveStep(1); setProjectMenuOpen(false); }} className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg bg-slate-950 px-3 text-sm font-semibold text-white hover:bg-slate-800"><Plus className="size-4" />New Project</button>
         </div>
       </div>
-      <nav aria-label="Project workflow" className="-mx-1 overflow-x-auto px-1 pb-2 sm:overflow-visible sm:pb-0">
+      <div role="group" aria-label="Project workflow progress" className="-mx-1 overflow-x-auto px-1 pb-2 sm:overflow-visible sm:pb-0">
         <ol className="grid min-w-140 grid-cols-5 gap-2 sm:min-w-0 sm:gap-3">
           {wizardSteps.map((step, index) => {
             const stepNumber = (index + 1) as WizardStep;
@@ -136,18 +141,17 @@ export function WizardShell() {
             const isComplete = stepNumber < activeStep;
             const isActive = stepNumber === activeStep;
             return (
-              <li key={step.id}>
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(stepNumber)}
-                  aria-current={isActive ? "step" : undefined}
-                  className="group flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl py-1 text-center transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+              <li key={step.id} aria-current={isActive ? "step" : undefined} className="relative">
+                {index < wizardSteps.length - 1 && <span aria-hidden="true" className={`absolute left-1/2 top-5 z-0 h-px w-[calc(150%+0.5rem)] sm:w-[calc(150%+0.75rem)] ${isComplete ? "bg-slate-950" : "bg-slate-200"}`} />}
+                <div
+                  className="flex w-full flex-col items-center gap-2 rounded-xl py-1 text-center"
+                  aria-label={`${step.label}${isActive ? ", current step" : isComplete ? ", completed" : ", upcoming"}`}
                 >
                   <span
-                    className={`flex h-10 w-10 items-center justify-center rounded-2xl border text-xs font-semibold shadow-sm transition-all duration-200 group-hover:shadow-md sm:h-11 sm:w-11 ${
+                    className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-2xl border text-xs font-semibold shadow-sm transition-colors duration-200 sm:h-11 sm:w-11 ${
                       isActive || isComplete
                         ? "border-slate-950 bg-slate-950 text-white"
-                        : "border-slate-200 bg-white text-slate-500 group-hover:border-slate-300"
+                        : "border-slate-200 bg-white text-slate-500"
                     }`}
                   >
                     {isComplete ? <Check className="h-4 w-4" aria-hidden="true" /> : <Icon className="h-4 w-4" aria-hidden="true" />}
@@ -155,12 +159,12 @@ export function WizardShell() {
                   <span className={`text-[10px] font-medium leading-4 sm:text-xs ${isActive ? "font-semibold text-slate-900" : "text-slate-500"}`}>
                     {step.label}
                   </span>
-                </button>
+                </div>
               </li>
             );
           })}
         </ol>
-      </nav>
+      </div>
 
       {activeStep === 1 ? (
         <UploadManager onContinue={() => setActiveStep(2)} />

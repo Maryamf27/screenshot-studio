@@ -17,7 +17,6 @@ export const storePresets = {
       { id: "phone", label: "Phone", width: 1080, height: 1920, orientation: "portrait" as const },
       { id: "tablet-7", label: "7\" tablet", width: 1440, height: 2560, orientation: "portrait" as const },
       { id: "tablet-10", label: "10\" tablet", width: 1440, height: 2560, orientation: "portrait" as const },
-      { id: "feature-graphic", label: "Feature graphic", width: 1024, height: 500, orientation: "landscape" as const },
     ],
   },
   appStore: {

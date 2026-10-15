@@ -64,16 +64,33 @@ async function drawBackgroundAsset(ctx: CanvasRenderingContext2D, asset: Backgro
   offscreen.height = canvasHeight;
   const offscreenContext = offscreen.getContext("2d");
   if (!offscreenContext) return;
-  const landscape = canvasWidth > canvasHeight;
-  const maxWidth = canvasWidth * (landscape ? 0.5 : 0.9);
-  const maxHeight = canvasHeight * (landscape ? 0.9 : 0.82);
-  const scale = Math.min(maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
+  const focusBackground = asset.src === "/assets/fitness-focus-background.jpg";
+  const maxWidth = canvasWidth * (focusBackground ? 1 : 0.9);
+  const maxHeight = canvasHeight * (focusBackground ? 1 : 0.82);
+  const scale = focusBackground
+    ? Math.max(maxWidth / image.naturalWidth, maxHeight / image.naturalHeight)
+    : Math.min(maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
   const imageWidth = image.naturalWidth * scale;
   const imageHeight = image.naturalHeight * scale;
-  const centerX = canvasWidth * (landscape ? 0.8 : 0.53);
+  const centerX = canvasWidth * (focusBackground ? 0.5 : 0.53);
   const x = centerX - imageWidth / 2;
-  const y = canvasHeight * (landscape ? 0.06 : 0.11);
+  const y = focusBackground ? (canvasHeight - imageHeight) / 2 : canvasHeight * 0.11;
   offscreenContext.drawImage(image, x, y, imageWidth, imageHeight);
+
+  if (focusBackground) {
+    offscreenContext.globalCompositeOperation = "source-atop";
+    const tint = offscreenContext.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+    tint.addColorStop(0, "rgba(24, 39, 27, 0.38)");
+    tint.addColorStop(0.52, "rgba(3, 7, 5, 0.24)");
+    tint.addColorStop(1, "rgba(2, 5, 3, 0.46)");
+    offscreenContext.fillStyle = tint;
+    offscreenContext.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.save();
+    ctx.globalAlpha = asset.opacity ?? 1;
+    ctx.drawImage(offscreen, 0, 0);
+    ctx.restore();
+    return;
+  }
 
   // Fade the silhouette toward the headline area and slide edges so it reads as atmosphere.
   offscreenContext.globalCompositeOperation = "destination-in";
@@ -214,7 +231,7 @@ async function drawText(
   const y = (layer.y / 100) * canvasHeight;
   const width = (layer.width / 100) * canvasWidth;
   const height = (layer.height / 100) * canvasHeight;
-  const fontSize = (layer.fontSize / 100) * canvasWidth;
+  const fontSize = (layer.fontSize / 100) * Math.min(canvasWidth, canvasHeight);
   const lineHeight = fontSize * layer.lineHeight;
   const left = alignment === "center" ? x - width / 2 : alignment === "right" ? x - width : x;
   const top = y;
@@ -287,11 +304,14 @@ async function drawBadge(ctx: CanvasRenderingContext2D, text: string, template: 
   const fontSize = (badge.fontSize / 100) * canvasWidth;
   const paddingX = (badge.paddingX / 100) * canvasWidth;
   const paddingY = (badge.paddingY / 100) * canvasHeight;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(Math.max(0, x - maxWidth / 2), Math.max(0, y), Math.min(maxWidth, canvasWidth), Math.min(canvasHeight, (badge.height / 100) * canvasHeight + paddingY * 2));
+  ctx.clip();
   await document.fonts.load(`${badge.fontWeight} ${fontSize}px "${family}"`);
   ctx.font = `${badge.fontWeight} ${fontSize}px "${family}"`;
   const width = Math.min(maxWidth, ctx.measureText(text).width + paddingX * 2);
   const height = Math.max((badge.height / 100) * canvasHeight, fontSize * badge.lineHeight + paddingY * 2);
-  ctx.save();
   if (badge.laurel) {
     ctx.fillStyle = "#B88B3A";
     const centerY = y + height / 2;
@@ -737,6 +757,10 @@ async function drawTaskCard(ctx: CanvasRenderingContext2D, card: TaskCardDefinit
   const height = (card.height / 100) * canvasHeight;
   const radius = (card.radius / 100) * canvasWidth;
   ctx.save();
+  ctx.beginPath();
+  ctx.rect(Math.max(0, x), Math.max(0, y), Math.max(0, Math.min(width, canvasWidth - x)), Math.max(0, Math.min(height, canvasHeight - y)));
+  ctx.clip();
+  ctx.save();
   ctx.shadowColor = "rgba(15, 23, 42, 0.10)";
   ctx.shadowBlur = canvasWidth * 0.012;
   ctx.shadowOffsetY = canvasHeight * 0.003;
@@ -744,7 +768,7 @@ async function drawTaskCard(ctx: CanvasRenderingContext2D, card: TaskCardDefinit
   roundedRect(ctx, x, y, width, height, radius);
   ctx.fill();
   ctx.restore();
-  const scale = Math.max(0.55, Math.min(canvasWidth / 360, height / 48));
+  const scale = Math.max(0.55, Math.min(canvasWidth / 360, height / 48, width / 200));
   const indicatorRadius = Math.max(3, width * 0.014);
   const centerY = y + height / 2;
   const indicatorX = x + 24 * scale;
@@ -783,6 +807,7 @@ async function drawTaskCard(ctx: CanvasRenderingContext2D, card: TaskCardDefinit
     ctx.fillText(item.detail, textX, subtitleY, textLimit);
   }
   ctx.restore();
+  ctx.restore();
 }
 
 async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: TemplateDefinition, items: { subtitle: string; title: string }[], canvasWidth: number, canvasHeight: number, family: string, yOffset = 0) {
@@ -796,6 +821,9 @@ async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: Template
   for (const [index, row] of items.entries()) {
     const y = startY + index * (rowHeight + gap);
     ctx.save();
+    ctx.beginPath();
+    ctx.rect(Math.max(0, x), Math.max(0, y), Math.max(0, Math.min(width, canvasWidth - x)), Math.max(0, Math.min(rowHeight, canvasHeight - y)));
+    ctx.clip();
     ctx.fillStyle = layout.fillColor;
     roundedRect(ctx, x, y, width, rowHeight, (layout.radius / 100) * canvasWidth);
     ctx.fill();
@@ -825,6 +853,10 @@ async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: Floatin
   const y = (widget.y / 100) * canvasHeight;
   const width = (widget.width / 100) * canvasWidth;
   const height = (widget.height / 100) * canvasHeight;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(Math.max(0, x), Math.max(0, y), Math.max(0, Math.min(width, canvasWidth - x)), Math.max(0, Math.min(height, canvasHeight - y)));
+  ctx.clip();
   ctx.save();
   ctx.shadowColor = "rgba(15, 23, 42, 0.22)";
   ctx.shadowBlur = canvasWidth * 0.035;
@@ -858,6 +890,7 @@ async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: Floatin
     ctx.fillStyle = widget.mutedColor;
     ctx.fillText(item.subtitle, x + inset, rowTop + itemHeight * 0.48, width - inset * 2);
   }
+  ctx.restore();
   ctx.restore();
 }
 
@@ -941,6 +974,11 @@ export async function renderSlide(
   canvas.height = preset.height;
   const ctx = canvas.getContext("2d", { alpha: false });
   if (!ctx) throw new Error("Canvas 2D context is unavailable.");
+  // Keep every renderer layer, including shadows and rotated stickers, within the export bounds.
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, canvas.width, canvas.height);
+  ctx.clip();
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -972,7 +1010,6 @@ export async function renderSlide(
     const backgroundEnd = resolveBackgroundColor(background.end ?? background.start, brandColor);
     const contrastColor = getAutomaticTextColor(background, brandColor);
     const contrastBackgrounds = background.type === "gradient" ? [backgroundStart, backgroundEnd] : [backgroundStart];
-    const isLandscape = canvas.width > canvas.height;
     if (background.type === "gradient") {
       let gradient: CanvasGradient;
       if (background.continuous && (slide.panoramaCount ?? 1) > 1) {
@@ -995,51 +1032,32 @@ export async function renderSlide(
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     drawBackgroundOverlay(ctx, options.backgroundAccent, template, canvas.width, canvas.height, contrastBackgrounds);
-    await drawBackgroundAsset(ctx, template.backgroundAsset, canvas.width, canvas.height, backgroundAsset);
     drawNativeTemplateDecoration(ctx, template.nativeDecoration, canvas.width, canvas.height);
+    await drawBackgroundAsset(ctx, template.backgroundAsset, canvas.width, canvas.height, backgroundAsset);
     drawHeaderPanel(ctx, template, canvas.width, canvas.height);
     drawTemplateStickers(ctx, loadedStickers, canvas.width, canvas.height);
 
     const showDecorativeLayers = options.showDecorativeLayers !== false;
-    const landscapeHeadline = isLandscape ? {
-      ...template.headline,
-      x: 31,
-      y: 7,
-      width: 58,
-      height: 12,
-      fontSize: template.headline.fontSize * 0.62,
-      align: "center" as const,
-      maxLines: 2,
-    } : template.headline;
-    const landscapeSubheadline = isLandscape ? {
-      ...template.subheadline,
-      x: 31,
-      y: 20,
-      width: 58,
-      height: 8,
-      fontSize: template.subheadline.fontSize * 0.62,
-      align: "center" as const,
-      maxLines: 2,
-    } : template.subheadline;
     if (showDecorativeLayers && template.badge && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false)) {
       await drawBadge(ctx, slide.badgeText ?? template.badge.text, template, canvas.width, canvas.height, slide.headlineFontFamily ?? family);
     }
-    const showRatingBadge = showDecorativeLayers && (slide.showRatingBadge ?? Boolean(template.badge?.laurel && slide.isFirstSlide !== false && template.nativeDecoration !== "fitness-neon-dark"));
+    const laurelBadgeVisible = Boolean(template.badge?.laurel && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false));
+    const showRatingBadge = showDecorativeLayers && !laurelBadgeVisible && (slide.showRatingBadge ?? Boolean(template.defaultRatingBadge));
     const pillBadgeBottom = template.badge && !template.badge.laurel ? template.badge.y + template.badge.height + 0.5 : 0;
     const editorialFashion = template.id === "fashion-editorial-grid";
     const academicEducation = template.id === "edu-flashcard-stack";
-    const ratingTop = editorialFashion || academicEducation ? (isLandscape ? 35 : 29) : pillBadgeBottom || 0.5;
+    const ratingTop = editorialFashion || academicEducation ? 29 : pillBadgeBottom || 0.5;
     const ratingBottom = ratingTop + 6.8;
-    const headlineY = editorialFashion || academicEducation ? Math.max(landscapeHeadline.y, pillBadgeBottom) : Math.max(landscapeHeadline.y, pillBadgeBottom, showRatingBadge ? ratingBottom + (isLandscape ? 0.6 : 0.7) : 0);
-    const headlineLayer = { ...landscapeHeadline, y: headlineY };
+    const headlineY = editorialFashion || academicEducation ? Math.max(template.headline.y, pillBadgeBottom) : Math.max(template.headline.y, pillBadgeBottom, showRatingBadge ? ratingBottom + 0.7 : 0);
+    const headlineLayer = { ...template.headline, y: headlineY };
     const subheadlineLayer = {
-      ...landscapeSubheadline,
-      y: Math.max(landscapeSubheadline.y, headlineLayer.y + headlineLayer.height + (isLandscape ? 0.8 : 0.5)),
+      ...template.subheadline,
+      y: Math.max(template.subheadline.y, headlineLayer.y + headlineLayer.height + 0.5),
     };
     if (showRatingBadge) {
       const ratingBadge = slide.ratingBadge ?? template.defaultRatingBadge ?? { score: "4.9", stars: 5, subtitle: "Apps We Love" };
       const darkBackground = luminance(averageColor(contrastBackgrounds)) < 0.35;
-      await drawRatingBadge(ctx, ratingBadge, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, (editorialFashion || academicEducation) && isLandscape ? 31 : isLandscape ? 31 : 50, isLandscape ? 0.62 : (editorialFashion || academicEducation) ? 0.72 : 1);
+      await drawRatingBadge(ctx, ratingBadge, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, 50, (editorialFashion || academicEducation) ? 0.72 : 1);
     }
     const headlineText = slide.headline === "Your Main Headline" ? template.defaultHeadline ?? slide.headline : slide.headline;
     await drawText(ctx, headlineText, headlineLayer, canvas.width, canvas.height, headlineFamily, slide.textAlignment, slide.headlineColor ?? (template.headline.autoContrast === false ? undefined : contrastColor), contrastBackgrounds);
@@ -1052,17 +1070,12 @@ export async function renderSlide(
     const firstCardTop = template.taskCards?.[0]?.y ?? template.routineRows?.y;
     const cardOffset = showDecorativeLayers && firstCardTop !== undefined ? Math.max(0, copyBottom + 1 - firstCardTop) : 0;
     const cardBounds: { left: number; right: number; bottom: number }[] = [];
-    const taskCards = template.taskCards?.map((card, index) => isLandscape ? {
-      ...card,
-      x: 5,
-      y: 37 + index * 14.5,
-      width: 53,
-      height: 12,
-    } : card);
+    const itemsForCards = template.id === "side-by-side-proof" ? items.slice(0, 2) : items;
+    const taskCards = template.taskCards;
     if (showDecorativeLayers && taskCards?.length) {
       const verticalStep = taskCards.length > 1 ? taskCards[1].y - taskCards[0].y : 0;
       const step = verticalStep || taskCards[0].height + 1;
-      for (const [index, item] of items.entries()) {
+      for (const [index, item] of itemsForCards.entries()) {
         const card = taskCards[index] ?? taskCards[taskCards.length - 1];
         const y = (index < taskCards.length ? card.y : taskCards[taskCards.length - 1].y + (index - taskCards.length + 1) * step) + cardOffset;
         const positionedCard = { ...card, y };
@@ -1077,7 +1090,7 @@ export async function renderSlide(
       cardBounds.push({ left: rowLayout.x, right: rowLayout.x + rowLayout.width, bottom });
     }
 
-    const box = isLandscape ? { ...template.screenshot, x: 80, y: 6, width: 40, height: 88 } : template.screenshot;
+    const box = template.screenshot;
     const imageWidth = loaded.image instanceof HTMLCanvasElement ? loaded.image.width : loaded.image.naturalWidth;
     const imageHeight = loaded.image instanceof HTMLCanvasElement ? loaded.image.height : loaded.image.naturalHeight;
     const insetRatio = template.device.visible && options.frameVisible !== false ? 0.018 : 0;
@@ -1122,14 +1135,12 @@ export async function renderSlide(
     }
     if (showDecorativeLayers) {
       const defaultWidgetItems = template.floatingWidget ? [{ title: template.floatingWidget.title, subtitle: template.floatingWidget.detail }] : [];
-      const widget = isLandscape && template.floatingWidget
-        ? { ...template.floatingWidget, x: 31, y: 72, width: 56, height: 20 }
-        : template.floatingWidget;
-      await drawFloatingWidget(ctx, widget, slide.floatingWidgetItems ?? defaultWidgetItems, canvas.width, canvas.height, cardFamily);
+      await drawFloatingWidget(ctx, template.floatingWidget, slide.floatingWidgetItems ?? defaultWidgetItems, canvas.width, canvas.height, cardFamily);
     }
     return canvas;
   } finally {
     loaded?.dispose();
+    ctx.restore();
   }
 }
 

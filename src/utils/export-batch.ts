@@ -1,6 +1,6 @@
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { allStorePresets, type StorePlatform, type StorePreset } from "@/src/config/storePresets";
+import { allStorePresets, storePresets, type StorePlatform, type StorePreset } from "@/src/config/storePresets";
 import { renderSlide } from "@/src/renderer/render-slide";
 import { getTemplate } from "@/src/renderer/templates";
 import { useProjectStore, type CustomDimension, type UploadedImage } from "@/src/store/project-store";
@@ -28,7 +28,7 @@ export function getExportTargets(state: ExportSelection = useProjectStore.getSta
   const selected = allStorePresets
     .filter((preset) => state.selectedPresetIds.includes(preset.id))
     .map((preset) => {
-      const presetPlatform: StorePlatform = allStorePresets.indexOf(preset) < 4 ? "google-play" : "app-store";
+      const presetPlatform: StorePlatform = storePresets.googlePlay.presets.some(({ id }) => id === preset.id) ? "google-play" : "app-store";
       return {
         id: preset.id,
         label: preset.label,
@@ -72,12 +72,12 @@ export async function exportBatch(onProgress: (progress: ExportProgress) => void
   const targets = getExportTargets(state);
   if (targets.length === 0) throw new Error("Select at least one export size in Step 2.");
 
-  const template = getTemplate(state.activeTemplate ?? "award-badge");
   const jobsTotal = state.images.length * targets.length;
   const zip = new JSZip();
   let jobsComplete = 0;
 
   for (const [slideIndex, slide] of state.images.entries()) {
+    const template = getTemplate(slide.templateId ?? "award-badge");
     for (const target of targets) {
       onProgress({ stage: "render", current: jobsComplete, total: jobsTotal, slideIndex, targetLabel: target.label });
       const frameColors = { dark: "#111827", light: "#f8fafc", accent: state.brandColor } as const;
