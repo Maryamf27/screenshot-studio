@@ -9,30 +9,38 @@ import { useProjectStore, type UploadedImage } from "@/src/store/project-store";
 import { StepNavigation } from "@/components/step-navigation";
 
 const presetGroups = [
-  { label: "Solid Light / Warm", options: [
-    { label: "Golden Yellow", type: "solid", primaryColor: "#FDE047", secondaryColor: "#FDE047" },
-    { label: "Warm Taupe", type: "solid", primaryColor: "#786252", secondaryColor: "#786252" },
-    { label: "Pure White", type: "solid", primaryColor: "#FFFFFF", secondaryColor: "#FFFFFF" },
-    { label: "Crisp Slate Light", type: "solid", primaryColor: "#F8FAFC", secondaryColor: "#F8FAFC" },
-  ] },
-  { label: "Pastel & Vibrant", options: [
-    { label: "Soft Lavender", type: "solid", primaryColor: "#F3E8FF", secondaryColor: "#F3E8FF" },
-    { label: "Blush Pink", type: "solid", primaryColor: "#FCE7F3", secondaryColor: "#FCE7F3" },
-    { label: "Mint Green", type: "solid", primaryColor: "#DCFCE7", secondaryColor: "#DCFCE7" },
-    { label: "Sky Blue", type: "solid", primaryColor: "#E0F2FE", secondaryColor: "#E0F2FE" },
-  ] },
-  { label: "Gradients", options: [
-    { label: "Sunset Pop", type: "gradient", primaryColor: "#F43F5E", secondaryColor: "#FB923C" },
-    { label: "Cool Indigo", type: "gradient", primaryColor: "#4F46E5", secondaryColor: "#7C3AED" },
-    { label: "Emerald Wave", type: "gradient", primaryColor: "#059669", secondaryColor: "#34D399" },
-    { label: "Soft Aura", type: "gradient", primaryColor: "#EEF2FF", secondaryColor: "#E0E7FF" },
-  ] },
-  { label: "Dark Premium", options: [
-    { label: "Obsidian Dark", type: "solid", primaryColor: "#090D16", secondaryColor: "#090D16" },
-    { label: "Midnight Navy", type: "solid", primaryColor: "#0F172A", secondaryColor: "#0F172A" },
-    { label: "Deep Violet", type: "solid", primaryColor: "#1E1B4B", secondaryColor: "#1E1B4B" },
-    { label: "Charcoal", type: "solid", primaryColor: "#18181B", secondaryColor: "#18181B" },
-  ] },
+  {
+    label: "Solid Light / Warm", options: [
+      { label: "Golden Yellow", type: "solid", primaryColor: "#FDE047", secondaryColor: "#FDE047" },
+      { label: "Warm Taupe", type: "solid", primaryColor: "#786252", secondaryColor: "#786252" },
+      { label: "Pure White", type: "solid", primaryColor: "#FFFFFF", secondaryColor: "#FFFFFF" },
+      { label: "Crisp Slate Light", type: "solid", primaryColor: "#F8FAFC", secondaryColor: "#F8FAFC" },
+    ]
+  },
+  {
+    label: "Pastel & Vibrant", options: [
+      { label: "Soft Lavender", type: "solid", primaryColor: "#F3E8FF", secondaryColor: "#F3E8FF" },
+      { label: "Blush Pink", type: "solid", primaryColor: "#FCE7F3", secondaryColor: "#FCE7F3" },
+      { label: "Mint Green", type: "solid", primaryColor: "#DCFCE7", secondaryColor: "#DCFCE7" },
+      { label: "Sky Blue", type: "solid", primaryColor: "#E0F2FE", secondaryColor: "#E0F2FE" },
+    ]
+  },
+  {
+    label: "Gradients", options: [
+      { label: "Sunset Pop", type: "gradient", primaryColor: "#F43F5E", secondaryColor: "#FB923C" },
+      { label: "Cool Indigo", type: "gradient", primaryColor: "#4F46E5", secondaryColor: "#7C3AED" },
+      { label: "Emerald Wave", type: "gradient", primaryColor: "#059669", secondaryColor: "#34D399" },
+      { label: "Soft Aura", type: "gradient", primaryColor: "#EEF2FF", secondaryColor: "#E0E7FF" },
+    ]
+  },
+  {
+    label: "Dark Premium", options: [
+      { label: "Obsidian Dark", type: "solid", primaryColor: "#090D16", secondaryColor: "#090D16" },
+      { label: "Midnight Navy", type: "solid", primaryColor: "#0F172A", secondaryColor: "#0F172A" },
+      { label: "Deep Violet", type: "solid", primaryColor: "#1E1B4B", secondaryColor: "#1E1B4B" },
+      { label: "Charcoal", type: "solid", primaryColor: "#18181B", secondaryColor: "#18181B" },
+    ]
+  },
 ] as const;
 
 const controlClass = "mt-1.5 h-10 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-800 shadow-sm outline-none transition-colors hover:border-slate-300 focus:border-orange-400 focus:ring-2 focus:ring-orange-100";

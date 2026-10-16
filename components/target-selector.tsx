@@ -40,7 +40,7 @@ export function TargetSelector({ onBack, onContinue }: { onBack: () => void; onC
               type="button"
               onClick={() => setPlatform(option)}
               aria-pressed={platform === option}
-              className={`${selectableClass} ${platform === option ? "border-orange-300 bg-orange-50" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}
+              className={`${selectableClass} ${platform === option ? "border-primary bg-accent" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}
             >
               <span className="text-sm font-semibold text-slate-900">{option === "google-play" ? "Google Play" : "App Store"}</span>
               <span className="mt-1 block text-xs leading-5 text-slate-500">{option === "google-play" ? "Android phone and tablet listings" : "iPhone and iPad product pages"}</span>
@@ -59,7 +59,7 @@ export function TargetSelector({ onBack, onContinue }: { onBack: () => void; onC
               type="button"
               onClick={() => togglePreset(preset.id)}
               aria-pressed={selected.includes(preset.id)}
-              className={`${selectableClass} flex items-center justify-between ${selected.includes(preset.id) ? "border-orange-300 bg-orange-50" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}
+              className={`${selectableClass} flex items-center justify-between ${selected.includes(preset.id) ? "border-primary bg-accent" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}
             >
               <span>
                 <span className="block text-sm font-medium text-slate-900">{preset.label}</span>

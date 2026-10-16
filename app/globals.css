@@ -17,6 +17,47 @@
   --accent-foreground: #c93e20;
 } 
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #171614;
+  --foreground: #f5f3ef;
+  --muted: #242320;
+  --muted-foreground: #aaa69f;
+  --border: #393733;
+  --ring: #ff7659;
+  --card: #1e1d1a;
+  --card-foreground: #f5f3ef;
+  --primary: #ff7659;
+  --primary-foreground: #21120e;
+  --accent: #3a241e;
+  --accent-foreground: #ffad99;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* Keep the editor's existing slate-based utility classes readable in dark mode. */
+:root[data-theme="dark"] .bg-white:not(canvas) { background-color: var(--card); }
+:root[data-theme="dark"] .bg-slate-50 { background-color: #22211e; }
+:root[data-theme="dark"] .bg-slate-100 { background-color: #292824; }
+:root[data-theme="dark"] .bg-slate-200 { background-color: #393733; }
+:root[data-theme="dark"] .text-slate-900,
+:root[data-theme="dark"] .text-slate-800,
+:root[data-theme="dark"] .text-slate-700,
+:root[data-theme="dark"] .text-slate-600,
+:root[data-theme="dark"] .text-gray-900,
+:root[data-theme="dark"] .text-gray-800 { color: var(--foreground); }
+:root[data-theme="dark"] .text-slate-500,
+:root[data-theme="dark"] .text-slate-400,
+:root[data-theme="dark"] .text-gray-500,
+:root[data-theme="dark"] .text-gray-400 { color: var(--muted-foreground); }
+:root[data-theme="dark"] .border-slate-100,
+:root[data-theme="dark"] .border-slate-200,
+:root[data-theme="dark"] .border-slate-300 { border-color: var(--border); }
+:root[data-theme="dark"] .bg-slate-950 { background-color: #f5f3ef; }
+:root[data-theme="dark"] .bg-slate-950.text-white { color: #171614; }
+
 /* --- Tailwind theme integration --- */
 @theme inline {
   --color-background: var(--background);

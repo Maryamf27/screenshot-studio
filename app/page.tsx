@@ -1,11 +1,8 @@
-import { AppHeader } from "@/components/app-header";
 import { WizardShell } from "@/components/wizard-shell";
 
 export default function Home() {
   return (
     <>
-      <AppHeader />
-
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-12">
         <section className="border-b border-border pb-8">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Workspace</p>
