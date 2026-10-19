@@ -2,7 +2,7 @@
 
 import { get, set } from "idb-keyval";
 import { create } from "zustand";
-import { allStorePresets, type StorePresetId, type StorePlatform } from "@/src/config/storePresets";
+import { allStorePresets, type StorePresetId, type StorePlatform, type WizardStep } from "@/src/config/storePresets";
 import { getTemplate } from "@/src/renderer/templates";
 import type { SlideBackgroundAccent } from "@/src/renderer/templates";
 
@@ -65,6 +65,7 @@ type ProjectState = {
   projects: Project[];
   activeProjectId: string | null;
   hasHydrated: boolean;
+  wizardStep: WizardStep;
   images: UploadedImage[];
   activeSlideIndex: number;
   selectedPlatform: StorePlatform | null;
@@ -81,9 +82,10 @@ type ProjectState = {
   addCustomDimension: (dimension: Omit<CustomDimension, "id">) => void;
   removeCustomDimension: (id: string) => void;
   setBrandSettings: (settings: Partial<Pick<ProjectState, "brandColor" | "font">>) => void;
+  setWizardStep: (step: WizardStep | ((current: WizardStep) => WizardStep)) => void;
   setSlideTemplate: (id: string) => void;
   setActiveSlideIndex: (index: number) => void;
-  updateSlide: (id: string, updates: Partial<Pick<UploadedImage, "headline" | "subheadline" | "badgeText" | "headlineFont" | "subheadlineFont" | "cardFontFamily" | "headlineColor" | "subheadlineColor" | "textAlignment" | "background" | "backgroundAccent" | "showDecorativeLayers" | "frameVisible" | "frameColor" | "cardItems" | "floatingWidgetItems" | "showRatingBadge" | "ratingBadge">>) => void;
+  updateSlide: (id: string, updates: SlideUpdate) => void;
   applyBrandColorToAllSlides: () => void;
   createProject: (name?: string) => Promise<string>;
   openProject: (id: string) => void;
@@ -91,6 +93,9 @@ type ProjectState = {
   renameProject: (id: string, name: string) => void;
   deleteProject: (id: string) => void;
 };
+
+type SlideTextUpdate = Partial<Pick<UploadedImage, "headline" | "subheadline" | "badgeText" | "cardItems" | "floatingWidgetItems" | "ratingBadge">>;
+type SlideUpdate = SlideTextUpdate & Partial<Pick<UploadedImage, "headlineFont" | "subheadlineFont" | "cardFontFamily" | "headlineColor" | "subheadlineColor" | "textAlignment" | "background" | "backgroundAccent" | "showDecorativeLayers" | "frameVisible" | "frameColor" | "showRatingBadge">>;
 
 const STORAGE_KEY = "store-screenshot-studio-projects";
 const LEGACY_STORAGE_KEY = "store-screenshot-studio-project";
@@ -108,6 +113,7 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
   projects: [],
   activeProjectId: null,
   hasHydrated: false,
+  wizardStep: 1,
   images: [],
   activeSlideIndex: 0,
   selectedPlatform: null,
@@ -218,6 +224,7 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
   addCustomDimension: (dimension) => setState((state) => ({ customDimensions: [...state.customDimensions, { ...dimension, id: crypto.randomUUID() }] })),
   removeCustomDimension: (id) => setState((state) => ({ customDimensions: state.customDimensions.filter((dimension) => dimension.id !== id) })),
   setBrandSettings: (settings) => setState(settings),
+  setWizardStep: (step) => setState((state) => ({ wizardStep: typeof step === "function" ? step(state.wizardStep) : step })),
   setSlideTemplate: (templateId) => setState((state) => {
     const template = getTemplate(templateId);
     if (!state.images[state.activeSlideIndex]) return {};
@@ -258,7 +265,9 @@ export const useProjectStore = create<ProjectState>((setState, getState) => ({
     };
   }),
   setActiveSlideIndex: (activeSlideIndex) => setState((state) => ({ activeSlideIndex: Math.min(Math.max(0, Math.floor(activeSlideIndex)), Math.max(0, state.images.length - 1)) })),
-  updateSlide: (id, updates) => setState((state) => ({ images: state.images.map((image) => image.id === id ? { ...image, ...updates } : image) })),
+  updateSlide: (id, updates: SlideUpdate) => setState((state) => ({
+    images: state.images.map((slide) => slide.id === id ? { ...slide, ...updates } : slide),
+  })),
   applyBrandColorToAllSlides: () => setState((state) => ({
     images: state.images.map((image) => ({
       ...image,
@@ -319,7 +328,8 @@ export function hydrateProjectStore() {
       }
     }
     projects = projects.map((project) => {
-      const { activeTemplate: legacyTemplateId, ...globalSettings } = project.globalSettings;
+      const { activeTemplate: legacyTemplateId, contentLocale: _oldContentLocale, ...globalSettings } = project.globalSettings as Project["globalSettings"] & { contentLocale?: string };
+      void _oldContentLocale;
       return {
         ...project,
         slides: normalizeSlides(project.slides, legacyTemplateId ?? "award-badge"),
@@ -345,11 +355,10 @@ useProjectStore.subscribe((state) => {
   if (current) {
     const globalSettings = { activeSlideIndex: state.activeSlideIndex, selectedPlatform: state.selectedPlatform, selectedPresetIds: state.selectedPresetIds, customDimensions: state.customDimensions, brandColor: state.brandColor, font: state.font };
     const changed = current.slides !== state.images || Object.keys(globalSettings).some((key) => current.globalSettings[key as keyof typeof globalSettings] !== globalSettings[key as keyof typeof globalSettings]);
-    if (changed) {
-      const updated: Project = { ...current, updatedAt: Date.now(), slides: state.images, globalSettings };
-      projects = projects.map((project) => project.id === current.id ? updated : project);
-      useProjectStore.setState({ projects });
-    }
+    if (!changed) return;
+    const updated: Project = { ...current, updatedAt: Date.now(), slides: state.images, globalSettings };
+    projects = projects.map((project) => project.id === current.id ? updated : project);
+    useProjectStore.setState({ projects });
   }
   void set(STORAGE_KEY, { projects, activeProjectId: state.activeProjectId });
 });

@@ -1,0 +1,467 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "add": "Add",
+    "remove": "Remove",
+    "delete": "Delete project",
+    "newProject": "New project",
+    "createProject": "Create new project",
+    "language": "Language",
+    "theme": "Switch to {theme} theme",
+    "light": "light",
+    "dark": "dark",
+    "continueToExport": "Continue to export"
+  },
+  "navigation": {
+    "home": "Workspace",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "main": "Main navigation",
+    "homeLabel": "Screenshot Studio home"
+  },
+  "home": {
+    "eyebrow": "Workspace",
+    "title": "Your projects",
+    "description": "Manage your projects and create polished, store-ready app listing images."
+  },
+  "projects": {
+    "loading": "Loading saved projects…",
+    "eyebrow": "Project dashboard",
+    "title": "Your projects",
+    "description": "Pick up where you left off or start a new store listing.",
+    "empty": "No saved projects yet",
+    "emptyDescription": "Create a project to begin uploading screenshots.",
+    "dashboard": "Projects dashboard",
+    "switch": "Switch project",
+    "current": "Current project:",
+    "open": "Open project",
+    "updated": "Updated {date}",
+    "slide": "slide",
+    "slides": "slides",
+    "rename": "Rename project",
+    "renameCurrent": "Rename current project",
+    "projectName": "Project name",
+    "currentProjectName": "Current project name",
+    "renameNamed": "Rename {name}",
+    "saved": "Saved projects"
+  },
+  "workflow": {
+    "progress": "Project workflow progress",
+    "steps": [
+      "Upload",
+      "Choose target",
+      "Pick a template",
+      "Customize",
+      "Export"
+    ],
+    "statuses": {
+      "current": "current step",
+      "completed": "completed",
+      "upcoming": "upcoming"
+    },
+    "shortSteps": [
+      "Upload",
+      "Platform",
+      "Template",
+      "Customize",
+      "Export"
+    ]
+  },
+  "upload": {
+    "release": "Release to add screenshots",
+    "drop": "Drop your screenshots here",
+    "types": "PNG or JPG",
+    "count": "{count} of 10 screenshots",
+    "browse": "Browse files",
+    "validation": "Only PNG and JPG images are supported.",
+    "limit": "You can add up to 10 screenshots.",
+    "uploaded": "Uploaded screenshots",
+    "reorder": "Reorder {name}",
+    "delete": "Delete {name}",
+    "slideTitle": "Slide title",
+    "next": "Next",
+    "privacy": "Your images stay private and are processed locally in your browser.",
+    "upToTen": "Up to 10 screenshots"
+  },
+  "target": {
+    "eyebrow": "Store",
+    "title": "Where are you publishing?",
+    "googleDescription": "Android phone and tablet listings",
+    "appleDescription": "iPhone and iPad product pages",
+    "sizes": "Export sizes",
+    "select": "Select the formats you need",
+    "custom": "Custom dimensions",
+    "customDescription": "Add a format not listed above.",
+    "name": "Name",
+    "width": "Width",
+    "height": "Height",
+    "formats": "{count} export formats selected",
+    "format": "{count} export format selected",
+    "remove": "Remove {name}",
+    "dimensionName": "Custom dimension name",
+    "customWidth": "Custom width",
+    "customHeight": "Custom height",
+    "presets": {
+      "phone": "Phone",
+      "tablet-7": "7-inch tablet",
+      "tablet-10": "10-inch tablet",
+      "iphone-dynamic-island-medium-1206": "iPhone Dynamic Island (1206 px)",
+      "iphone-dynamic-island-medium-1179": "iPhone Dynamic Island (1179 px)",
+      "iphone-dynamic-island-large": "iPhone Dynamic Island large",
+      "iphone-6-5-face-id": "iPhone 6.5-inch Face ID",
+      "ipad-13": "iPad 13-inch"
+    }
+  },
+  "template": {
+    "step": "Step 3 / Template",
+    "title": "Pick a template",
+    "description": "Choose a starting layout. Each card previews your first screenshot; the selected design is rendered at the active target's full dimensions.",
+    "chooseSlide": "Choose screenshot to customize",
+    "gallery": "Template gallery",
+    "layouts": "{count} layouts",
+    "filter": "Filter templates by category",
+    "live": "Live preview",
+    "preview": "Previewing slide {slide}. Choose a slide above to assign its template.",
+    "categories": {
+      "All": "All",
+      "General": "General",
+      "Fashion": "Fashion",
+      "Fitness": "Fitness",
+      "Education": "Education",
+      "Productivity": "Productivity"
+    },
+    "slideNamed": "Slide {number}: {name}"
+  },
+  "customize": {
+    "step": "Step 4 / Customize",
+    "title": "Customize each screenshot",
+    "description": "Copy, background, and frame settings are saved independently for every slide.",
+    "slides": "Your slides",
+    "live": "Live preview",
+    "updates": "Updates live",
+    "typography": "Text & typography",
+    "editCopy": "Edit the copy on this slide.",
+    "headline": "Headline",
+    "headlinePlaceholder": "Your main headline",
+    "headlineFont": "Headline font",
+    "subheadline": "Subheadline",
+    "subheadlinePlaceholder": "Add a supporting message",
+    "none": "No screenshots to customize",
+    "addScreenshot": "Go back to Step 1 and add at least one screenshot.",
+    "screenshotCount": "{count} screenshots",
+    "screenshot": "{count} screenshot",
+    "selectScreenshot": "Select screenshot to customize",
+    "slide": "Slide {number}",
+    "subheadlineFont": "Subheadline font",
+    "badge": "Optional badge text",
+    "verified": "Only add verified information",
+    "alignment": "Text alignment",
+    "colorOverrides": "Text color overrides",
+    "routineCards": "Editable routine / task cards",
+    "savedRows": "These rows are saved for this slide.",
+    "cardFont": "Card font family",
+    "item": "Item {number}",
+    "timeSubtitle": "Time / subtitle",
+    "timeExample": "e.g. 9:00 AM",
+    "titleField": "Title",
+    "addTask": "Add a task",
+    "detail": "Detail",
+    "optionalDetail": "Optional detail",
+    "removeItem": "Remove item",
+    "addItem": "Add item",
+    "widget": "Floating widget content",
+    "widgetCopy": "Edit the copy shown in the overlapping notification card.",
+    "widgetItem": "Widget item {number}",
+    "widgetTitle": "Widget title",
+    "supportingDetail": "Supporting detail",
+    "removeWidget": "Remove item",
+    "addWidget": "Add widget item",
+    "social": "Optional rating or social proof",
+    "socialHelp": "Hidden by default. Only enter ratings or claims that belong to this app.",
+    "showRating": "Show verified rating on this slide",
+    "score": "Score",
+    "ratingPlaceholder": "Enter app rating",
+    "starCount": "Star count",
+    "subtitle": "Subtitle",
+    "reviewsPlaceholder": "e.g. 120 verified reviews",
+    "accents": "Background accents / pattern",
+    "patternHelp": "Choose a subtle overlay for this slide only.",
+    "pattern": "Pattern",
+    "templateDefault": "Template default",
+    "noneSolid": "None / solid",
+    "softArches": "Soft arches",
+    "floatingOrbs": "Floating orbs",
+    "gridDots": "Subtle grid / dots",
+    "sprinkles": "Sprinkles / sparks",
+    "layers": "Decorative layers",
+    "layersHelp": "Hide cards and badges when you want a cleaner slide.",
+    "showLayers": "Show decorative cards / badges",
+    "background": "Background",
+    "backgroundHelp": "Choose a solid color or a two-stop gradient.",
+    "backgroundType": "Background type",
+    "startColor": "Start color",
+    "backgroundColor": "Background color",
+    "primaryColor": "Background primary color",
+    "endColor": "End color",
+    "secondaryColor": "Background secondary color",
+    "angle": "Gradient angle",
+    "angleAria": "Gradient direction angle",
+    "deviceFrame": "Device frame",
+    "deviceHelp": "Control the phone mockup around your screenshot.",
+    "showDevice": "Show device frame",
+    "frameFinish": "Frame finish",
+    "dark": "Dark",
+    "light": "Light",
+    "accent": "Accent (brand color)",
+    "projectBrand": "Project brand",
+    "brandHelp": "Use the brand color for device accents while each template keeps its own palette.",
+    "brandColor": "Brand color",
+    "brandColorAria": "Project brand color",
+    "applyBrand": "Use brand color on every device frame",
+    "auto": "Auto",
+    "editSlide": "Edit slide {number}: {name}",
+    "singleSlide": "Slide {number}",
+    "alignments": {
+      "left": "Left",
+      "center": "Center",
+      "right": "Right"
+    },
+    "backgroundTypes": {
+      "solid": "Solid",
+      "gradient": "Gradient"
+    },
+    "continueToExport": "Continue to export"
+  },
+  "export": {
+    "step": "Step 5 / Export",
+    "title": "Review and export your screenshots",
+    "description": "Each slide will be rendered at every selected output size and packaged in a store-organized ZIP.",
+    "slides": "Slides",
+    "targets": "Selected targets",
+    "files": "PNG files in ZIP",
+    "folders": "Output folders",
+    "none": "No export targets selected. Go back to Step 2 to choose sizes.",
+    "success": "ZIP created and downloaded successfully.",
+    "back": "Back to customization",
+    "preparing": "Preparing export…",
+    "download": "Render and download ZIP",
+    "building": "Building your export",
+    "render": "Rendering slide {slide} of {total} ({target})…",
+    "packaging": "Packaging PNG files into ZIP…",
+    "progress": "Export progress",
+    "rendered": "{current} / {total} images rendered",
+    "packaged": "{percent}% packaged",
+    "error": "The export could not be completed."
+  },
+  "contact": {
+    "eyebrow": "We're here to help",
+    "title": "Contact us",
+    "description": "Have a question or feedback about Screenshot Studio? Send us a note and we'll get back to you.",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "sending": "Sending…",
+    "send": "Send message",
+    "notConfigured": "Email is not configured yet. Please try again later.",
+    "sent": "Thanks for reaching out. Your message has been sent.",
+    "failed": "We couldn't send your message. Please try again shortly."
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "updated": "Last updated: October 16, 2026",
+    "contactLink": "contact page",
+    "privacyTitle": "Privacy policy",
+    "termsTitle": "Terms of use",
+    "privacySections": [
+      [
+        "Information you provide",
+        "Screenshot Studio processes the images and project details you choose to provide so you can create store listing graphics. Contact form submissions include the name, email address, subject, and message you enter."
+      ],
+      [
+        "How information is used",
+        "We use submitted information to operate the studio, respond to support requests, and improve the service. Contact messages are sent through EmailJS when the service is configured."
+      ],
+      [
+        "Storage and sharing",
+        "Project data may be stored in your browser to support the editor. Information submitted through the contact form is transmitted to EmailJS and handled according to its privacy terms. We do not sell personal information."
+      ],
+      [
+        "Your choices",
+        "You can choose what information and images to provide. For questions about this policy or a contact submission, use our contact page."
+      ],
+      [
+        "Policy updates",
+        "We may update this policy as the service changes. The date above indicates when it was most recently revised."
+      ]
+    ],
+    "termsSections": [
+      [
+        "Using Screenshot Studio",
+        "Screenshot Studio helps you prepare marketing images for app store listings. You are responsible for ensuring your use of the service follows applicable laws and the rules of the stores where you publish your images."
+      ],
+      [
+        "Your content",
+        "You retain responsibility for the screenshots, logos, text, and other materials you upload. You must have the rights needed to use those materials. Avoid uploading content you are not authorized to use."
+      ],
+      [
+        "Acceptable use",
+        "Do not use the service to violate others' rights, distribute unlawful content, interfere with the service, or attempt to access systems without authorization."
+      ],
+      [
+        "Availability",
+        "The service is provided as available and may change over time. We may fix, update, or temporarily suspend features to maintain the service."
+      ],
+      [
+        "Contact",
+        "Questions about these terms can be sent through our contact page."
+      ]
+    ]
+  },
+  "templates": {
+    "award-badge": {
+      "label": "Warm Editorial Cards",
+      "style": "Warm editorial",
+      "description": "A quiet ivory canvas and editable feature cards balance the app screenshot."
+    },
+    "earthy-routine": {
+      "label": "Earthy Routine Rows",
+      "style": "Warm split schedule",
+      "description": "A deep taupe title card and tidy routine rows give the listing a grounded, crafted feel."
+    },
+    "split-bleed": {
+      "label": "Oversized Bleed / Split Caption",
+      "style": "Immersive device hero",
+      "description": "A compact upper caption makes room for a phone that continues cleanly beyond the canvas edge."
+    },
+    "floating-widget": {
+      "label": "Minimalist Floating Widget",
+      "style": "Light notification layer",
+      "description": "Quiet white space, crisp type, and a floating product widget add dimension to the device preview."
+    },
+    "side-by-side-proof": {
+      "label": "Side-by-Side Feature Cards",
+      "style": "Two column features",
+      "description": "Two editable callouts flank the central phone preview."
+    },
+    "bottom-banner-widget": {
+      "label": "Bottom Banner Notification",
+      "style": "Overlapping bottom banner",
+      "description": "A broad notification banner overlaps the lower edge of a large centered phone."
+    },
+    "split-sidecar-hero": {
+      "label": "Split Sidecar Hero",
+      "style": "Left copy, right device",
+      "description": "A compact text and feature column balances a large phone positioned on the right."
+    },
+    "top-pill-story": {
+      "label": "Caption Stack",
+      "style": "Open editorial caption",
+      "description": "An open caption block leads into an oversized phone preview and an optional callout."
+    },
+    "fashion-festive-promo": {
+      "label": "Festive Promo",
+      "style": "Fashion ? festive campaign",
+      "description": "A restrained campaign canvas with gold details, generous headline space, and a large product preview."
+    },
+    "fashion-panoramic-split": {
+      "label": "Panoramic Split",
+      "style": "Fashion ? continuous panorama",
+      "description": "A tilted phone crosses a soft, continuous fashion canvas."
+    },
+    "fashion-editorial-grid": {
+      "label": "Editorial Collage",
+      "style": "Fashion ? editorial contact sheet",
+      "description": "A composed fashion campaign pairs an oversized app preview with two real screenshot panels and editable editorial copy."
+    },
+    "fashion-promo-block": {
+      "label": "Promo Block",
+      "style": "Fashion ? bold campaign",
+      "description": "A high impact campaign banner leads into the product screenshot."
+    },
+    "fitness-dark-neon": {
+      "label": "Dark Neon",
+      "style": "Fitness ? electric cyan",
+      "description": "A charcoal training layout with athletic photography and an electric cyan device edge."
+    },
+    "fitness-neon-dark": {
+      "label": "Fitness & Bodybuilding",
+      "style": "Cinematic ? dark olive",
+      "description": "Athletic photography, deep charcoal, and restrained olive accents frame the app preview."
+    },
+    "fitness-log-cards": {
+      "label": "Workout Log Cards",
+      "style": "Fitness ? exercise checklist",
+      "description": "Exercise checkoff cards float above a strong phone preview."
+    },
+    "edu-flashcard-stack": {
+      "label": "Academic Sticker Stack",
+      "style": "Education ? premium ivory study",
+      "description": "Academic sticker art frames editable course copy and a clean device preview."
+    },
+    "edu-pastel-waves": {
+      "label": "Pastel Waves & Cards",
+      "style": "Education ? layered study cards",
+      "description": "Soft blue vector waves and stacked flashcards frame the learning app preview."
+    },
+    "edu-institution-badges": {
+      "label": "Institution Badges",
+      "style": "Education ? credential grid",
+      "description": "A tilted left phone balances a neat grid of institution badges."
+    },
+    "prod-minimal-widget": {
+      "label": "Product Focus",
+      "style": "Productivity ? screen first",
+      "description": "A quiet interface lets the uploaded app screen become the hero without a decorative device frame."
+    },
+    "prod-split-bleed": {
+      "label": "Split Bleed",
+      "style": "Productivity ? developer dark mode",
+      "description": "An upper caption gives way to a dark developer screen bleeding off the lower edge."
+    }
+  },
+  "presetGroups": {
+    "solid_light_warm": "Solid light / warm",
+    "pastel_vibrant": "Pastel & vibrant",
+    "gradients": "Gradients",
+    "dark_premium": "Dark premium"
+  },
+  "presets": {
+    "golden_yellow": "Golden yellow",
+    "warm_taupe": "Warm taupe",
+    "pure_white": "Pure white",
+    "crisp_slate_light": "Crisp slate light",
+    "soft_lavender": "Soft lavender",
+    "blush_pink": "Blush pink",
+    "mint_green": "Mint green",
+    "sky_blue": "Sky blue",
+    "sunset_pop": "Sunset pop",
+    "cool_indigo": "Cool indigo",
+    "emerald_wave": "Emerald wave",
+    "soft_aura": "Soft aura",
+    "obsidian_dark": "Obsidian dark",
+    "midnight_navy": "Midnight navy",
+    "deep_violet": "Deep violet",
+    "charcoal": "Charcoal"
+  },
+  "preview": {
+    "upload": "Upload a screenshot to preview a template.",
+    "template": "Template preview using the first screenshot",
+    "rendered": "Rendered screenshot preview",
+    "scale": "Rendered at the selected target?s full dimensions; display scaling does not change the output pixels.",
+    "textOverflow": "Some text is too long for its template area. Shorten the text or adjust the layout before exporting."
+  },
+  "metadata": {
+    "description": "Create polished, store-ready app listing images from mobile screenshots.",
+    "contactTitle": "Contact | Screenshot Studio",
+    "privacyTitle": "Privacy Policy | Screenshot Studio",
+    "termsTitle": "Terms of Use | Screenshot Studio"
+  }
+}

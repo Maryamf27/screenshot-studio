@@ -33,6 +33,8 @@ export type RenderOptions = {
   onTextOverflow?: (message: string) => void;
 };
 
+const TEXT_OVERFLOW_MESSAGE = "Some text is too long for its template area. Shorten the text or adjust the layout before exporting.";
+
 type ImageLike = HTMLImageElement | HTMLCanvasElement;
 const backgroundAssetCache = new Map<string, Promise<HTMLImageElement>>();
 const screenshotImageCache = new WeakMap<Blob, Promise<HTMLImageElement>>();
@@ -235,7 +237,10 @@ async function drawText(
   const width = Math.min((layer.width / 100) * canvasWidth, maxTextWidth ?? Number.POSITIVE_INFINITY);
   const height = (layer.height / 100) * canvasHeight;
   const baseFontSize = (layer.fontSize / 100) * Math.min(canvasWidth, canvasHeight);
-  const minimumFontSize = Math.max(12, baseFontSize * 0.62);
+  const maxScale = Math.min(1, Math.max(0.3, layer.maxFontScale ?? 1));
+  const minScale = Math.min(maxScale, Math.max(0.3, layer.minFontScale ?? 0.62));
+  const maximumFontSize = baseFontSize * maxScale;
+  const minimumFontSize = Math.max(8, baseFontSize * minScale);
   // Template x is an alignment anchor: centered templates store the center,
   // while left/right aligned templates store the corresponding box edge.
   // Keep that template box fixed when the user changes alignment so the copy
@@ -283,7 +288,7 @@ async function drawText(
     if (line) lines.push(line);
     return lines;
   };
-  let fontSize = baseFontSize;
+  let fontSize = maximumFontSize;
   let visibleLines = makeLines(fontSize);
   while (fontSize > minimumFontSize && (visibleLines.length > maxLines || visibleLines.length * fontSize * layer.lineHeight > height)) {
     fontSize = Math.max(minimumFontSize, fontSize * 0.94);
@@ -295,7 +300,7 @@ async function drawText(
   }
   const lineHeight = fontSize * layer.lineHeight;
   const fits = visibleLines.length <= maxLines && visibleLines.length * lineHeight <= height;
-  if (!fits) onOverflow?.("Text is too long for this template. Shorten the headline or subheadline before exporting.");
+  if (!fits) onOverflow?.(TEXT_OVERFLOW_MESSAGE);
   visibleLines = visibleLines.slice(0, maxLines);
   ctx.font = `${layer.fontWeight} ${fontSize}px "${family}", sans-serif`;
   visibleLines.forEach((value, index) => {
@@ -322,13 +327,44 @@ async function drawText(
   ctx.restore();
 }
 
-async function drawBadge(ctx: CanvasRenderingContext2D, text: string, template: TemplateDefinition, canvasWidth: number, canvasHeight: number, family: string): Promise<void> {
+async function drawFittedLine(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  family: string,
+  weight: number,
+  fontSize: number,
+  color: string,
+  alignment: CanvasTextAlign,
+  baseline: CanvasTextBaseline,
+  onOverflow?: (message: string) => void,
+) {
+  if (!text.trim() || maxWidth <= 0) return;
+  const minimumSize = Math.max(8, fontSize * 0.62);
+  let fittedSize = fontSize;
+  await document.fonts.load(`${weight} ${fontSize}px "${family}"`);
+  ctx.textAlign = alignment;
+  ctx.textBaseline = baseline;
+  ctx.fillStyle = color;
+  ctx.font = `${weight} ${fittedSize}px "${family}"`;
+  while (ctx.measureText(text).width > maxWidth && fittedSize > minimumSize) {
+    fittedSize = Math.max(minimumSize, fittedSize * 0.94);
+    ctx.font = `${weight} ${fittedSize}px "${family}"`;
+  }
+  if (ctx.measureText(text).width > maxWidth) onOverflow?.(TEXT_OVERFLOW_MESSAGE);
+  ctx.fillText(text, x, y, maxWidth);
+}
+
+async function drawBadge(ctx: CanvasRenderingContext2D, text: string, template: TemplateDefinition, canvasWidth: number, canvasHeight: number, family: string, onOverflow?: (message: string) => void): Promise<void> {
   const badge = template.badge;
   if (!badge || !text.trim()) return;
   const x = (badge.x / 100) * canvasWidth;
   const y = (badge.y / 100) * canvasHeight;
   const maxWidth = (badge.width / 100) * canvasWidth;
-  const fontSize = (badge.fontSize / 100) * canvasWidth;
+  const baseFontSize = (badge.fontSize / 100) * canvasWidth;
+  let fontSize = baseFontSize;
   const paddingX = (badge.paddingX / 100) * canvasWidth;
   const paddingY = (badge.paddingY / 100) * canvasHeight;
   ctx.save();
@@ -337,6 +373,12 @@ async function drawBadge(ctx: CanvasRenderingContext2D, text: string, template: 
   ctx.clip();
   await document.fonts.load(`${badge.fontWeight} ${fontSize}px "${family}"`);
   ctx.font = `${badge.fontWeight} ${fontSize}px "${family}"`;
+  const textWidth = Math.max(0, maxWidth - paddingX * 2);
+  while (ctx.measureText(text).width > textWidth && fontSize > Math.max(8, baseFontSize * 0.62)) {
+    fontSize = Math.max(Math.max(8, baseFontSize * 0.62), fontSize * 0.94);
+    ctx.font = `${badge.fontWeight} ${fontSize}px "${family}"`;
+  }
+  if (ctx.measureText(text).width > textWidth) onOverflow?.(TEXT_OVERFLOW_MESSAGE);
   const width = Math.min(maxWidth, ctx.measureText(text).width + paddingX * 2);
   const height = Math.max((badge.height / 100) * canvasHeight, fontSize * badge.lineHeight + paddingY * 2);
   if (badge.laurel) {
@@ -378,6 +420,7 @@ async function drawRatingBadge(
   darkBackground: boolean,
   centerXPercent = 50,
   scale = 1,
+  onOverflow?: (message: string) => void,
 ) {
   const centerX = (centerXPercent / 100) * canvasWidth;
   const top = (topPercent / 100) * canvasHeight;
@@ -398,7 +441,8 @@ async function drawRatingBadge(
   ctx.textBaseline = "middle";
   ctx.font = `800 ${scoreSize}px "${family}"`;
   ctx.fillStyle = textColor;
-  ctx.fillText(rating.score, centerX, scoreY);
+  if (ctx.measureText(rating.score).width > canvasWidth * 0.3) onOverflow?.(TEXT_OVERFLOW_MESSAGE);
+  ctx.fillText(rating.score, centerX, scoreY, canvasWidth * 0.3);
   const scoreWidth = ctx.measureText(rating.score).width;
 
   // Fine curved stems and rotated leaves form a small laurel around the score.
@@ -426,9 +470,7 @@ async function drawRatingBadge(
   ctx.font = `700 ${starsSize}px "${family}"`;
   ctx.fillStyle = accentColor;
   ctx.fillText(stars, centerX, starsY);
-  ctx.font = `500 ${subtitleSize}px "${family}"`;
-  ctx.fillStyle = textColor;
-  ctx.fillText(rating.subtitle, centerX, subtitleY);
+  await drawFittedLine(ctx, rating.subtitle, centerX, subtitleY, canvasWidth * 0.4, family, 500, subtitleSize, textColor, "center", "middle", onOverflow);
   ctx.restore();
 }
 
@@ -784,7 +826,7 @@ function drawHeaderPanel(ctx: CanvasRenderingContext2D, template: TemplateDefini
   ctx.restore();
 }
 
-async function drawTaskCard(ctx: CanvasRenderingContext2D, card: TaskCardDefinition, item: { subtitle: string; title: string; detail?: string }, canvasWidth: number, canvasHeight: number, family: string) {
+async function drawTaskCard(ctx: CanvasRenderingContext2D, card: TaskCardDefinition, item: { subtitle: string; title: string; detail?: string }, canvasWidth: number, canvasHeight: number, family: string, onOverflow?: (message: string) => void) {
   const x = (card.x / 100) * canvasWidth;
   const y = (card.y / 100) * canvasHeight;
   const width = (card.width / 100) * canvasWidth;
@@ -818,33 +860,22 @@ async function drawTaskCard(ctx: CanvasRenderingContext2D, card: TaskCardDefinit
   ctx.beginPath();
   ctx.arc(indicatorX, centerY, indicatorRadius, 0, Math.PI * 2);
   ctx.fill();
-  ctx.textAlign = "left";
-  ctx.textBaseline = "top";
-  await document.fonts.load(`500 ${subtitleSize}px "${family}"`);
-  await document.fonts.load(`700 ${titleSize}px "${family}"`);
   ctx.font = `700 ${titleSize}px "${family}"`;
-  ctx.fillStyle = card.textColor;
   const timeWidth = item.subtitle ? Math.min(textLimit * 0.45, ctx.measureText(item.subtitle).width) : 0;
   const titleWidth = Math.max(0, textLimit - (timeWidth ? timeWidth + 12 * scale : 0));
-  ctx.fillText(item.title, textX, titleY, titleWidth);
+  await drawFittedLine(ctx, item.title, textX, titleY, titleWidth, family, 700, titleSize, card.textColor, "left", "top", onOverflow);
   if (item.subtitle) {
-    ctx.textAlign = "right";
-    ctx.font = `400 ${subtitleSize}px "${family}"`;
-    ctx.fillStyle = card.accentColor;
-    ctx.fillText(item.subtitle, rightEdge, titleY + 1 * scale, timeWidth || textLimit * 0.45);
-    ctx.textAlign = "left";
+    await drawFittedLine(ctx, item.subtitle, rightEdge, titleY + 1 * scale, timeWidth || textLimit * 0.45, family, 400, subtitleSize, card.accentColor, "right", "top", onOverflow);
   }
   if (item.detail) {
-    ctx.font = `400 ${subtitleSize}px "${family}"`;
-    ctx.fillStyle = card.textColor;
     ctx.globalAlpha = 0.68;
-    ctx.fillText(item.detail, textX, subtitleY, textLimit);
+    await drawFittedLine(ctx, item.detail, textX, subtitleY, textLimit, family, 400, subtitleSize, card.textColor, "left", "top", onOverflow);
   }
   ctx.restore();
   ctx.restore();
 }
 
-async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: TemplateDefinition, items: { subtitle: string; title: string }[], canvasWidth: number, canvasHeight: number, family: string, yOffset = 0) {
+async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: TemplateDefinition, items: { subtitle: string; title: string }[], canvasWidth: number, canvasHeight: number, family: string, yOffset = 0, onOverflow?: (message: string) => void) {
   const layout = template.routineRows;
   if (!layout) return;
   const x = (layout.x / 100) * canvasWidth;
@@ -869,19 +900,13 @@ async function drawRoutineRows(ctx: CanvasRenderingContext2D, template: Template
     const titleSize = canvasWidth * 0.019;
     await document.fonts.load(`500 ${timeSize}px "${family}"`);
     await document.fonts.load(`700 ${titleSize}px "${family}"`);
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    ctx.font = `500 ${timeSize}px "${family}"`;
-    ctx.fillStyle = layout.mutedColor;
-    ctx.fillText(row.subtitle, insetX, y + rowHeight * 0.32, width * 0.8);
-    ctx.font = `700 ${titleSize}px "${family}"`;
-    ctx.fillStyle = layout.textColor;
-    ctx.fillText(row.title, insetX, y + rowHeight * 0.7, width * 0.8);
+    await drawFittedLine(ctx, row.subtitle, insetX, y + rowHeight * 0.32, width * 0.8, family, 500, timeSize, layout.mutedColor, "left", "middle", onOverflow);
+    await drawFittedLine(ctx, row.title, insetX, y + rowHeight * 0.7, width * 0.8, family, 700, titleSize, layout.textColor, "left", "middle", onOverflow);
     ctx.restore();
   }
 }
 
-async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: FloatingWidgetDefinition | undefined, items: { title: string; subtitle: string }[], canvasWidth: number, canvasHeight: number, family: string) {
+async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: FloatingWidgetDefinition | undefined, items: { title: string; subtitle: string }[], canvasWidth: number, canvasHeight: number, family: string, onOverflow?: (message: string) => void) {
   if (!widget || !items.some((item) => item.title.trim() || item.subtitle.trim()) && !widget.eyebrow.trim()) return;
   const x = (widget.x / 100) * canvasWidth;
   const y = (widget.y / 100) * canvasHeight;
@@ -907,22 +932,14 @@ async function drawFloatingWidget(ctx: CanvasRenderingContext2D, widget: Floatin
   await document.fonts.load(`700 ${titleSize}px "${family}"`);
   await document.fonts.load(`400 ${detailSize}px "${family}"`);
   ctx.save();
-  ctx.textAlign = "left";
-  ctx.textBaseline = "top";
-  ctx.font = `500 ${eyebrowSize}px "${family}"`;
-  ctx.fillStyle = widget.accentColor;
-  ctx.fillText(widget.eyebrow, x + inset, y + height * 0.17, width - inset * 2);
+  await drawFittedLine(ctx, widget.eyebrow, x + inset, y + height * 0.17, width - inset * 2, family, 500, eyebrowSize, widget.accentColor, "left", "top", onOverflow);
   const contentTop = y + height * 0.36;
   const contentHeight = height * 0.55;
   const itemHeight = contentHeight / Math.max(1, items.length);
   for (const [index, item] of items.entries()) {
     const rowTop = contentTop + index * itemHeight;
-    ctx.font = `700 ${titleSize}px "${family}"`;
-    ctx.fillStyle = widget.textColor;
-    ctx.fillText(item.title, x + inset, rowTop, width - inset * 2);
-    ctx.font = `400 ${detailSize}px "${family}"`;
-    ctx.fillStyle = widget.mutedColor;
-    ctx.fillText(item.subtitle, x + inset, rowTop + itemHeight * 0.48, width - inset * 2);
+    await drawFittedLine(ctx, item.title, x + inset, rowTop, width - inset * 2, family, 700, titleSize, widget.textColor, "left", "top", onOverflow);
+    await drawFittedLine(ctx, item.subtitle, x + inset, rowTop + itemHeight * 0.48, width - inset * 2, family, 400, detailSize, widget.mutedColor, "left", "top", onOverflow);
   }
   ctx.restore();
   ctx.restore();
@@ -1121,7 +1138,7 @@ export async function renderSlide(
 
     const badgeText = slide.badgeText ?? "";
     if (showDecorativeLayers && template.badge && badgeText.trim() && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false)) {
-      await drawBadge(ctx, badgeText, template, canvas.width, canvas.height, slide.headlineFontFamily ?? family);
+      await drawBadge(ctx, badgeText, template, canvas.width, canvas.height, slide.headlineFontFamily ?? family, options.onTextOverflow);
     }
     const laurelBadgeVisible = Boolean(template.badge?.laurel && badgeText.trim() && (!template.badge.firstSlideOnly || slide.isFirstSlide !== false));
     const rating = slide.ratingBadge;
@@ -1140,7 +1157,7 @@ export async function renderSlide(
     };
     if (showRatingBadge) {
       const darkBackground = luminance(averageColor(contrastBackgrounds)) < 0.35;
-      await drawRatingBadge(ctx, rating!, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, 50, (editorialFashion || academicEducation) ? 0.72 : 1);
+      await drawRatingBadge(ctx, rating!, ratingTop, canvas.width, canvas.height, headlineFamily, contrastColor, darkBackground, 50, (editorialFashion || academicEducation) ? 0.72 : 1, options.onTextOverflow);
     }
     const headlineText = slide.headline === "Your Main Headline" ? template.defaultHeadline ?? slide.headline : slide.headline;
     const subheadlineText = slide.subheadline?.trim() ? slide.subheadline : template.defaultSubheadline ?? "";
@@ -1163,12 +1180,12 @@ export async function renderSlide(
         const card = taskCards[index] ?? taskCards[taskCards.length - 1];
         const y = (index < taskCards.length ? card.y : taskCards[taskCards.length - 1].y + (index - taskCards.length + 1) * step) + cardOffset;
         const positionedCard = { ...card, y };
-        await drawTaskCard(ctx, positionedCard, item, canvas.width, canvas.height, cardFamily);
+        await drawTaskCard(ctx, positionedCard, item, canvas.width, canvas.height, cardFamily, options.onTextOverflow);
         cardBounds.push({ left: card.x, right: card.x + card.width, bottom: y + card.height });
       }
     }
     if (showDecorativeLayers && template.routineRows && items.length > 0) {
-      await drawRoutineRows(ctx, template, items, canvas.width, canvas.height, cardFamily, cardOffset);
+      await drawRoutineRows(ctx, template, items, canvas.width, canvas.height, cardFamily, cardOffset, options.onTextOverflow);
       const rowLayout = template.routineRows;
       const bottom = rowLayout.y + cardOffset + Math.max(0, items.length - 1) * (rowLayout.rowHeight + rowLayout.gap) + rowLayout.rowHeight;
       cardBounds.push({ left: rowLayout.x, right: rowLayout.x + rowLayout.width, bottom });
@@ -1224,7 +1241,7 @@ export async function renderSlide(
     }
     if (showDecorativeLayers) {
       const defaultWidgetItems = template.floatingWidget ? [{ title: template.floatingWidget.title, subtitle: template.floatingWidget.detail }] : [];
-      await drawFloatingWidget(ctx, template.floatingWidget, slide.floatingWidgetItems ?? defaultWidgetItems, canvas.width, canvas.height, cardFamily);
+      await drawFloatingWidget(ctx, template.floatingWidget, slide.floatingWidgetItems ?? defaultWidgetItems, canvas.width, canvas.height, cardFamily, options.onTextOverflow);
     }
     return canvas;
   } finally {

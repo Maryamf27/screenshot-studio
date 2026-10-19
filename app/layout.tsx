@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import {NextIntlClientProvider} from 'next-intl';
 import "./globals.css";
-import { AppHeader } from "@/components/app-header";
+import type {Metadata} from 'next';
+import enMessages from '@/messages/en.json';
+
+export const instant = false;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,9 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Store Screenshot Studio",
-  description:
-    "Convert raw mobile app screenshots into polished Google Play and Apple App Store marketing images.",
+  title: 'Store Screenshot Studio',
+  description: 'Create polished app store screenshots in minutes.',
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -26,8 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground font-sans">
-        <AppHeader />
-        {children}
+        <NextIntlClientProvider locale="en" messages={enMessages}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

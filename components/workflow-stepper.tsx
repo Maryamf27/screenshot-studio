@@ -1,5 +1,6 @@
 import { Upload, Monitor, LayoutTemplate, Paintbrush, Download } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import {useTranslations} from 'next-intl';
 
 interface Step {
   label: string;
@@ -20,8 +21,9 @@ interface WorkflowStepperProps {
 }
 
 export function WorkflowStepper({ activeStep = 0 }: WorkflowStepperProps) {
+  const t = useTranslations('workflow');
   return (
-    <nav aria-label="Workflow steps" className="w-full">
+    <nav aria-label={t('progress')} className="w-full">
       <ol className="flex items-center justify-between gap-0 overflow-x-auto">
         {steps.map((step, index) => {
           const isActive = index === activeStep;
@@ -61,7 +63,7 @@ export function WorkflowStepper({ activeStep = 0 }: WorkflowStepperProps) {
                         : "text-muted-foreground"
                   }`}
                 >
-                  {step.label}
+                  {t(`shortSteps.${index}`)}
                 </span>
               </div>
             </li>

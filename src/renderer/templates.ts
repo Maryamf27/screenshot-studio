@@ -6,6 +6,9 @@ export type TextLayerDefinition = {
   width: number;
   height: number;
   fontSize: number;
+  /** Relative fitting bounds around `fontSize`; values above 1 are capped at the original size. */
+  minFontScale?: number;
+  maxFontScale?: number;
   fontWeight: 400 | 500 | 700 | 800;
   lineHeight: number;
   color: string;

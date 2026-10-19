@@ -1,0 +1,467 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "continue": "Continuar",
+    "loading": "Cargando…",
+    "error": "Algo salió mal",
+    "add": "Añadir",
+    "remove": "Quitar",
+    "delete": "Eliminar proyecto",
+    "newProject": "Nuevo proyecto",
+    "createProject": "Crear proyecto nuevo",
+    "language": "Idioma",
+    "theme": "Cambiar al tema {theme}",
+    "light": "claro",
+    "dark": "oscuro",
+    "continueToExport": "Continuar a la exportaci?n"
+  },
+  "navigation": {
+    "home": "Espacio de trabajo",
+    "contact": "Contacto",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "main": "Navegación principal",
+    "homeLabel": "Inicio de Screenshot Studio"
+  },
+  "home": {
+    "eyebrow": "Espacio de trabajo",
+    "title": "Tus proyectos",
+    "description": "Administra tus proyectos y crea imágenes pulidas para las fichas de las tiendas."
+  },
+  "projects": {
+    "loading": "Cargando proyectos guardados…",
+    "eyebrow": "Panel de proyectos",
+    "title": "Tus proyectos",
+    "description": "Continúa donde lo dejaste o empieza una ficha nueva.",
+    "empty": "Aún no hay proyectos guardados",
+    "emptyDescription": "Crea un proyecto para empezar a subir capturas.",
+    "dashboard": "Panel de proyectos",
+    "switch": "Cambiar proyecto",
+    "current": "Proyecto actual:",
+    "open": "Abrir proyecto",
+    "updated": "Actualizado {date}",
+    "slide": "diapositiva",
+    "slides": "diapositivas",
+    "rename": "Cambiar nombre del proyecto",
+    "renameCurrent": "Cambiar nombre del proyecto actual",
+    "projectName": "Nombre del proyecto",
+    "currentProjectName": "Nombre del proyecto actual",
+    "renameNamed": "Cambiar el nombre de {name}",
+    "saved": "Proyectos guardados"
+  },
+  "workflow": {
+    "progress": "Progreso del flujo del proyecto",
+    "steps": [
+      "Subir",
+      "Elegir destino",
+      "Elegir plantilla",
+      "Personalizar",
+      "Exportar"
+    ],
+    "statuses": {
+      "current": "paso actual",
+      "completed": "completado",
+      "upcoming": "próximo"
+    },
+    "shortSteps": [
+      "Subir",
+      "Tienda",
+      "Plantilla",
+      "Personalizar",
+      "Exportar"
+    ]
+  },
+  "upload": {
+    "release": "Suelta para añadir capturas",
+    "drop": "Suelta aquí tus capturas",
+    "types": "PNG o JPG",
+    "count": "{count} de 10 capturas",
+    "browse": "Explorar archivos",
+    "validation": "Solo se admiten imágenes PNG y JPG.",
+    "limit": "Puedes añadir hasta 10 capturas.",
+    "uploaded": "Capturas subidas",
+    "reorder": "Reordenar {name}",
+    "delete": "Eliminar {name}",
+    "slideTitle": "Título de la diapositiva",
+    "next": "Siguiente",
+    "privacy": "Tus imágenes son privadas y se procesan localmente en tu navegador.",
+    "upToTen": "Hasta 10 capturas"
+  },
+  "target": {
+    "eyebrow": "Tienda",
+    "title": "¿Dónde vas a publicar?",
+    "googleDescription": "Fichas para teléfonos y tabletas Android",
+    "appleDescription": "Páginas de producto para iPhone y iPad",
+    "sizes": "Tamaños de exportación",
+    "select": "Selecciona los formatos que necesitas",
+    "custom": "Dimensiones personalizadas",
+    "customDescription": "Añade un formato que no aparezca arriba.",
+    "name": "Nombre",
+    "width": "Ancho",
+    "height": "Alto",
+    "formats": "{count} formatos de exportación seleccionados",
+    "format": "{count} formato de exportación seleccionado",
+    "remove": "Quitar {name}",
+    "dimensionName": "Nombre de dimensión personalizada",
+    "customWidth": "Ancho personalizado",
+    "customHeight": "Alto personalizado",
+    "presets": {
+      "phone": "Tel?fono",
+      "tablet-7": "Tableta de 7 pulgadas",
+      "tablet-10": "Tableta de 10 pulgadas",
+      "iphone-dynamic-island-medium-1206": "iPhone Dynamic Island (1206 px)",
+      "iphone-dynamic-island-medium-1179": "iPhone Dynamic Island (1179 px)",
+      "iphone-dynamic-island-large": "iPhone Dynamic Island grande",
+      "iphone-6-5-face-id": "iPhone 6,5 pulgadas Face ID",
+      "ipad-13": "iPad de 13 pulgadas"
+    }
+  },
+  "template": {
+    "step": "Paso 3 / Plantilla",
+    "title": "Elige una plantilla",
+    "description": "Elige un diseño inicial. Cada tarjeta muestra una vista previa de la primera captura; el diseño seleccionado se renderiza con las dimensiones del destino activo.",
+    "chooseSlide": "Elegir captura para personalizar",
+    "gallery": "Galería de plantillas",
+    "layouts": "{count} diseños",
+    "filter": "Filtrar plantillas por categoría",
+    "live": "Vista previa",
+    "preview": "Vista previa de la diapositiva {slide}. Elige una diapositiva arriba para asignarle una plantilla.",
+    "categories": {
+      "All": "Todas",
+      "General": "General",
+      "Fashion": "Moda",
+      "Fitness": "Fitness",
+      "Education": "Educación",
+      "Productivity": "Productividad"
+    },
+    "slideNamed": "Diapositiva {number}: {name}"
+  },
+  "customize": {
+    "step": "Paso 4 / Personalizar",
+    "title": "Personaliza cada captura",
+    "description": "El texto, el fondo y el marco se guardan por separado en cada diapositiva.",
+    "slides": "Tus diapositivas",
+    "live": "Vista previa",
+    "updates": "Actualizaci?n en directo",
+    "typography": "Texto y tipografía",
+    "editCopy": "Edita el texto de esta diapositiva.",
+    "headline": "Titular",
+    "headlinePlaceholder": "Tu titular principal",
+    "headlineFont": "Fuente del titular",
+    "subheadline": "Subt?tulo",
+    "subheadlinePlaceholder": "Añade un mensaje de apoyo",
+    "none": "No hay capturas para personalizar",
+    "addScreenshot": "Vuelve al paso 1 y a?ade al menos una captura.",
+    "screenshotCount": "{count} capturas",
+    "screenshot": "{count} captura",
+    "selectScreenshot": "Seleccionar captura para personalizar",
+    "slide": "Diapositiva {number}",
+    "subheadlineFont": "Fuente del subt?tulo",
+    "badge": "Texto opcional de insignia",
+    "verified": "A?ade solo informaci?n verificada",
+    "alignment": "Alineaci?n del texto",
+    "colorOverrides": "Colores de texto personalizados",
+    "routineCards": "Tarjetas editables de rutinas y tareas",
+    "savedRows": "Estas filas se guardan para esta diapositiva.",
+    "cardFont": "Fuente de las tarjetas",
+    "item": "Elemento {number}",
+    "timeSubtitle": "Hora / subt?tulo",
+    "timeExample": "p. ej., 9:00",
+    "titleField": "T?tulo",
+    "addTask": "A?adir una tarea",
+    "detail": "Detalle",
+    "optionalDetail": "Detalle opcional",
+    "removeItem": "Quitar elemento",
+    "addItem": "A?adir elemento",
+    "widget": "Contenido del widget flotante",
+    "widgetCopy": "Edita el texto de la tarjeta de notificaci?n superpuesta.",
+    "widgetItem": "Elemento del widget {number}",
+    "widgetTitle": "T?tulo del widget",
+    "supportingDetail": "Detalle complementario",
+    "removeWidget": "Quitar elemento",
+    "addWidget": "A?adir elemento al widget",
+    "social": "Valoraci?n o prueba social opcional",
+    "socialHelp": "Oculto de forma predeterminada. A?ade solo valoraciones o afirmaciones reales de esta aplicaci?n.",
+    "showRating": "Mostrar valoraci?n verificada en esta diapositiva",
+    "score": "Puntuaci?n",
+    "ratingPlaceholder": "Introduce la valoraci?n de la aplicaci?n",
+    "starCount": "N?mero de estrellas",
+    "subtitle": "Subt?tulo",
+    "reviewsPlaceholder": "p. ej., 120 rese?as verificadas",
+    "accents": "Acentos o patr?n de fondo",
+    "patternHelp": "Elige una superposici?n sutil solo para esta diapositiva.",
+    "pattern": "Patr?n",
+    "templateDefault": "Predeterminado de la plantilla",
+    "noneSolid": "Ninguno / liso",
+    "softArches": "Arcos suaves",
+    "floatingOrbs": "Esferas flotantes",
+    "gridDots": "Cuadr?cula / puntos sutiles",
+    "sprinkles": "Destellos y chispas",
+    "layers": "Capas decorativas",
+    "layersHelp": "Oculta las tarjetas e insignias para lograr un dise?o m?s limpio.",
+    "showLayers": "Mostrar tarjetas e insignias decorativas",
+    "background": "Fondo",
+    "backgroundHelp": "Elige un color s?lido o un degradado de dos colores.",
+    "backgroundType": "Tipo de fondo",
+    "startColor": "Color inicial",
+    "backgroundColor": "Color de fondo",
+    "primaryColor": "Color principal del fondo",
+    "endColor": "Color final",
+    "secondaryColor": "Color secundario del fondo",
+    "angle": "?ngulo del degradado",
+    "angleAria": "?ngulo de direcci?n del degradado",
+    "deviceFrame": "Marco del dispositivo",
+    "deviceHelp": "Controla la maqueta del tel?fono alrededor de tu captura.",
+    "showDevice": "Mostrar marco del dispositivo",
+    "frameFinish": "Acabado del marco",
+    "dark": "Oscuro",
+    "light": "Claro",
+    "accent": "Acento (color de marca)",
+    "projectBrand": "Marca del proyecto",
+    "brandHelp": "Usa el color de marca en los detalles del dispositivo; cada plantilla conserva su paleta.",
+    "brandColor": "Color de marca",
+    "brandColorAria": "Color de marca del proyecto",
+    "applyBrand": "Aplicar el color de marca a todos los marcos",
+    "auto": "Autom?tico",
+    "editSlide": "Editar diapositiva {number}: {name}",
+    "singleSlide": "Diapositiva {number}",
+    "alignments": {
+      "left": "Izquierda",
+      "center": "Centro",
+      "right": "Derecha"
+    },
+    "backgroundTypes": {
+      "solid": "Liso",
+      "gradient": "Degradado"
+    },
+    "continueToExport": "Continuar a la exportaci?n"
+  },
+  "export": {
+    "step": "?tape 5 / Exporter",
+    "title": "Revisa y exporta tus capturas",
+    "description": "Cada diapositiva se renderizará en todos los tamaños elegidos y se incluirá en un ZIP organizado por tienda.",
+    "slides": "Diapositivas",
+    "targets": "Destinos seleccionados",
+    "files": "Archivos PNG en ZIP",
+    "folders": "Carpetas de salida",
+    "none": "No hay destinos seleccionados. Vuelve al paso 2 para elegir tamaños.",
+    "success": "El ZIP se creó y descargó correctamente.",
+    "back": "Volver a personalización",
+    "preparing": "Preparando exportación…",
+    "download": "Renderizar y descargar ZIP",
+    "building": "Creando tu exportación",
+    "render": "Renderizando diapositiva {slide} de {total} ({target})…",
+    "packaging": "Comprimiendo archivos PNG en ZIP…",
+    "progress": "Progreso de exportación",
+    "rendered": "{current} / {total} imágenes renderizadas",
+    "packaged": "{percent}% empaquetado",
+    "error": "No se pudo completar la exportación."
+  },
+  "contact": {
+    "eyebrow": "Estamos aquí para ayudarte",
+    "title": "Contáctanos",
+    "description": "¿Tienes alguna pregunta o comentario sobre Screenshot Studio? Escríbenos y te responderemos.",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "subject": "Asunto",
+    "message": "Mensaje",
+    "sending": "Enviando…",
+    "send": "Enviar mensaje",
+    "notConfigured": "El correo aún no está configurado. Inténtalo más tarde.",
+    "sent": "Gracias por escribirnos. Tu mensaje se ha enviado.",
+    "failed": "No pudimos enviar tu mensaje. Inténtalo de nuevo pronto."
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "updated": "Última actualización: 16 de octubre de 2026",
+    "contactLink": "página de contacto",
+    "privacyTitle": "Política de privacidad",
+    "termsTitle": "Condiciones de uso",
+    "privacySections": [
+      [
+        "Información que proporcionas",
+        "Screenshot Studio procesa las imágenes y los detalles del proyecto que proporcionas para crear gráficos para fichas de tiendas. Los mensajes del formulario de contacto incluyen el nombre, correo, asunto y mensaje que escribas."
+      ],
+      [
+        "Uso de la información",
+        "Usamos la información enviada para operar el estudio, responder solicitudes de soporte y mejorar el servicio. Los mensajes se envían mediante EmailJS cuando está configurado."
+      ],
+      [
+        "Almacenamiento y uso compartido",
+        "Los datos del proyecto pueden guardarse en tu navegador para usar el editor. La información del formulario se transmite a EmailJS según sus condiciones de privacidad. No vendemos información personal."
+      ],
+      [
+        "Tus opciones",
+        "Puedes elegir qué información e imágenes proporcionar. Si tienes preguntas sobre esta política o un mensaje, utiliza nuestra página de contacto."
+      ],
+      [
+        "Actualizaciones de la política",
+        "Podemos actualizar esta política a medida que cambie el servicio. La fecha anterior indica su última revisión."
+      ]
+    ],
+    "termsSections": [
+      [
+        "Uso de Screenshot Studio",
+        "Screenshot Studio te ayuda a preparar imágenes de marketing para fichas de tiendas de aplicaciones. Debes asegurarte de cumplir las leyes aplicables y las reglas de las tiendas donde publiques tus imágenes."
+      ],
+      [
+        "Tu contenido",
+        "Eres responsable de las capturas, logotipos, textos y otros materiales que subas. Debes tener los derechos necesarios para usarlos. No subas contenido sin autorización."
+      ],
+      [
+        "Uso aceptable",
+        "No utilices el servicio para infringir derechos, distribuir contenido ilegal, interferir con el servicio ni acceder a sistemas sin autorización."
+      ],
+      [
+        "Disponibilidad",
+        "El servicio se ofrece según disponibilidad y puede cambiar. Podemos corregir, actualizar o suspender temporalmente funciones para mantenerlo."
+      ],
+      [
+        "Contacto",
+        "Puedes enviar preguntas sobre estas condiciones mediante nuestra página de contacto."
+      ]
+    ]
+  },
+  "templates": {
+    "award-badge": {
+      "label": "Tarjetas editoriales c?lidas",
+      "style": "Estilo editorial c?lido",
+      "description": "Un fondo marfil sereno y tarjetas editables equilibran la captura de la aplicaci?n."
+    },
+    "earthy-routine": {
+      "label": "Filas de rutina natural",
+      "style": "Agenda c?lida dividida",
+      "description": "Una tarjeta de t?tulo topo y filas ordenadas aportan un aspecto artesanal y equilibrado."
+    },
+    "split-bleed": {
+      "label": "Sangrado amplio / t?tulo dividido",
+      "style": "Dispositivo protagonista",
+      "description": "Un t?tulo compacto deja espacio para que el tel?fono sobresalga del borde del lienzo."
+    },
+    "floating-widget": {
+      "label": "Widget flotante minimalista",
+      "style": "Notificaci?n ligera",
+      "description": "El espacio en blanco, la tipograf?a n?tida y un widget flotante dan profundidad a la vista previa."
+    },
+    "side-by-side-proof": {
+      "label": "Tarjetas de funciones en paralelo",
+      "style": "Funciones en dos columnas",
+      "description": "Dos llamadas editables flanquean la vista previa central del tel?fono."
+    },
+    "bottom-banner-widget": {
+      "label": "Notificaci?n en franja inferior",
+      "style": "Banner inferior superpuesto",
+      "description": "Una franja de notificaci?n se superpone al borde inferior de un tel?fono centrado."
+    },
+    "split-sidecar-hero": {
+      "label": "Protagonista con lateral dividido",
+      "style": "Texto a la izquierda, dispositivo a la derecha",
+      "description": "Una columna compacta de texto equilibra un tel?fono grande a la derecha."
+    },
+    "top-pill-story": {
+      "label": "Bloque de t?tulos",
+      "style": "T?tulo editorial abierto",
+      "description": "Un bloque de t?tulo abierto conduce a una vista previa grande del tel?fono y una llamada opcional."
+    },
+    "fashion-festive-promo": {
+      "label": "Promoci?n festiva",
+      "style": "Moda ? campa?a festiva",
+      "description": "Un dise?o refinado con detalles dorados, espacio amplio para el t?tulo y una vista previa del producto."
+    },
+    "fashion-panoramic-split": {
+      "label": "Panor?mica dividida",
+      "style": "Moda ? panor?mica continua",
+      "description": "Un tel?fono inclinado cruza un fondo de moda suave y continuo."
+    },
+    "fashion-editorial-grid": {
+      "label": "Collage editorial",
+      "style": "Moda ? l?mina editorial",
+      "description": "Una campa?a de moda combina una vista previa grande con dos capturas y texto editorial editable."
+    },
+    "fashion-promo-block": {
+      "label": "Bloque promocional",
+      "style": "Moda ? campa?a llamativa",
+      "description": "Un banner de campa?a llamativo da paso a la captura del producto."
+    },
+    "fitness-dark-neon": {
+      "label": "Ne?n oscuro",
+      "style": "Fitness ? cian el?ctrico",
+      "description": "Un dise?o de entrenamiento carb?n con fotograf?a deportiva y bordes cian el?ctricos."
+    },
+    "fitness-neon-dark": {
+      "label": "Fitness y musculaci?n",
+      "style": "Cinem?tico ? oliva oscuro",
+      "description": "La fotograf?a deportiva, el carb?n profundo y acentos oliva enmarcan la vista previa."
+    },
+    "fitness-log-cards": {
+      "label": "Tarjetas de registro de entrenamiento",
+      "style": "Fitness ? lista de ejercicios",
+      "description": "Tarjetas para marcar ejercicios flotan sobre una vista previa destacada del tel?fono."
+    },
+    "edu-flashcard-stack": {
+      "label": "Pila de pegatinas acad?micas",
+      "style": "Educaci?n ? estudio marfil",
+      "description": "Ilustraciones acad?micas enmarcan el texto editable del curso y una vista previa limpia."
+    },
+    "edu-pastel-waves": {
+      "label": "Ondas pastel y tarjetas",
+      "style": "Educaci?n ? tarjetas de estudio",
+      "description": "Ondas azules y fichas apiladas enmarcan la vista previa de la aplicaci?n educativa."
+    },
+    "edu-institution-badges": {
+      "label": "Insignias institucionales",
+      "style": "Educaci?n ? cuadr?cula de credenciales",
+      "description": "Un tel?fono inclinado equilibra una cuadr?cula ordenada de insignias institucionales."
+    },
+    "prod-minimal-widget": {
+      "label": "Protagonismo del producto",
+      "style": "Productividad ? primero la pantalla",
+      "description": "Una interfaz serena destaca la pantalla subida sin un marco decorativo."
+    },
+    "prod-split-bleed": {
+      "label": "Sangrado dividido",
+      "style": "Productividad ? modo oscuro para desarrollo",
+      "description": "Un t?tulo superior da paso a una pantalla oscura que sobresale por el borde inferior."
+    }
+  },
+  "presetGroups": {
+    "solid_light_warm": "Tonos cálidos y claros",
+    "pastel_vibrant": "Pastel y vibrante",
+    "gradients": "Degradados",
+    "dark_premium": "Oscuro prémium"
+  },
+  "presets": {
+    "golden_yellow": "Amarillo dorado",
+    "warm_taupe": "Topo cálido",
+    "pure_white": "Blanco puro",
+    "crisp_slate_light": "Pizarra clara",
+    "soft_lavender": "Lavanda suave",
+    "blush_pink": "Rosa empolvado",
+    "mint_green": "Verde menta",
+    "sky_blue": "Azul cielo",
+    "sunset_pop": "Atardecer intenso",
+    "cool_indigo": "Índigo frío",
+    "emerald_wave": "Ola esmeralda",
+    "soft_aura": "Aura suave",
+    "obsidian_dark": "Obsidiana oscura",
+    "midnight_navy": "Azul medianoche",
+    "deep_violet": "Violeta profundo",
+    "charcoal": "Carbón"
+  },
+  "preview": {
+    "upload": "Sube una captura para obtener una vista previa de la plantilla.",
+    "template": "Vista previa de la plantilla con la primera captura",
+    "rendered": "Vista previa de la captura renderizada",
+    "scale": "Se renderiza con las dimensiones completas del destino. La escala de visualizaci?n no cambia los p?xeles de salida.",
+    "textOverflow": "El texto es demasiado largo para esta plantilla. Acorta el t?tulo o el subt?tulo antes de exportar."
+  },
+  "metadata": {
+    "description": "Crea im?genes pulidas para fichas de tiendas de aplicaciones a partir de capturas m?viles.",
+    "contactTitle": "Contacto | Screenshot Studio",
+    "privacyTitle": "Pol?tica de privacidad | Screenshot Studio",
+    "termsTitle": "Condiciones de uso | Screenshot Studio"
+  }
+}

@@ -7,8 +7,10 @@ import { SortableContext, arrayMove, horizontalListSortingStrategy, useSortable 
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, ImageUp, Trash2 } from "lucide-react";
 import { useProjectStore, hydrateProjectStore, type UploadedImage } from "@/src/store/project-store";
+import {useTranslations} from 'next-intl';
 
 function SortableImage({ image, onRemove, onRename }: { image: UploadedImage; onRemove: () => void; onRename: (name: string) => void }) {
+  const t = useTranslations('upload');
   const { attributes, listeners, setNodeRef, transform, transition, isDragging, isOver } = useSortable({ id: image.id });
   const [preview] = useState(() => URL.createObjectURL(image.file));
   useEffect(() => () => URL.revokeObjectURL(preview), [preview]);
@@ -32,7 +34,7 @@ function SortableImage({ image, onRemove, onRename }: { image: UploadedImage; on
             type="button"
             {...attributes}
             {...listeners}
-            aria-label={`Reorder ${image.name}`}
+            aria-label={t('reorder', {name: image.name})}
             className={`inline-flex size-9 touch-none items-center justify-center rounded-lg border border-white/80 bg-white/95 text-slate-600 shadow-sm transition-colors hover:bg-white hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
           >
             <GripVertical className="size-4" aria-hidden="true" />
@@ -40,7 +42,7 @@ function SortableImage({ image, onRemove, onRename }: { image: UploadedImage; on
           <button
             type="button"
             onClick={onRemove}
-            aria-label={`Delete ${image.name}`}
+            aria-label={t('delete', {name: image.name})}
             className="inline-flex size-9 cursor-pointer items-center justify-center rounded-lg border border-white/80 bg-white/95 text-slate-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 active:scale-[0.98]"
           >
             <Trash2 className="size-4" aria-hidden="true" />
@@ -50,7 +52,7 @@ function SortableImage({ image, onRemove, onRename }: { image: UploadedImage; on
 
       <div className="min-w-0 space-y-1.5 p-2 pt-3">
         <p className="truncate text-xs font-medium leading-5 text-slate-500" title={image.file.name}>{image.file.name}</p>
-        <label className="sr-only" htmlFor={`slide-name-${image.id}`}>Slide title</label>
+        <label className="sr-only" htmlFor={`slide-name-${image.id}`}>{t('slideTitle')}</label>
         <input
           id={`slide-name-${image.id}`}
           type="text"
@@ -65,6 +67,7 @@ function SortableImage({ image, onRemove, onRename }: { image: UploadedImage; on
 }
 
 export function UploadManager({ onContinue }: { onContinue: () => void }) {
+  const t = useTranslations('upload');
   const images = useProjectStore((state) => state.images);
   const addImages = useProjectStore((state) => state.addImages);
   const removeImage = useProjectStore((state) => state.removeImage);
@@ -75,8 +78,8 @@ export function UploadManager({ onContinue }: { onContinue: () => void }) {
   useEffect(() => hydrateProjectStore(), []);
 
   const onDrop = (accepted: File[], rejected: { file: File }[]) => {
-    if (rejected.length) setMessage("Only PNG and JPG images are supported.");
-    else if (accepted.length + images.length > 10) setMessage("You can add up to 10 screenshots.");
+    if (rejected.length) setMessage(t('validation'));
+    else if (accepted.length + images.length > 10) setMessage(t('limit'));
     else setMessage(undefined);
     addImages(accepted);
   };
@@ -109,16 +112,16 @@ export function UploadManager({ onContinue }: { onContinue: () => void }) {
           <ImageUp className="size-6" strokeWidth={1.7} aria-hidden="true" />
         </div>
         <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-          {isDragActive ? "Release to add screenshots" : "Drop your screenshots here"}
+          {isDragActive ? t('release') : t('drop')}
         </h2>
-        <p className="mt-2 text-sm text-slate-500">PNG or JPG <span aria-hidden="true">·</span> {images.length} of 10 screenshots</p>
+        <p className="mt-2 text-sm text-slate-500">{t('types')} <span aria-hidden="true">·</span> {t('count', {count: images.length})}</p>
         <button
           type="button"
           onClick={open}
           disabled={images.length >= 10}
           className="mt-6 inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
         >
-          Browse files
+          {t('browse')}
         </button>
       </div>
 
@@ -127,7 +130,7 @@ export function UploadManager({ onContinue }: { onContinue: () => void }) {
       {images.length > 0 && (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
           <SortableContext items={ids} strategy={horizontalListSortingStrategy}>
-            <ol className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5" aria-label="Uploaded screenshots">
+            <ol className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5" aria-label={t('uploaded')}>
               {images.map((image) => (
                 <SortableImage key={image.id} image={image} onRemove={() => removeImage(image.id)} onRename={(name) => renameImage(image.id, name)} />
               ))}
@@ -143,10 +146,10 @@ export function UploadManager({ onContinue }: { onContinue: () => void }) {
           disabled={images.length === 0}
           className="inline-flex h-11 cursor-pointer items-center justify-center rounded-xl bg-slate-950 px-6 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-slate-800 hover:shadow-md active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
         >
-          Next
+          {t('next')}
         </button>
       </div>
-      <p className="mt-4 text-center text-xs leading-5 text-slate-500">Your images stay private and are processed locally in your browser.</p>
+      <p className="mt-4 text-center text-xs leading-5 text-slate-500">{t('privacy')}</p>
     </div>
   );
 }

@@ -1,22 +1,27 @@
-import type { Metadata } from "next";
+import type {Metadata} from 'next';
+import {getTranslations} from 'next-intl/server';
+import {hasLocale} from 'next-intl';
+import {routing} from '@/i18n/routing';
+import {Link} from '@/i18n/navigation';
 
-export const metadata: Metadata = { title: "Terms of Use | Screenshot Studio" };
+export async function generateMetadata({params}: {params?: Promise<{locale?: string}>}): Promise<Metadata> {
+  const requestedLocale = (await params)?.locale;
+  const locale = hasLocale(routing.locales, requestedLocale) ? requestedLocale : routing.defaultLocale;
+  const t = await getTranslations({locale, namespace: 'metadata'});
+  return {title: t('termsTitle')};
+}
 
-export default function TermsPage() {
-  return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-10 sm:px-8 sm:py-16">
-      <article className="mx-auto max-w-3xl">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Legal</p>
-        <h1 className="text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">Terms of use</h1>
-        <p className="mt-3 text-sm text-muted-foreground">Last updated: October 16, 2026</p>
-        <div className="mt-8 space-y-7 text-sm leading-7 text-muted-foreground sm:text-base">
-          <section><h2 className="mb-2 text-lg font-semibold text-foreground">Using Screenshot Studio</h2><p>Screenshot Studio helps you prepare marketing images for app store listings. You are responsible for ensuring your use of the service follows applicable laws and the rules of the stores where you publish your images.</p></section>
-          <section><h2 className="mb-2 text-lg font-semibold text-foreground">Your content</h2><p>You retain responsibility for the screenshots, logos, text, and other materials you upload. You must have the rights needed to use those materials. Avoid uploading content you are not authorized to use.</p></section>
-          <section><h2 className="mb-2 text-lg font-semibold text-foreground">Acceptable use</h2><p>Do not use the service to violate others’ rights, distribute unlawful content, interfere with the service, or attempt to access systems without authorization.</p></section>
-          <section><h2 className="mb-2 text-lg font-semibold text-foreground">Availability</h2><p>The service is provided as available and may change over time. We may fix, update, or temporarily suspend features to maintain the service.</p></section>
-          <section><h2 className="mb-2 text-lg font-semibold text-foreground">Contact</h2><p>Questions about these terms can be sent through our <a className="text-primary underline underline-offset-4" href="/contact">contact page</a>.</p></section>
-        </div>
-      </article>
-    </main>
-  );
+export default async function TermsPage({params}: {params?: Promise<{locale?: string}>}) {
+  const requestedLocale = (await params)?.locale;
+  const locale = hasLocale(routing.locales, requestedLocale) ? requestedLocale : routing.defaultLocale;
+  const t = await getTranslations({locale, namespace: 'legal'});
+  const sections = t.raw('termsSections') as [string, string][];
+  return <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-10 sm:px-8 sm:py-16"><article className="mx-auto max-w-3xl">
+    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">{t('eyebrow')}</p>
+    <h1 className="text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">{t('termsTitle')}</h1>
+    <p className="mt-3 text-sm text-muted-foreground">{t('updated')}</p>
+    <div className="mt-8 space-y-7 text-sm leading-7 text-muted-foreground sm:text-base">
+      {sections.map(([title, body], index) => <section key={title}><h2 className="mb-2 text-lg font-semibold text-foreground">{title}</h2><p>{index === 4 ? <>{body.split(t('contactLink'))[0]}<Link className="text-primary underline underline-offset-4" href="/contact">{t('contactLink')}</Link>{body.split(t('contactLink'))[1]}</> : body}</p></section>)}
+    </div>
+  </article></main>;
 }
