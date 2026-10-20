@@ -57,6 +57,12 @@
 :root[data-theme="dark"] .border-slate-300 { border-color: var(--border); }
 :root[data-theme="dark"] .bg-slate-950 { background-color: #f5f3ef; }
 :root[data-theme="dark"] .bg-slate-950.text-white { color: #171614; }
+:root[data-theme="dark"] .preset-option:hover,
+:root[data-theme="dark"] .preset-option:focus-visible {
+  background-color: var(--muted);
+  border-color: var(--border);
+  color: var(--foreground);
+}
 
 /* --- Tailwind theme integration --- */
 @theme inline {
