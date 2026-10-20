@@ -6,10 +6,10 @@ import {ChevronDown, Moon, Sun} from 'lucide-react';
 import {useEffect, useRef, useState} from 'react';
 
 const locales = [
-  {value: 'en', label: 'English'},
-  {value: 'es', label: 'Español'},
-  {value: 'fr', label: 'Français'},
-  {value: 'de', label: 'Deutsch'}
+  {value: 'en', label: 'English', flag: '🇺🇸'},
+  {value: 'es', label: 'Español', flag: '🇪🇸'},
+  {value: 'fr', label: 'Français', flag: '🇫🇷'},
+  {value: 'de', label: 'Deutsch', flag: '🇩🇪'}
 ] as const;
 
 export function AppHeader() {
@@ -64,11 +64,11 @@ export function AppHeader() {
       <div className="col-start-2 row-start-1 flex items-center justify-end gap-1.5 md:order-3">
         <div ref={languageMenuRef} className="relative">
           <button id="language-select" type="button" aria-label={t('common.language')} aria-haspopup="listbox" aria-expanded={languageMenuOpen} onClick={() => setLanguageMenuOpen((open) => !open)} onKeyDown={(event) => { if (event.key === 'Escape') setLanguageMenuOpen(false); }} className="inline-flex h-9 min-w-28 cursor-pointer items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground shadow-sm transition-colors hover:border-primary/60 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm">
-            <span>{locales.find((item) => item.value === locale)?.label ?? 'English'}</span>
+            <span className="inline-flex items-center gap-2"><span aria-hidden="true">{locales.find((item) => item.value === locale)?.flag ?? '🇺🇸'}</span>{locales.find((item) => item.value === locale)?.label ?? 'English'}</span>
             <ChevronDown size={15} className={`text-muted-foreground transition-transform ${languageMenuOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
           </button>
           {languageMenuOpen && <div role="listbox" aria-label={t('common.language')} className="absolute end-0 z-50 mt-2 min-w-full overflow-hidden rounded-xl border border-border bg-card p-1 shadow-lg shadow-black/10">
-            {locales.map((item) => <button key={item.value} type="button" role="option" aria-selected={locale === item.value} onClick={() => { setLanguageMenuOpen(false); if (locale !== item.value) router.replace(pathname, {locale: item.value}); }} className={`block w-full cursor-pointer rounded-lg px-3 py-2 text-start text-sm transition-colors ${locale === item.value ? 'bg-accent font-semibold text-accent-foreground' : 'text-foreground hover:bg-muted'}`}>{item.label}</button>)}
+            {locales.map((item) => <button key={item.value} type="button" role="option" aria-selected={locale === item.value} onClick={() => { setLanguageMenuOpen(false); if (locale !== item.value) router.replace(pathname, {locale: item.value}); }} className={`flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-start text-sm transition-colors ${locale === item.value ? 'bg-accent font-semibold text-accent-foreground' : 'text-foreground hover:bg-muted'}`}><span aria-hidden="true">{item.flag}</span>{item.label}</button>)}
           </div>}
         </div>
         <button type="button" onClick={toggleTheme} aria-label={t('common.theme', {theme: t(dark ? 'common.light' : 'common.dark')})} title={t('common.theme', {theme: t(dark ? 'common.light' : 'common.dark')})} className="flex size-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
