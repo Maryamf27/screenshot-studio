@@ -7,10 +7,9 @@ import {useEffect, useRef, useState} from 'react';
 
 const locales = [
   {value: 'en', label: 'English'},
-  {value: 'es', label: 'Espa?ol'},
-  {value: 'fr', label: 'Fran?ais'},
-  {value: 'de', label: 'Deutsch'},
-  {value: 'ar', label: '???????'}
+  {value: 'es', label: 'Español'},
+  {value: 'fr', label: 'Français'},
+  {value: 'de', label: 'Deutsch'}
 ] as const;
 
 export function AppHeader() {
@@ -30,7 +29,7 @@ export function AppHeader() {
 
   useEffect(() => {
     document.documentElement.lang = locale;
-    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = 'ltr';
   }, [locale]);
 
   useEffect(() => {
@@ -68,7 +67,7 @@ export function AppHeader() {
             <span>{locales.find((item) => item.value === locale)?.label ?? 'English'}</span>
             <ChevronDown size={15} className={`text-muted-foreground transition-transform ${languageMenuOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
           </button>
-          {languageMenuOpen && <div role="listbox" aria-label={t('common.language')} className="absolute right-0 z-50 mt-2 min-w-full overflow-hidden rounded-xl border border-border bg-card p-1 shadow-lg shadow-black/10">
+          {languageMenuOpen && <div role="listbox" aria-label={t('common.language')} className="absolute end-0 z-50 mt-2 min-w-full overflow-hidden rounded-xl border border-border bg-card p-1 shadow-lg shadow-black/10">
             {locales.map((item) => <button key={item.value} type="button" role="option" aria-selected={locale === item.value} onClick={() => { setLanguageMenuOpen(false); if (locale !== item.value) router.replace(pathname, {locale: item.value}); }} className={`block w-full cursor-pointer rounded-lg px-3 py-2 text-start text-sm transition-colors ${locale === item.value ? 'bg-accent font-semibold text-accent-foreground' : 'text-foreground hover:bg-muted'}`}>{item.label}</button>)}
           </div>}
         </div>
@@ -79,7 +78,7 @@ export function AppHeader() {
 
       <nav aria-label={t('navigation.main')} className="col-span-2 row-start-2 flex min-w-0 items-center justify-between border-t border-border/70 pt-2 md:order-2 md:col-span-1 md:row-auto md:justify-start md:gap-1 md:border-0 md:pt-0">
         <div className="flex items-center gap-1"><Link className={mainLinkClass('/')} href="/">{t('navigation.home')}</Link><Link className={mainLinkClass('/contact')} href="/contact">{t('navigation.contact')}</Link></div>
-        <div className="flex items-center gap-3 pl-2 sm:pl-3 md:ml-4 md:border-l md:border-border"><Link className={legalLinkClass} href="/privacy">{t('navigation.privacy')}</Link><Link className={legalLinkClass} href="/terms">{t('navigation.terms')}</Link></div>
+        <div className="flex items-center gap-3 ps-2 sm:ps-3 md:ms-4 md:border-s md:border-border"><Link className={legalLinkClass} href="/privacy">{t('navigation.privacy')}</Link><Link className={legalLinkClass} href="/terms">{t('navigation.terms')}</Link></div>
       </nav>
     </div>
   </header>;

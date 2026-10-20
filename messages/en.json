@@ -237,7 +237,8 @@
       "solid": "Solid",
       "gradient": "Gradient"
     },
-    "continueToExport": "Continue to export"
+    "continueToExport": "Continue to export",
+    "colorOverrideAria": "{label} color override"
   },
   "export": {
     "step": "Step 5 / Export",
@@ -368,62 +369,62 @@
     },
     "fashion-festive-promo": {
       "label": "Festive Promo",
-      "style": "Fashion ? festive campaign",
+      "style": "Fashion · festive campaign",
       "description": "A restrained campaign canvas with gold details, generous headline space, and a large product preview."
     },
     "fashion-panoramic-split": {
       "label": "Panoramic Split",
-      "style": "Fashion ? continuous panorama",
+      "style": "Fashion · continuous panorama",
       "description": "A tilted phone crosses a soft, continuous fashion canvas."
     },
     "fashion-editorial-grid": {
       "label": "Editorial Collage",
-      "style": "Fashion ? editorial contact sheet",
+      "style": "Fashion · editorial contact sheet",
       "description": "A composed fashion campaign pairs an oversized app preview with two real screenshot panels and editable editorial copy."
     },
     "fashion-promo-block": {
       "label": "Promo Block",
-      "style": "Fashion ? bold campaign",
+      "style": "Fashion · bold campaign",
       "description": "A high impact campaign banner leads into the product screenshot."
     },
     "fitness-dark-neon": {
       "label": "Dark Neon",
-      "style": "Fitness ? electric cyan",
+      "style": "Fitness · electric cyan",
       "description": "A charcoal training layout with athletic photography and an electric cyan device edge."
     },
     "fitness-neon-dark": {
       "label": "Fitness & Bodybuilding",
-      "style": "Cinematic ? dark olive",
+      "style": "Cinematic · dark olive",
       "description": "Athletic photography, deep charcoal, and restrained olive accents frame the app preview."
     },
     "fitness-log-cards": {
       "label": "Workout Log Cards",
-      "style": "Fitness ? exercise checklist",
+      "style": "Fitness · exercise checklist",
       "description": "Exercise checkoff cards float above a strong phone preview."
     },
     "edu-flashcard-stack": {
       "label": "Academic Sticker Stack",
-      "style": "Education ? premium ivory study",
+      "style": "Education · premium ivory study",
       "description": "Academic sticker art frames editable course copy and a clean device preview."
     },
     "edu-pastel-waves": {
       "label": "Pastel Waves & Cards",
-      "style": "Education ? layered study cards",
+      "style": "Education · layered study cards",
       "description": "Soft blue vector waves and stacked flashcards frame the learning app preview."
     },
     "edu-institution-badges": {
       "label": "Institution Badges",
-      "style": "Education ? credential grid",
+      "style": "Education · credential grid",
       "description": "A tilted left phone balances a neat grid of institution badges."
     },
     "prod-minimal-widget": {
       "label": "Product Focus",
-      "style": "Productivity ? screen first",
+      "style": "Productivity · screen first",
       "description": "A quiet interface lets the uploaded app screen become the hero without a decorative device frame."
     },
     "prod-split-bleed": {
       "label": "Split Bleed",
-      "style": "Productivity ? developer dark mode",
+      "style": "Productivity · developer dark mode",
       "description": "An upper caption gives way to a dark developer screen bleeding off the lower edge."
     }
   },
@@ -455,7 +456,7 @@
     "upload": "Upload a screenshot to preview a template.",
     "template": "Template preview using the first screenshot",
     "rendered": "Rendered screenshot preview",
-    "scale": "Rendered at the selected target?s full dimensions; display scaling does not change the output pixels.",
+    "scale": "Rendered at the selected target’s full dimensions; display scaling does not change the output pixels.",
     "textOverflow": "Some text is too long for its template area. Shorten the text or adjust the layout before exporting."
   },
   "metadata": {

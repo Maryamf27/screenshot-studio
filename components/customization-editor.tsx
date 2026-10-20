@@ -107,7 +107,7 @@ function resolveTemplateColor(color: string, brandColor: string) {
 function ColorOverride({ label, value, onChange, onAuto }: { label: string; value: string; onChange: (color: string) => void; onAuto: () => void }) {
   const t = useTranslations('customize');
   return <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-    <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-xs font-medium text-slate-600"><input aria-label={`${label} color override`} type="color" value={value} onChange={(event) => onChange(event.target.value)} className="size-6 cursor-pointer rounded border-0 bg-transparent p-0" /><span className="truncate">{label}</span></label>
+    <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-xs font-medium text-slate-600"><input aria-label={t('colorOverrideAria', {label})} type="color" value={value} onChange={(event) => onChange(event.target.value)} className="size-6 cursor-pointer rounded border-0 bg-transparent p-0" /><span className="truncate">{label}</span></label>
     <button type="button" onClick={onAuto} className="cursor-pointer rounded-md px-2 py-1 text-[11px] font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900">{t('auto')}</button>
   </div>;
 }
@@ -201,7 +201,7 @@ export function CustomizationEditor({ onBack, onContinue }: { onBack: () => void
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(19rem,22rem)]">
         <div className="min-w-0 rounded-2xl border border-slate-200 bg-slate-50 p-3 sm:p-5 xl:sticky xl:top-6 xl:self-start">
             <div className="mb-3 flex items-center justify-between gap-3">
-            <div><p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">{t('live')}</p><p className="mt-1 text-sm font-semibold text-slate-900">Slide {activeSlideIndex + 1} · {activeImage.name}</p></div>
+            <div><p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">{t('live')}</p><p className="mt-1 text-sm font-semibold text-slate-900">{t('slide', {number: activeSlideIndex + 1})} · {activeImage.name}</p></div>
             <span className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-500">{t('updates')}</span>
           </div>
           <CanvasPreview slideIndex={activeSlideIndex} />

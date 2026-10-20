@@ -16,7 +16,7 @@
     "theme": "Passer au thème {theme}",
     "light": "clair",
     "dark": "sombre",
-    "continueToExport": "Continuer vers l?exportation"
+    "continueToExport": "Continuer vers l’exportation"
   },
   "navigation": {
     "home": "Espace de travail",
@@ -50,7 +50,7 @@
     "projectName": "Nom du projet",
     "currentProjectName": "Nom du projet actuel",
     "renameNamed": "Renommer {name}",
-    "saved": "Projets enregistr?s"
+    "saved": "Projets enregistrés"
   },
   "workflow": {
     "progress": "Progression du projet",
@@ -69,7 +69,7 @@
     "shortSteps": [
       "Importer",
       "Boutique",
-      "Mod?le",
+      "Modèle",
       "Personnaliser",
       "Exporter"
     ]
@@ -88,7 +88,7 @@
     "slideTitle": "Titre de la diapositive",
     "next": "Suivant",
     "privacy": "Vos images restent privées et sont traitées localement dans votre navigateur.",
-    "upToTen": "Jusqu?? 10 captures"
+    "upToTen": "Jusqu’à 10 captures"
   },
   "target": {
     "eyebrow": "Boutique",
@@ -109,7 +109,7 @@
     "customWidth": "Largeur personnalisée",
     "customHeight": "Hauteur personnalisée",
     "presets": {
-      "phone": "T?l?phone",
+      "phone": "Téléphone",
       "tablet-7": "Tablette 7 pouces",
       "tablet-10": "Tablette 10 pouces",
       "iphone-dynamic-island-medium-1206": "iPhone Dynamic Island (1206 px)",
@@ -145,7 +145,7 @@
     "description": "Le texte, l’arrière-plan et le cadre sont enregistrés séparément pour chaque diapositive.",
     "slides": "Vos diapositives",
     "live": "Aperçu en direct",
-    "updates": "Mise ? jour en direct",
+    "updates": "Mise à jour en direct",
     "typography": "Texte et typographie",
     "editCopy": "Modifiez le texte de cette diapositive.",
     "headline": "Titre",
@@ -153,94 +153,95 @@
     "headlineFont": "Police du titre",
     "subheadline": "Sous-titre",
     "subheadlinePlaceholder": "Ajoutez un message complémentaire",
-    "none": "Aucune capture ? personnaliser",
-    "addScreenshot": "Revenez ? l??tape 1 et ajoutez au moins une capture.",
+    "none": "Aucune capture à personnaliser",
+    "addScreenshot": "Revenez à l’étape 1 et ajoutez au moins une capture.",
     "screenshotCount": "{count} captures",
     "screenshot": "{count} capture",
-    "selectScreenshot": "Choisir la capture ? personnaliser",
+    "selectScreenshot": "Choisir la capture à personnaliser",
     "slide": "Diapositive {number}",
     "subheadlineFont": "Police du sous-titre",
     "badge": "Texte de badge facultatif",
-    "verified": "N?ajoutez que des informations v?rifi?es",
+    "verified": "N’ajoutez que des informations vérifiées",
     "alignment": "Alignement du texte",
-    "colorOverrides": "Couleurs de texte personnalis?es",
-    "routineCards": "Cartes modifiables de routines et t?ches",
-    "savedRows": "Ces rang?es sont enregistr?es pour cette diapositive.",
+    "colorOverrides": "Couleurs de texte personnalisées",
+    "routineCards": "Cartes modifiables de routines et tâches",
+    "savedRows": "Ces rangées sont enregistrées pour cette diapositive.",
     "cardFont": "Police des cartes",
-    "item": "?l?ment {number}",
+    "item": "élément {number}",
     "timeSubtitle": "Heure / sous-titre",
     "timeExample": "ex. 9 h 00",
     "titleField": "Titre",
-    "addTask": "Ajouter une t?che",
-    "detail": "D?tail",
-    "optionalDetail": "D?tail facultatif",
-    "removeItem": "Retirer l??l?ment",
-    "addItem": "Ajouter un ?l?ment",
+    "addTask": "Ajouter une tâche",
+    "detail": "Détail",
+    "optionalDetail": "Détail facultatif",
+    "removeItem": "Retirer l’élément",
+    "addItem": "Ajouter un élément",
     "widget": "Contenu du widget flottant",
-    "widgetCopy": "Modifiez le texte de la notification superpos?e.",
-    "widgetItem": "?l?ment du widget {number}",
+    "widgetCopy": "Modifiez le texte de la notification superposée.",
+    "widgetItem": "élément du widget {number}",
     "widgetTitle": "Titre du widget",
-    "supportingDetail": "D?tail compl?mentaire",
-    "removeWidget": "Retirer l??l?ment",
-    "addWidget": "Ajouter un ?l?ment au widget",
+    "supportingDetail": "Détail complémentaire",
+    "removeWidget": "Retirer l’élément",
+    "addWidget": "Ajouter un élément au widget",
     "social": "Note ou preuve sociale facultative",
-    "socialHelp": "Masqu? par d?faut. N?ajoutez que des notes ou affirmations v?rifi?es concernant l?application.",
-    "showRating": "Afficher la note v?rifi?e sur cette diapositive",
+    "socialHelp": "Masqué par défaut. N’ajoutez que des notes ou affirmations vérifiées concernant l’application.",
+    "showRating": "Afficher la note vérifiée sur cette diapositive",
     "score": "Note",
-    "ratingPlaceholder": "Saisissez la note de l?application",
-    "starCount": "Nombre d??toiles",
+    "ratingPlaceholder": "Saisissez la note de l’application",
+    "starCount": "Nombre d’étoiles",
     "subtitle": "Sous-titre",
-    "reviewsPlaceholder": "ex. 120 avis v?rifi?s",
-    "accents": "Accents ou motif d?arri?re-plan",
-    "patternHelp": "Choisissez une superposition discr?te pour cette diapositive uniquement.",
+    "reviewsPlaceholder": "ex. 120 avis vérifiés",
+    "accents": "Accents ou motif d’arrière-plan",
+    "patternHelp": "Choisissez une superposition discrète pour cette diapositive uniquement.",
     "pattern": "Motif",
-    "templateDefault": "Par d?faut du mod?le",
+    "templateDefault": "Par défaut du modèle",
     "noneSolid": "Aucun / uni",
     "softArches": "Arches douces",
     "floatingOrbs": "Orbes flottants",
     "gridDots": "Grille / points discrets",
-    "sprinkles": "Paillettes / ?tincelles",
-    "layers": "?l?ments d?coratifs",
-    "layersHelp": "Masquez les cartes et badges pour obtenir une diapositive plus ?pur?e.",
-    "showLayers": "Afficher les cartes et badges d?coratifs",
-    "background": "Arri?re-plan",
-    "backgroundHelp": "Choisissez une couleur unie ou un d?grad? ? deux tons.",
-    "backgroundType": "Type d?arri?re-plan",
-    "startColor": "Couleur de d?part",
-    "backgroundColor": "Couleur d?arri?re-plan",
-    "primaryColor": "Couleur principale de l?arri?re-plan",
+    "sprinkles": "Paillettes / étincelles",
+    "layers": "éléments décoratifs",
+    "layersHelp": "Masquez les cartes et badges pour obtenir une diapositive plus épurée.",
+    "showLayers": "Afficher les cartes et badges décoratifs",
+    "background": "Arrière-plan",
+    "backgroundHelp": "Choisissez une couleur unie ou un dégradé à deux tons.",
+    "backgroundType": "Type d’arrière-plan",
+    "startColor": "Couleur de départ",
+    "backgroundColor": "Couleur d’arrière-plan",
+    "primaryColor": "Couleur principale de l’arrière-plan",
     "endColor": "Couleur de fin",
-    "secondaryColor": "Couleur secondaire de l?arri?re-plan",
-    "angle": "Angle du d?grad?",
-    "angleAria": "Angle du d?grad?",
-    "deviceFrame": "Cadre de l?appareil",
-    "deviceHelp": "R?glez la maquette du t?l?phone autour de votre capture.",
-    "showDevice": "Afficher le cadre de l?appareil",
+    "secondaryColor": "Couleur secondaire de l’arrière-plan",
+    "angle": "Angle du dégradé",
+    "angleAria": "Angle du dégradé",
+    "deviceFrame": "Cadre de l’appareil",
+    "deviceHelp": "Réglez la maquette du téléphone autour de votre capture.",
+    "showDevice": "Afficher le cadre de l’appareil",
     "frameFinish": "Finition du cadre",
     "dark": "Sombre",
     "light": "Clair",
     "accent": "Accent (couleur de marque)",
     "projectBrand": "Marque du projet",
-    "brandHelp": "Utilisez la couleur de marque pour les accents de l?appareil tout en gardant la palette de chaque mod?le.",
+    "brandHelp": "Utilisez la couleur de marque pour les accents de l’appareil tout en gardant la palette de chaque modèle.",
     "brandColor": "Couleur de marque",
     "brandColorAria": "Couleur de marque du projet",
-    "applyBrand": "Appliquer la couleur de marque ? tous les cadres",
-    "auto": "Auto",
+    "applyBrand": "Appliquer la couleur de marque à tous les cadres",
+    "auto": "Automatique",
     "editSlide": "Modifier la diapositive {number} : {name}",
     "singleSlide": "Diapositive {number}",
     "alignments": {
       "left": "Gauche",
-      "center": "Centr?",
+      "center": "Centré",
       "right": "Droite"
     },
     "backgroundTypes": {
       "solid": "Uni",
-      "gradient": "D?grad?"
+      "gradient": "Dégradé"
     },
-    "continueToExport": "Continuer vers l?exportation"
+    "continueToExport": "Continuer vers l’exportation",
+    "colorOverrideAria": "Remplacement de couleur pour {label}"
   },
   "export": {
-    "step": "?tape 5 / Exporter",
+    "step": "Étape 5 / Exporter",
     "title": "Vérifiez et exportez vos captures",
     "description": "Chaque diapositive sera rendue dans chaque taille sélectionnée, puis ajoutée à un ZIP organisé par boutique.",
     "slides": "Diapositives",
@@ -327,104 +328,104 @@
   },
   "templates": {
     "award-badge": {
-      "label": "Cartes ?ditoriales chaleureuses",
-      "style": "?ditorial chaleureux",
-      "description": "Un fond ivoire apaisant et des cartes de fonctionnalit?s modifiables ?quilibrent la capture."
+      "label": "Cartes éditoriales chaleureuses",
+      "style": "Éditorial chaleureux",
+      "description": "Un fond ivoire apaisant et des cartes de fonctionnalités modifiables équilibrent la capture."
     },
     "earthy-routine": {
-      "label": "Rang?es de routine naturelles",
+      "label": "Rangées de routine naturelles",
       "style": "Planning chaleureux en deux parties",
-      "description": "Un titre taupe profond et des rang?es ordonn?es donnent un aspect artisanal et pos?."
+      "description": "Un titre taupe profond et des rangées ordonnées donnent un aspect artisanal et posé."
     },
     "split-bleed": {
-      "label": "D?bordement ample / l?gende divis?e",
+      "label": "Débordement ample / légende divisée",
       "style": "Appareil immersif",
-      "description": "Une l?gende compacte laisse place ? un t?l?phone qui d?passe nettement du canevas."
+      "description": "Une légende compacte laisse place à un téléphone qui dépasse nettement du canevas."
     },
     "floating-widget": {
       "label": "Widget flottant minimaliste",
-      "style": "Notification l?g?re",
-      "description": "Un espace a?r?, une typographie nette et un widget flottant donnent du relief ? l?aper?u."
+      "style": "Notification légère",
+      "description": "Un espace aéré, une typographie nette et un widget flottant donnent du relief à l’aperçu."
     },
     "side-by-side-proof": {
-      "label": "Cartes de fonctionnalit?s c?te ? c?te",
-      "style": "Fonctionnalit?s en deux colonnes",
-      "description": "Deux encarts modifiables encadrent l?aper?u central du t?l?phone."
+      "label": "Cartes de fonctionnalités côte à côte",
+      "style": "Fonctionnalités en deux colonnes",
+      "description": "Deux encarts modifiables encadrent l’aperçu central du téléphone."
     },
     "bottom-banner-widget": {
-      "label": "Notification en bandeau inf?rieur",
-      "style": "Bandeau inf?rieur superpos?",
-      "description": "Un large bandeau de notification chevauche le bas d?un t?l?phone centr?."
+      "label": "Notification en bandeau inférieur",
+      "style": "Bandeau inférieur superposé",
+      "description": "Un large bandeau de notification chevauche le bas d’un téléphone centré."
     },
     "split-sidecar-hero": {
-      "label": "Visuel principal avec panneau lat?ral",
-      "style": "Texte ? gauche, appareil ? droite",
-      "description": "Une colonne compacte de texte ?quilibre un grand t?l?phone plac? ? droite."
+      "label": "Visuel principal avec panneau latéral",
+      "style": "Texte à gauche, appareil à droite",
+      "description": "Une colonne compacte de texte équilibre un grand téléphone placé à droite."
     },
     "top-pill-story": {
-      "label": "Pile de l?gendes",
-      "style": "L?gende ?ditoriale ouverte",
-      "description": "Un bloc de l?gende ouvert m?ne ? un grand aper?u de t?l?phone et ? un encart facultatif."
+      "label": "Pile de légendes",
+      "style": "Légende éditoriale ouverte",
+      "description": "Un bloc de légende ouvert mène à un grand aperçu de téléphone et à un encart facultatif."
     },
     "fashion-festive-promo": {
       "label": "Promotion festive",
-      "style": "Mode ? campagne festive",
-      "description": "Un canevas raffin?, des d?tails dor?s, un grand espace de titre et un aper?u produit."
+      "style": "Mode à campagne festive",
+      "description": "Un canevas raffiné, des détails dorés, un grand espace de titre et un aperçu produit."
     },
     "fashion-panoramic-split": {
-      "label": "Panorama divis?",
-      "style": "Mode ? panorama continu",
-      "description": "Un t?l?phone inclin? traverse un canevas de mode doux et continu."
+      "label": "Panorama divisé",
+      "style": "Mode · panorama continu",
+      "description": "Un téléphone incliné traverse un canevas de mode doux et continu."
     },
     "fashion-editorial-grid": {
-      "label": "Collage ?ditorial",
-      "style": "Mode ? planche ?ditoriale",
-      "description": "Une campagne de mode associe un grand aper?u ? deux captures et ? un texte ?ditorial modifiable."
+      "label": "Collage éditorial",
+      "style": "Mode · planche éditoriale",
+      "description": "Une campagne de mode associe un grand aperçu à deux captures et à un texte éditorial modifiable."
     },
     "fashion-promo-block": {
       "label": "Bloc promotionnel",
-      "style": "Mode ? campagne audacieuse",
-      "description": "Une banni?re de campagne marquante m?ne ? la capture du produit."
+      "style": "Mode à campagne audacieuse",
+      "description": "Une bannière de campagne marquante mène à la capture du produit."
     },
     "fitness-dark-neon": {
-      "label": "N?on sombre",
-      "style": "Fitness ? cyan ?lectrique",
-      "description": "Un canevas d?entra?nement anthracite, des photos sportives et un contour cyan ?lectrique."
+      "label": "Néon sombre",
+      "style": "Fitness · cyan électrique",
+      "description": "Un canevas d’entraînement anthracite, des photos sportives et un contour cyan électrique."
     },
     "fitness-neon-dark": {
       "label": "Fitness et musculation",
-      "style": "Cin?matique ? olive sombre",
-      "description": "Des photos sportives, un anthracite profond et des accents olive encadrent l?aper?u."
+      "style": "Cinématique · olive sombre",
+      "description": "Des photos sportives, un anthracite profond et des accents olive encadrent l’aperçu."
     },
     "fitness-log-cards": {
-      "label": "Cartes de suivi d?entra?nement",
-      "style": "Fitness ? liste d?exercices",
-      "description": "Des cartes de suivi des exercices flottent au-dessus d?un aper?u de t?l?phone affirm?."
+      "label": "Cartes de suivi d’entraînement",
+      "style": "Fitness · liste d’exercices",
+      "description": "Des cartes de suivi des exercices flottent au-dessus d’un aperçu de téléphone affirmé."
     },
     "edu-flashcard-stack": {
-      "label": "Pile d?autocollants acad?miques",
-      "style": "?ducation ? ?tude ivoire",
-      "description": "Des illustrations acad?miques encadrent le texte du cours et un aper?u ?pur?."
+      "label": "Pile d’autocollants académiques",
+      "style": "Éducation · étude ivoire",
+      "description": "Des illustrations académiques encadrent le texte du cours et un aperçu épuré."
     },
     "edu-pastel-waves": {
       "label": "Vagues pastel et cartes",
-      "style": "?ducation ? cartes d??tude",
-      "description": "Des vagues bleues et des fiches empil?es encadrent l?aper?u de l?application ?ducative."
+      "style": "Éducation · cartes d’étude",
+      "description": "Des vagues bleues et des fiches empilées encadrent l’aperçu de l’application éducative."
     },
     "edu-institution-badges": {
       "label": "Badges institutionnels",
-      "style": "?ducation ? grille de certifications",
-      "description": "Un t?l?phone inclin? ?quilibre une grille ordonn?e de badges institutionnels."
+      "style": "Éducation · grille de certifications",
+      "description": "Un téléphone incliné équilibre une grille ordonnée de badges institutionnels."
     },
     "prod-minimal-widget": {
-      "label": "Produit ? l?honneur",
-      "style": "Productivit? ? ?cran d?abord",
-      "description": "Une interface ?pur?e met en valeur l??cran import? sans cadre d?coratif."
+      "label": "Produit à l’honneur",
+      "style": "Productivité · écran d’abord",
+      "description": "Une interface épurée met en valeur l’écran importé sans cadre décoratif."
     },
     "prod-split-bleed": {
-      "label": "D?bordement divis?",
-      "style": "Productivit? ? mode sombre d?veloppeur",
-      "description": "Une l?gende sup?rieure laisse place ? un ?cran sombre qui d?borde en bas du canevas."
+      "label": "Débordement divisé",
+      "style": "Productivité · mode sombre développeur",
+      "description": "Une légende supérieure laisse place à un écran sombre qui déborde en bas du canevas."
     }
   },
   "presetGroups": {
@@ -452,16 +453,16 @@
     "charcoal": "Anthracite"
   },
   "preview": {
-    "upload": "Importez une capture pour pr?visualiser un mod?le.",
-    "template": "Aper?u du mod?le avec la premi?re capture",
-    "rendered": "Aper?u de la capture g?n?r?e",
-    "scale": "Le rendu utilise les dimensions compl?tes de la cible. La mise ? l??chelle ? l??cran ne modifie pas les pixels export?s.",
-    "textOverflow": "Le texte est trop long pour ce mod?le. Raccourcissez le titre ou le sous-titre avant l?exportation."
+    "upload": "Importez une capture pour prévisualiser un modèle.",
+    "template": "Aperçu du modèle avec la première capture",
+    "rendered": "Aperçu de la capture générée",
+    "scale": "Le rendu utilise les dimensions complètes de la cible. La mise à l’échelle à l’écran ne modifie pas les pixels exportés.",
+    "textOverflow": "Le texte est trop long pour ce modèle. Raccourcissez le titre ou le sous-titre avant l’exportation."
   },
   "metadata": {
-    "description": "Cr?ez des visuels soign?s pour les fiches des boutiques ? partir de captures mobiles.",
+    "description": "Créez des visuels soignés pour les fiches des boutiques à partir de captures mobiles.",
     "contactTitle": "Contact | Screenshot Studio",
-    "privacyTitle": "Politique de confidentialit? | Screenshot Studio",
-    "termsTitle": "Conditions d?utilisation | Screenshot Studio"
+    "privacyTitle": "Politique de confidentialité | Screenshot Studio",
+    "termsTitle": "Conditions d’utilisation | Screenshot Studio"
   }
 }

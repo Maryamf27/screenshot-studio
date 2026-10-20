@@ -2,14 +2,14 @@
   "common": {
     "save": "Speichern",
     "cancel": "Abbrechen",
-    "back": "Zur?ck",
+    "back": "Zurück",
     "next": "Weiter",
     "continue": "Fortfahren",
-    "loading": "Wird geladen?",
+    "loading": "Wird geladen…",
     "error": "Etwas ist schiefgelaufen",
-    "add": "Hinzuf?gen",
+    "add": "Hinzufügen",
     "remove": "Entfernen",
-    "delete": "Projekt l?schen",
+    "delete": "Projekt löschen",
     "newProject": "Neues Projekt",
     "createProject": "Neues Projekt erstellen",
     "language": "Sprache",
@@ -29,19 +29,19 @@
   "home": {
     "eyebrow": "Arbeitsbereich",
     "title": "Ihre Projekte",
-    "description": "Verwalten Sie Ihre Projekte und erstellen Sie hochwertige Bilder f?r App-Store-Eintr?ge."
+    "description": "Verwalten Sie Ihre Projekte und erstellen Sie hochwertige Bilder für App-Store-Einträge."
   },
   "projects": {
-    "loading": "Gespeicherte Projekte werden geladen?",
-    "eyebrow": "Projekt?bersicht",
+    "loading": "Gespeicherte Projekte werden geladen…",
+    "eyebrow": "Projektübersicht",
     "title": "Ihre Projekte",
-    "description": "Setzen Sie dort fort, wo Sie aufgeh?rt haben, oder beginnen Sie einen neuen Store-Eintrag.",
+    "description": "Setzen Sie dort fort, wo Sie aufgehört haben, oder beginnen Sie einen neuen Store-Eintrag.",
     "empty": "Noch keine gespeicherten Projekte",
     "emptyDescription": "Erstellen Sie ein Projekt, um Screenshots hochzuladen.",
-    "dashboard": "Projekt?bersicht",
+    "dashboard": "Projektübersicht",
     "switch": "Projekt wechseln",
     "current": "Aktuelles Projekt:",
-    "open": "Projekt ?ffnen",
+    "open": "Projekt öffnen",
     "updated": "Aktualisiert {date}",
     "slide": "Folie",
     "slides": "Folien",
@@ -56,8 +56,8 @@
     "progress": "Projektfortschritt",
     "steps": [
       "Hochladen",
-      "Ziel ausw?hlen",
-      "Vorlage w?hlen",
+      "Ziel auswählen",
+      "Vorlage wählen",
       "Anpassen",
       "Exportieren"
     ],
@@ -75,16 +75,16 @@
     ]
   },
   "upload": {
-    "release": "Loslassen, um Screenshots hinzuzuf?gen",
+    "release": "Loslassen, um Screenshots hinzuzufügen",
     "drop": "Screenshots hier ablegen",
     "types": "PNG oder JPG",
     "count": "{count} von 10 Screenshots",
     "browse": "Dateien durchsuchen",
-    "validation": "Nur PNG- und JPG-Bilder werden unterst?tzt.",
-    "limit": "Sie k?nnen bis zu 10 Screenshots hinzuf?gen.",
+    "validation": "Nur PNG- und JPG-Bilder werden unterstützt.",
+    "limit": "Sie können bis zu 10 Screenshots hinzufügen.",
     "uploaded": "Hochgeladene Screenshots",
     "reorder": "{name} neu anordnen",
-    "delete": "{name} l?schen",
+    "delete": "{name} löschen",
     "slideTitle": "Folientitel",
     "next": "Weiter",
     "privacy": "Ihre Bilder bleiben privat und werden lokal im Browser verarbeitet.",
@@ -92,139 +92,139 @@
   },
   "target": {
     "eyebrow": "App-Store",
-    "title": "Wo ver?ffentlichen Sie?",
-    "googleDescription": "Eintr?ge f?r Android-Smartphones und Tablets",
-    "appleDescription": "Produktseiten f?r iPhone und iPad",
-    "sizes": "Exportgr??en",
-    "select": "W?hlen Sie die ben?tigten Formate",
-    "custom": "Benutzerdefinierte Ma?e",
-    "customDescription": "F?gen Sie ein nicht aufgef?hrtes Format hinzu.",
+    "title": "Wo veröffentlichen Sie?",
+    "googleDescription": "Einträge für Android-Smartphones und Tablets",
+    "appleDescription": "Produktseiten für iPhone und iPad",
+    "sizes": "Exportgrößen",
+    "select": "Wählen Sie die benötigten Formate",
+    "custom": "Benutzerdefinierte Maße",
+    "customDescription": "Fügen Sie ein nicht aufgeführtes Format hinzu.",
     "name": "Name",
     "width": "Breite",
-    "height": "H?he",
-    "formats": "{count} Exportformate ausgew?hlt",
-    "format": "{count} Exportformat ausgew?hlt",
+    "height": "Höhe",
+    "formats": "{count} Exportformate ausgewählt",
+    "format": "{count} Exportformat ausgewählt",
     "remove": "{name} entfernen",
     "dimensionName": "Name des benutzerdefinierten Formats",
     "customWidth": "Benutzerdefinierte Breite",
-    "customHeight": "Benutzerdefinierte H?he",
+    "customHeight": "Benutzerdefinierte Höhe",
     "presets": {
       "phone": "Smartphone",
       "tablet-7": "7-Zoll-Tablet",
       "tablet-10": "10-Zoll-Tablet",
       "iphone-dynamic-island-medium-1206": "iPhone Dynamic Island (1206 Pixel)",
       "iphone-dynamic-island-medium-1179": "iPhone Dynamic Island (1179 Pixel)",
-      "iphone-dynamic-island-large": "iPhone Dynamic Island gro?",
+      "iphone-dynamic-island-large": "iPhone Dynamic Island groß",
       "iphone-6-5-face-id": "iPhone 6,5 Zoll Face ID",
       "ipad-13": "iPad 13 Zoll"
     }
   },
   "template": {
     "step": "Schritt 3 / Vorlage",
-    "title": "Vorlage ausw?hlen",
-    "description": "W?hlen Sie ein Startlayout. Jede Karte zeigt Ihren ersten Screenshot; das ausgew?hlte Design wird in den vollst?ndigen Abmessungen des aktiven Ziels gerendert.",
-    "chooseSlide": "Screenshot zum Anpassen ausw?hlen",
+    "title": "Vorlage auswählen",
+    "description": "Wählen Sie ein Startlayout. Jede Karte zeigt Ihren ersten Screenshot; das ausgewählte Design wird in den vollständigen Abmessungen des aktiven Ziels gerendert.",
+    "chooseSlide": "Screenshot zum Anpassen auswählen",
     "gallery": "Vorlagengalerie",
     "layouts": "{count} Layouts",
     "filter": "Vorlagen nach Kategorie filtern",
     "live": "Live-Vorschau",
-    "preview": "Vorschau von Folie {slide}. W?hlen Sie oben eine Folie, um ihr eine Vorlage zuzuweisen.",
+    "preview": "Vorschau von Folie {slide}. Wählen Sie oben eine Folie, um ihr eine Vorlage zuzuweisen.",
     "categories": {
       "All": "Alle",
       "General": "Allgemein",
       "Fashion": "Mode",
       "Fitness": "Fitness",
       "Education": "Bildung",
-      "Productivity": "Produktivit?t"
+      "Productivity": "Produktivität"
     },
     "slideNamed": "Folie {number}: {name}"
   },
   "customize": {
     "step": "Schritt 4 / Anpassen",
     "title": "Jeden Screenshot anpassen",
-    "description": "Text, Hintergrund und Rahmen werden f?r jede Folie separat gespeichert.",
+    "description": "Text, Hintergrund und Rahmen werden für jede Folie separat gespeichert.",
     "slides": "Ihre Folien",
     "live": "Live-Vorschau",
     "updates": "Wird live aktualisiert",
     "typography": "Text und Typografie",
     "editCopy": "Bearbeiten Sie den Text dieser Folie.",
-    "headline": "?berschrift",
-    "headlinePlaceholder": "Ihre Haupt?berschrift",
-    "headlineFont": "Schriftart der ?berschrift",
+    "headline": "Überschrift",
+    "headlinePlaceholder": "Ihre HauptÜberschrift",
+    "headlineFont": "Schriftart der Überschrift",
     "subheadline": "Untertitel",
-    "subheadlinePlaceholder": "F?gen Sie eine erg?nzende Nachricht hinzu",
+    "subheadlinePlaceholder": "Fügen Sie eine ergänzende Nachricht hinzu",
     "none": "Keine Screenshots zum Anpassen",
-    "addScreenshot": "Gehen Sie zur?ck zu Schritt 1 und f?gen Sie mindestens einen Screenshot hinzu.",
+    "addScreenshot": "Gehen Sie zurück zu Schritt 1 und fügen Sie mindestens einen Screenshot hinzu.",
     "screenshotCount": "{count} Screenshots",
     "screenshot": "{count} Screenshot",
-    "selectScreenshot": "Screenshot zum Anpassen ausw?hlen",
+    "selectScreenshot": "Screenshot zum Anpassen auswählen",
     "slide": "Folie {number}",
     "subheadlineFont": "Schriftart des Untertitels",
     "badge": "Optionaler Badge-Text",
-    "verified": "F?gen Sie nur best?tigte Informationen hinzu",
+    "verified": "Fügen Sie nur bestätigte Informationen hinzu",
     "alignment": "Textausrichtung",
     "colorOverrides": "Textfarben",
     "routineCards": "Bearbeitbare Routine-/Aufgabenkarten",
-    "savedRows": "Diese Zeilen werden f?r diese Folie gespeichert.",
+    "savedRows": "Diese Zeilen werden für diese Folie gespeichert.",
     "cardFont": "Schriftart der Karte",
     "item": "Element {number}",
     "timeSubtitle": "Zeit / Untertitel",
     "timeExample": "z. B. 9:00 Uhr",
     "titleField": "Titel",
-    "addTask": "Aufgabe hinzuf?gen",
+    "addTask": "Aufgabe hinzufügen",
     "detail": "Details",
     "optionalDetail": "Optionale Details",
     "removeItem": "Element entfernen",
-    "addItem": "Element hinzuf?gen",
+    "addItem": "Element hinzufügen",
     "widget": "Inhalt des schwebenden Widgets",
-    "widgetCopy": "Bearbeiten Sie den Text auf der ?berlappenden Benachrichtigungskarte.",
+    "widgetCopy": "Bearbeiten Sie den Text auf der überlappenden Benachrichtigungskarte.",
     "widgetItem": "Widget-Element {number}",
     "widgetTitle": "Widget-Titel",
-    "supportingDetail": "Erg?nzende Details",
+    "supportingDetail": "Ergänzende Details",
     "removeWidget": "Element entfernen",
-    "addWidget": "Widget-Element hinzuf?gen",
+    "addWidget": "Widget-Element hinzufügen",
     "social": "Optionale Bewertung oder Empfehlung",
-    "socialHelp": "Standardm??ig ausgeblendet. Geben Sie nur Bewertungen oder Aussagen zu dieser App ein.",
-    "showRating": "Best?tigte Bewertung auf dieser Folie anzeigen",
+    "socialHelp": "Standardmäßig ausgeblendet. Geben Sie nur Bewertungen oder Aussagen zu dieser App ein.",
+    "showRating": "Bestätigte Bewertung auf dieser Folie anzeigen",
     "score": "Bewertung",
     "ratingPlaceholder": "App-Bewertung eingeben",
     "starCount": "Anzahl der Sterne",
     "subtitle": "Untertitel",
-    "reviewsPlaceholder": "z. B. 120 best?tigte Bewertungen",
+    "reviewsPlaceholder": "z. B. 120 bestätigte Bewertungen",
     "accents": "Hintergrundakzente / Muster",
-    "patternHelp": "W?hlen Sie eine dezente ?berlagerung nur f?r diese Folie.",
+    "patternHelp": "Wählen Sie eine dezente Überlagerung nur für diese Folie.",
     "pattern": "Muster",
     "templateDefault": "Vorlagenstandard",
     "noneSolid": "Keins / einfarbig",
-    "softArches": "Sanfte B?gen",
+    "softArches": "Sanfte Bögen",
     "floatingOrbs": "Schwebende Kugeln",
     "gridDots": "Dezentes Raster / Punkte",
     "sprinkles": "Sprenkel / Funken",
     "layers": "Dekorative Ebenen",
-    "layersHelp": "Blenden Sie Karten und Badges f?r eine klarere Folie aus.",
+    "layersHelp": "Blenden Sie Karten und Badges für eine klarere Folie aus.",
     "showLayers": "Dekorative Karten / Badges anzeigen",
     "background": "Hintergrund",
-    "backgroundHelp": "W?hlen Sie eine Volltonfarbe oder einen Verlauf mit zwei Farbstopps.",
+    "backgroundHelp": "Wählen Sie eine Volltonfarbe oder einen Verlauf mit zwei Farbstopps.",
     "backgroundType": "Hintergrundtyp",
     "startColor": "Startfarbe",
     "backgroundColor": "Hintergrundfarbe",
-    "primaryColor": "Prim?re Hintergrundfarbe",
+    "primaryColor": "Primäre Hintergrundfarbe",
     "endColor": "Endfarbe",
-    "secondaryColor": "Sekund?re Hintergrundfarbe",
+    "secondaryColor": "Sekundäre Hintergrundfarbe",
     "angle": "Verlaufswinkel",
     "angleAria": "Winkel der Verlaufsrichtung",
-    "deviceFrame": "Ger?terahmen",
+    "deviceFrame": "Geräterahmen",
     "deviceHelp": "Steuern Sie den Smartphone-Rahmen um Ihren Screenshot.",
-    "showDevice": "Ger?terahmen anzeigen",
-    "frameFinish": "Rahmenoberfl?che",
+    "showDevice": "Geräterahmen anzeigen",
+    "frameFinish": "Rahmenoberfläche",
     "dark": "Dunkel",
     "light": "Hell",
     "accent": "Akzent (Markenfarbe)",
     "projectBrand": "Projektmarke",
-    "brandHelp": "Verwenden Sie die Markenfarbe f?r Ger?teakzente; jede Vorlage beh?lt ihre eigene Palette.",
+    "brandHelp": "Verwenden Sie die Markenfarbe für Geräteakzente; jede Vorlage behält ihre eigene Palette.",
     "brandColor": "Markenfarbe",
     "brandColorAria": "Projektmarkenfarbe",
-    "applyBrand": "Markenfarbe auf alle Ger?terahmen anwenden",
+    "applyBrand": "Markenfarbe auf alle Geräterahmen anwenden",
     "auto": "Automatisch",
     "editSlide": "Folie {number} bearbeiten: {name}",
     "singleSlide": "Folie {number}",
@@ -237,24 +237,25 @@
       "solid": "Einfarbig",
       "gradient": "Verlauf"
     },
-    "continueToExport": "Weiter zum Export"
+    "continueToExport": "Weiter zum Export",
+    "colorOverrideAria": "Farbüberschreibung für {label}"
   },
   "export": {
     "step": "Schritt 5 / Export",
-    "title": "Screenshots pr?fen und exportieren",
-    "description": "Jede Folie wird in allen ausgew?hlten Gr??en gerendert und in einer nach Store organisierten ZIP-Datei verpackt.",
+    "title": "Screenshots prüfen und exportieren",
+    "description": "Jede Folie wird in allen ausgewählten Größen gerendert und in einer nach Store organisierten ZIP-Datei verpackt.",
     "slides": "Folien",
-    "targets": "Ausgew?hlte Ziele",
+    "targets": "Ausgewählte Ziele",
     "files": "PNG-Dateien in ZIP",
     "folders": "Ausgabeordner",
-    "none": "Keine Exportziele ausgew?hlt. Gehen Sie zur?ck zu Schritt 2 und w?hlen Sie Gr??en aus.",
+    "none": "Keine Exportziele ausgewählt. Gehen Sie zurück zu Schritt 2 und wählen Sie Größen aus.",
     "success": "ZIP-Datei erstellt und erfolgreich heruntergeladen.",
-    "back": "Zur?ck zur Anpassung",
-    "preparing": "Export wird vorbereitet?",
+    "back": "Zurück zur Anpassung",
+    "preparing": "Export wird vorbereitet…",
     "download": "Rendern und ZIP herunterladen",
     "building": "Export wird erstellt",
-    "render": "Folie {slide} von {total} wird gerendert ({target})?",
-    "packaging": "PNG-Dateien werden in ZIP verpackt?",
+    "render": "Folie {slide} von {total} wird gerendert ({target})…",
+    "packaging": "PNG-Dateien werden in ZIP verpackt…",
     "progress": "Exportfortschritt",
     "rendered": "{current} / {total} Bilder gerendert",
     "packaged": "{percent}% verpackt",
@@ -268,60 +269,60 @@
     "email": "E-Mail",
     "subject": "Betreff",
     "message": "Nachricht",
-    "sending": "Wird gesendet?",
+    "sending": "Wird gesendet…",
     "send": "Nachricht senden",
-    "notConfigured": "E-Mail ist noch nicht eingerichtet. Bitte versuchen Sie es sp?ter erneut.",
-    "sent": "Danke f?r Ihre Nachricht. Sie wurde gesendet.",
-    "failed": "Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es sp?ter erneut."
+    "notConfigured": "E-Mail ist noch nicht eingerichtet. Bitte versuchen Sie es später erneut.",
+    "sent": "Danke für Ihre Nachricht. Sie wurde gesendet.",
+    "failed": "Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
   },
   "legal": {
     "eyebrow": "Rechtliches",
     "updated": "Zuletzt aktualisiert: 16. Oktober 2026",
     "contactLink": "Kontaktseite",
-    "privacyTitle": "Datenschutzerkl?rung",
+    "privacyTitle": "Datenschutzerklärung",
     "termsTitle": "Nutzungsbedingungen",
     "privacySections": [
       [
         "Von Ihnen bereitgestellte Informationen",
-        "Screenshot Studio verarbeitet die Bilder und Projektdetails, die Sie bereitstellen, damit Sie Grafiken f?r Store-Eintr?ge erstellen k?nnen. Kontaktanfragen enthalten den von Ihnen eingegebenen Namen, Ihre E-Mail-Adresse, den Betreff und die Nachricht."
+        "Screenshot Studio verarbeitet die Bilder und Projektdetails, die Sie bereitstellen, damit Sie Grafiken für Store-Einträge erstellen können. Kontaktanfragen enthalten den von Ihnen eingegebenen Namen, Ihre E-Mail-Adresse, den Betreff und die Nachricht."
       ],
       [
         "Verwendung der Informationen",
-        "Wir verwenden ?bermittelte Informationen, um das Studio zu betreiben, Supportanfragen zu beantworten und den Dienst zu verbessern. Kontaktanfragen werden ?ber EmailJS gesendet, sofern der Dienst eingerichtet ist."
+        "Wir verwenden übermittelte Informationen, um das Studio zu betreiben, Supportanfragen zu beantworten und den Dienst zu verbessern. Kontaktanfragen werden über EmailJS gesendet, sofern der Dienst eingerichtet ist."
       ],
       [
         "Speicherung und Weitergabe",
-        "Projektdaten k?nnen in Ihrem Browser gespeichert werden, damit der Editor funktioniert. Kontaktanfragen werden an EmailJS ?bermittelt und gem?? dessen Datenschutzbestimmungen verarbeitet. Wir verkaufen keine personenbezogenen Daten."
+        "Projektdaten können in Ihrem Browser gespeichert werden, damit der Editor funktioniert. Kontaktanfragen werden an EmailJS übermittelt und gemäß dessen Datenschutzbestimmungen verarbeitet. Wir verkaufen keine personenbezogenen Daten."
       ],
       [
-        "Ihre Wahlm?glichkeiten",
+        "Ihre Wahlmöglichkeiten",
         "Sie entscheiden, welche Informationen und Bilder Sie bereitstellen. Bei Fragen zu dieser Richtlinie oder einer Kontaktanfrage nutzen Sie bitte unsere Kontaktseite."
       ],
       [
-        "?nderungen dieser Richtlinie",
-        "Wir k?nnen diese Richtlinie an ?nderungen des Dienstes anpassen. Das oben angegebene Datum zeigt die letzte ?berarbeitung an."
+        "Änderungen dieser Richtlinie",
+        "Wir können diese Richtlinie an Änderungen des Dienstes anpassen. Das oben angegebene Datum zeigt die letzte überarbeitung an."
       ]
     ],
     "termsSections": [
       [
         "Nutzung von Screenshot Studio",
-        "Screenshot Studio hilft Ihnen, Marketingbilder f?r App-Store-Eintr?ge vorzubereiten. Sie sind daf?r verantwortlich, den Dienst im Einklang mit geltenden Gesetzen und den Regeln der Stores zu nutzen, in denen Sie Ihre Bilder ver?ffentlichen."
+        "Screenshot Studio hilft Ihnen, Marketingbilder für App-Store-Einträge vorzubereiten. Sie sind dafür verantwortlich, den Dienst im Einklang mit geltenden Gesetzen und den Regeln der Stores zu nutzen, in denen Sie Ihre Bilder veröffentlichen."
       ],
       [
         "Ihre Inhalte",
-        "Sie bleiben f?r Screenshots, Logos, Texte und andere hochgeladene Materialien verantwortlich. Sie m?ssen ?ber die erforderlichen Nutzungsrechte verf?gen. Laden Sie keine Inhalte hoch, zu deren Nutzung Sie nicht berechtigt sind."
+        "Sie bleiben für Screenshots, Logos, Texte und andere hochgeladene Materialien verantwortlich. Sie müssen über die erforderlichen Nutzungsrechte verfügen. Laden Sie keine Inhalte hoch, zu deren Nutzung Sie nicht berechtigt sind."
       ],
       [
-        "Zul?ssige Nutzung",
-        "Nutzen Sie den Dienst nicht, um Rechte anderer zu verletzen, rechtswidrige Inhalte zu verbreiten, den Dienst zu beeintr?chtigen oder unbefugt auf Systeme zuzugreifen."
+        "Zulässige Nutzung",
+        "Nutzen Sie den Dienst nicht, um Rechte anderer zu verletzen, rechtswidrige Inhalte zu verbreiten, den Dienst zu beeinträchtigen oder unbefugt auf Systeme zuzugreifen."
       ],
       [
-        "Verf?gbarkeit",
-        "Der Dienst wird in seiner jeweils verf?gbaren Form bereitgestellt und kann sich im Laufe der Zeit ?ndern. Wir k?nnen Funktionen korrigieren, aktualisieren oder vor?bergehend aussetzen, um den Dienst zu warten."
+        "Verfügbarkeit",
+        "Der Dienst wird in seiner jeweils verfügbaren Form bereitgestellt und kann sich im Laufe der Zeit ändern. Wir können Funktionen korrigieren, aktualisieren oder vorübergehend aussetzen, um den Dienst zu warten."
       ],
       [
         "Kontakt",
-        "Fragen zu diesen Bedingungen k?nnen Sie ?ber unsere Kontaktseite senden."
+        "Fragen zu diesen Bedingungen können Sie über unsere Kontaktseite senden."
       ]
     ]
   },
@@ -329,22 +330,22 @@
     "award-badge": {
       "label": "Warme Editorial-Karten",
       "style": "Warmes Editorial-Design",
-      "description": "Eine ruhige elfenbeinfarbene Fl?che und bearbeitbare Feature-Karten erg?nzen den App-Screenshot."
+      "description": "Eine ruhige elfenbeinfarbene Fläche und bearbeitbare Feature-Karten ergänzen den App-Screenshot."
     },
     "earthy-routine": {
-      "label": "Nat?rliche Routinen",
+      "label": "Natürliche Routinen",
       "style": "Warmer Zeitplan in zwei Spalten",
-      "description": "Eine dunkle taupefarbene Titelkarte und ?bersichtliche Routinezeilen verleihen dem Eintrag einen handgemachten Charakter."
+      "description": "Eine dunkle taupefarbene Titelkarte und übersichtliche Routinezeilen verleihen dem Eintrag einen handgemachten Charakter."
     },
     "split-bleed": {
-      "label": "Gro?fl?chiges Split-Layout",
-      "style": "Immersives Ger?te-Hero",
-      "description": "Eine kompakte Bildunterschrift oben schafft Platz f?r ein Smartphone, das ?ber den unteren Rand der Fl?che hinausgeht."
+      "label": "Großflächiges Split-Layout",
+      "style": "Immersives Geräte-Hero",
+      "description": "Eine kompakte Bildunterschrift oben schafft Platz für ein Smartphone, das über den unteren Rand der Fläche hinausgeht."
     },
     "floating-widget": {
       "label": "Schwebendes, minimalistisches Widget",
       "style": "Helle Benachrichtigungsebene",
-      "description": "Viel Wei?raum, klare Schrift und ein schwebendes Produkt-Widget geben der Ger?teansicht Tiefe."
+      "description": "Viel Weißraum, klare Schrift und ein schwebendes Produkt-Widget geben der Geräteansicht Tiefe."
     },
     "side-by-side-proof": {
       "label": "Feature-Karten nebeneinander",
@@ -353,58 +354,58 @@
     },
     "bottom-banner-widget": {
       "label": "Benachrichtigungsbanner unten",
-      "style": "?berlappendes Banner am unteren Rand",
-      "description": "Ein breites Benachrichtigungsbanner ?berlagert den unteren Rand eines gro?en, zentrierten Smartphones."
+      "style": "überlappendes Banner am unteren Rand",
+      "description": "Ein breites Benachrichtigungsbanner überlagert den unteren Rand eines großen, zentrierten Smartphones."
     },
     "split-sidecar-hero": {
       "label": "Geteiltes Sidecar-Hero",
-      "style": "Text links, Ger?t rechts",
-      "description": "Eine kompakte Text- und Feature-Spalte erg?nzt ein gro?es Smartphone auf der rechten Seite."
+      "style": "Text links, Gerät rechts",
+      "description": "Eine kompakte Text- und Feature-Spalte ergänzt ein großes Smartphone auf der rechten Seite."
     },
     "top-pill-story": {
       "label": "Gestapelte Bildunterschriften",
       "style": "Offenes Editorial-Layout",
-      "description": "Ein offener Bildunterschriftenblock f?hrt zu einer ?bergro?en Smartphone-Vorschau und einem optionalen Hinweis."
+      "description": "Ein offener Bildunterschriftenblock führt zu einer übergroßen Smartphone-Vorschau und einem optionalen Hinweis."
     },
     "fashion-festive-promo": {
       "label": "Festliche Modeaktion",
       "style": "Festliche Modekampagne",
-      "description": "Eine zur?ckhaltende Kampagnenfl?che mit goldenen Details, gro?z?gigem Platz f?r ?berschriften und gro?er Produktvorschau."
+      "description": "Eine zurückhaltende Kampagnenfläche mit goldenen Details, großzügigem Platz für Überschriften und großer Produktvorschau."
     },
     "fashion-panoramic-split": {
       "label": "Panorama-Split",
       "style": "Durchgehendes Modepanorama",
-      "description": "Ein schr?g gestelltes Smartphone verl?uft ?ber eine weiche, durchgehende Modefl?che."
+      "description": "Ein schräg gestelltes Smartphone verläuft über eine weiche, durchgehende Modefläche."
     },
     "fashion-editorial-grid": {
       "label": "Editorial-Collage",
       "style": "Redaktionelles Mode-Raster",
-      "description": "Eine gestaltete Modekampagne kombiniert eine gro?e App-Vorschau mit zwei Screenshot-Fl?chen und bearbeitbarem Editorial-Text."
+      "description": "Eine gestaltete Modekampagne kombiniert eine große App-Vorschau mit zwei Screenshot-Flächen und bearbeitbarem Editorial-Text."
     },
     "fashion-promo-block": {
       "label": "Aktionsblock",
       "style": "Markante Modekampagne",
-      "description": "Ein auff?lliges Kampagnenbanner f?hrt zum Produktscreenshot."
+      "description": "Ein auffälliges Kampagnenbanner führt zum Produktscreenshot."
     },
     "fitness-dark-neon": {
       "label": "Dunkles Neon",
-      "style": "Elektrisches Cyan f?r Fitness",
-      "description": "Ein dunkles Trainingslayout mit Sportfotografie und leuchtend cyanfarbenem Ger?terand."
+      "style": "Elektrisches Cyan für Fitness",
+      "description": "Ein dunkles Trainingslayout mit Sportfotografie und leuchtend cyanfarbenem Geräterand."
     },
     "fitness-neon-dark": {
       "label": "Fitness und Bodybuilding",
       "style": "Dunkles Oliv im Kino-Look",
-      "description": "Sportfotografie, tiefes Anthrazit und dezente Olivt?ne rahmen die App-Vorschau."
+      "description": "Sportfotografie, tiefes Anthrazit und dezente Olivtöne rahmen die App-Vorschau."
     },
     "fitness-log-cards": {
       "label": "Trainingsprotokoll-Karten",
-      "style": "?bungs-Checkliste",
-      "description": "Karten zum Abhaken von ?bungen schweben ?ber einer markanten Smartphone-Vorschau."
+      "style": "Übungs-Checkliste",
+      "description": "Karten zum Abhaken von Übungen schweben über einer markanten Smartphone-Vorschau."
     },
     "edu-flashcard-stack": {
       "label": "Akademischer Sticker-Stapel",
       "style": "Hochwertiges Lernen in Elfenbein",
-      "description": "Akademische Sticker-Illustrationen rahmen bearbeitbare Kursinformationen und eine klare Ger?teansicht."
+      "description": "Akademische Sticker-Illustrationen rahmen bearbeitbare Kursinformationen und eine klare Geräteansicht."
     },
     "edu-pastel-waves": {
       "label": "Pastellwellen und Karten",
@@ -414,36 +415,36 @@
     "edu-institution-badges": {
       "label": "Institutions-Badges",
       "style": "Raster mit Bildungsnachweisen",
-      "description": "Ein nach links geneigtes Smartphone erg?nzt ein ordentliches Raster mit Institutions-Badges."
+      "description": "Ein nach links geneigtes Smartphone ergänzt ein ordentliches Raster mit Institutions-Badges."
     },
     "prod-minimal-widget": {
       "label": "Produkt im Fokus",
       "style": "Bildschirm zuerst",
-      "description": "Ein ruhiges Interface r?ckt den hochgeladenen App-Bildschirm ohne dekorativen Ger?terahmen in den Mittelpunkt."
+      "description": "Ein ruhiges Interface rückt den hochgeladenen App-Bildschirm ohne dekorativen Geräterahmen in den Mittelpunkt."
     },
     "prod-split-bleed": {
       "label": "Geteiltes Anschnitt-Layout",
       "style": "Dunkler Entwicklermodus",
-      "description": "Eine obere Bildunterschrift geht in einen dunklen Entwicklerbildschirm ?ber, der am unteren Rand angeschnitten ist."
+      "description": "Eine obere Bildunterschrift geht in einen dunklen Entwicklerbildschirm über, der am unteren Rand angeschnitten ist."
     }
   },
   "presetGroups": {
     "solid_light_warm": "Helle und warme Volltonfarben",
     "pastel_vibrant": "Pastell und lebendige Farben",
-    "gradients": "Verl?ufe",
+    "gradients": "Verläufe",
     "dark_premium": "Dunkel und hochwertig"
   },
   "presets": {
     "golden_yellow": "Goldgelb",
     "warm_taupe": "Warmes Taupe",
-    "pure_white": "Reinwei?",
+    "pure_white": "Reinweiß",
     "crisp_slate_light": "Helles Schiefergrau",
     "soft_lavender": "Sanftes Lavendel",
     "blush_pink": "Zartrosa",
-    "mint_green": "Mintgr?n",
+    "mint_green": "Mintgrün",
     "sky_blue": "Himmelblau",
     "sunset_pop": "Sonnenuntergang",
-    "cool_indigo": "K?hles Indigo",
+    "cool_indigo": "Kühles Indigo",
     "emerald_wave": "Smaragdwelle",
     "soft_aura": "Sanfter Schimmer",
     "obsidian_dark": "Dunkler Obsidian",
@@ -455,13 +456,13 @@
     "upload": "Laden Sie einen Screenshot hoch, um eine Vorlage in der Vorschau zu sehen.",
     "template": "Vorlagenvorschau mit dem ersten Screenshot",
     "rendered": "Gerenderte Screenshot-Vorschau",
-    "scale": "Gerendert in den vollst?ndigen Abmessungen des ausgew?hlten Ziels; die Anzeigegr??e ?ndert die Ausgabepixel nicht.",
-    "textOverflow": "Einige Texte sind zu lang f?r ihren Vorlagenbereich. K?rzen Sie sie oder passen Sie das Layout vor dem Export an."
+    "scale": "Gerendert in den vollständigen Abmessungen des ausgewählten Ziels; die Anzeigegröße ändert die Ausgabepixel nicht.",
+    "textOverflow": "Einige Texte sind zu lang für ihren Vorlagenbereich. Kürzen Sie sie oder passen Sie das Layout vor dem Export an."
   },
   "metadata": {
-    "description": "Erstellen Sie hochwertige Bilder f?r App-Store-Eintr?ge aus mobilen Screenshots.",
+    "description": "Erstellen Sie hochwertige Bilder für App-Store-Einträge aus mobilen Screenshots.",
     "contactTitle": "Kontakt | Screenshot Studio",
-    "privacyTitle": "Datenschutzerkl?rung | Screenshot Studio",
+    "privacyTitle": "Datenschutzerklärung | Screenshot Studio",
     "termsTitle": "Nutzungsbedingungen | Screenshot Studio"
   }
 }

@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 
-const locales = ['en', 'es', 'fr', 'de', 'ar'];
+const locales = ['en', 'es', 'fr', 'de'];
 const messages = Object.fromEntries(locales.map((locale) => [
   locale,
   JSON.parse(readFileSync(new URL(`../messages/${locale}.json`, import.meta.url), 'utf8'))
@@ -38,6 +38,7 @@ for (const key of referenceKeys) {
   for (const locale of locales) {
     const value = flattened[locale][key];
     if (typeof value !== 'string' || !value.trim()) errors.push(`${locale}: ${key} must be a non-empty string`);
+    else if (/\p{L}\?\p{L}|\?\s+[a-zà-ÿ]/u.test(value)) errors.push(`${locale}: ${key} contains a likely corrupted question-mark placeholder`);
     else if (JSON.stringify(placeholders(value)) !== JSON.stringify(placeholders(flattened.en[key]))) {
       errors.push(`${locale}: interpolation placeholders differ for ${key}`);
     }

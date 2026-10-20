@@ -28,7 +28,7 @@ export default async function LocaleLayout({children, params}: {children: React.
   setRequestLocale(locale);
   const messages = (await import(`@/messages/${locale}.json`)).default;
   return <NextIntlClientProvider locale={locale} messages={messages}>
-    <div lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className="flex min-h-full flex-col">
+    <div lang={locale} dir="ltr" className="flex min-h-full flex-col">
       <Suspense fallback={null}><AppHeader /></Suspense><Suspense fallback={null}>{children}</Suspense>
     </div>
   </NextIntlClientProvider>;

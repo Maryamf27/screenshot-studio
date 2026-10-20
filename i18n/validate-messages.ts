@@ -2,7 +2,6 @@ import en from '../messages/en.json';
 import es from '../messages/es.json';
 import fr from '../messages/fr.json';
 import de from '../messages/de.json';
-import ar from '../messages/ar.json';
 import {templates} from '@/src/renderer/templates';
 
 type LocaleMessages = Record<string, unknown>;
@@ -26,7 +25,7 @@ function leafPaths(value: LocaleMessages, prefix = ''): string[] {
 }
 
 export function validateMessages() {
-  const resources = {en, es, fr, de, ar};
+  const resources = {en, es, fr, de};
   const reference = leafPaths(en as LocaleMessages);
   const errors: string[] = [];
 
